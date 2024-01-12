@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-        "outDir": "dist",
+    "outDir": "dist",
     "paths": { "~/*": ["./*"] },
     "target": "es2020",
     "module": "commonjs",
@@ -10,8 +10,8 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "declaration": true
-
-  },  "include": [
+  },
+  "include": [
     "./scripts",
     "./tests",
     "./types",
@@ -19,7 +19,6 @@
     "./deployments",
     "./bin",
     "./reports"
-  ],  
+  ],
   "files": ["./hardhat.config.ts"]
-
 }
