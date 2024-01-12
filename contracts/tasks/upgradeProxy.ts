@@ -1,7 +1,7 @@
 /** @format */
 
 import { task } from "hardhat/config";
-import UpgradeProxy from "~/deployments/deployers/upgradeProxy";
+import UpgradeProxy from "~/deploy/deployers/upgradeProxy";
 
 const taskId = "upgradeProxy";
 const taskDescription = "Upgrade the given contract proxy";
