@@ -44,7 +44,7 @@ export default function Navbar() {
       >
         {({ open }) => (
           <>
-            <div className="mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto px-4">
               <div className="relative flex justify-between lg:gap-8 xl:grid xl:grid-cols-12">
                 <div className="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-2">
                   <div className="flex flex-shrink-0 items-center">
