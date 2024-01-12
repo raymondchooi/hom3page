@@ -1,12 +1,28 @@
 {
   "name": "hom3page-contracts",
   "module": "index.ts",
-  "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+    "@types/node": "^20.8.9",
+    "@types/bun": "latest",
+    "@chainlink/contracts": "latest",
+    "@nomicfoundation/hardhat-ethers": "latest",
+    "@nomicfoundation/hardhat-toolbox": "latest",
+    "@nomicfoundation/hardhat-verify": "latest",
+    "@openzeppelin/contracts": "latest",
+    "@primitivefi/hardhat-dodoc": "latest",
+    "@typechain/ethers-v6": "latest",
+    "@typechain/hardhat": "latest",
+    "typescript": "^5.3.3",
+    "dotenv": "^16.3.1",
+    "hardhat-ethernal": "^3.2.5",
+    "hardhat-abi-exporter": "^2.10.1",
+    "hardhat-gas-reporter": "^1.0.9",
+    "keccak256": "^1.0.6",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.3",
+    "prettier-plugin-solidity": "^1.1.3",
+    "solidity-coverage": "^0.8.5",
+    "tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
     "hardhat": "^2.19.4"
