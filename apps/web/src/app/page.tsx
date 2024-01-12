@@ -3,8 +3,9 @@ export default function HomePage() {
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
         <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-          Hom3page - home of web3
+          Hom3page
         </h1>
+        <h2>Home of web3</h2>
       </div>
     </main>
   );
