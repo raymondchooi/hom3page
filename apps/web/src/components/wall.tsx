@@ -2,12 +2,12 @@
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-import { Block } from "components";
+import { Block, Button } from "components";
 
 export default function Wall() {
   function renderBlocks() {
     return (
-      <div className="flex flex-wrap justify-center">
+      <>
         {Array.from(Array(288).keys()).map((i) => (
           <Block
             key={i}
@@ -15,7 +15,7 @@ export default function Wall() {
             onClick={(id) => console.log(id)}
           />
         ))}
-      </div>
+      </>
     );
   }
   return (
@@ -28,9 +28,13 @@ export default function Wall() {
                 {renderBlocks()}
               </div>
             </TransformComponent>
-            <div>
-              <button onClick={() => zoomIn()}>+</button>
-              <button onClick={() => zoomOut()}>-</button>
+            <div className="mt-5 flex gap-x-2">
+              <Button onClick={() => zoomIn()} color="purple">
+                +
+              </Button>
+              <Button onClick={() => zoomOut()} color="purple">
+                -
+              </Button>
             </div>
           </>
         )}
