@@ -1,5 +1,7 @@
 "use client";
 
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+
 import { Block } from "components";
 
 export default function Wall() {
@@ -17,10 +19,24 @@ export default function Wall() {
     );
   }
   return (
-    <div className="flex flex-col items-center justify-center py-2">
-      <div className="flex flex-1 flex-col items-center justify-center px-20 text-center">
-        {renderBlocks()}
-      </div>
+    <div className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden py-2">
+      <TransformWrapper initialScale={0.5} centerOnInit minScale={0.00001}>
+        {({ zoomIn, zoomOut }) => (
+          <>
+            <TransformComponent>
+              <div className="grid-cols-24 grid text-center">
+                {renderBlocks()}
+              </div>
+            </TransformComponent>
+            <div>
+              <button onClick={() => zoomIn()}>+</button>
+              <button onClick={() => zoomOut()}>-</button>
+            </div>
+          </>
+        )}
+      </TransformWrapper>
     </div>
   );
 }
+
+// className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden bg-green-200 py-2"
