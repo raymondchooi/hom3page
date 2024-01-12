@@ -1,13 +1,29 @@
 {
   "name": "hom3page-contracts",
+  "version": "0.0.1",
   "module": "index.ts",
+  "scripts": {
+    "solhint": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
+    "prettier": "prettier --write 'contracts/**/*.sol'",
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "hardhat": "npx hardhat node",
+    "dev": "npx hardhat deployContracts --network hardhat",
+    "deploy-baseGoerli": "npx hardhat deployContracts --network base-goerli",
+    "deploy-opGoerli": "npx hardhat deployContracts --network opGoerli",
+    "deploy-mumbai": "npx hardhat deployContracts --network mumbai",
+    "deploy-arbGoerli": "npx hardhat deployContracts --network arbGoerli",
+    "deploy-sepolia": "npx hardhat deployContracts --network sepolia",
+    "deploy-ethGoerli": "npx hardhat deployContracts --network ethGoerli",
+    "deploy-local": "npx hardhat deployContracts --network localhost"
+  },
   "devDependencies": {
     "@types/node": "^20.8.9",
     "@types/bun": "latest",
     "@chainlink/contracts": "latest",
-    "@nomicfoundation/hardhat-ethers": "latest",
-    "@nomicfoundation/hardhat-toolbox": "latest",
-    "@nomicfoundation/hardhat-verify": "latest",
+    "@nomicfoundation/hardhat-ethers": "^3.0.4",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
     "@openzeppelin/contracts": "latest",
     "@primitivefi/hardhat-dodoc": "latest",
     "@typechain/ethers-v6": "latest",
@@ -22,7 +38,8 @@
     "prettier": "^3.0.3",
     "prettier-plugin-solidity": "^1.1.3",
     "solidity-coverage": "^0.8.5",
-    "tsconfig-paths": "^4.2.0"
+    "tsconfig-paths": "^4.2.0",
+    "ethers": "6.8.0"
   },
   "dependencies": {
     "hardhat": "^2.19.4"
