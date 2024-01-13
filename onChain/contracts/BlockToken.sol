@@ -13,10 +13,15 @@ contract BlockToken is ERC721AVotes, OnlyActive {
 
     mapping(uint256 => address) internal _innerWall;
 
+    /**
+     * @param name_ Name of the Token
+     * @param symbol_ Symbol or Ticker
+     * @param version_ Version of teh contract
+     */
     constructor(
-        string name_,
-        string symbol_,
-        string version_
+        string memory name_,
+        string memory symbol_,
+        string memory version_
     ) ERC721A(name_, symbol_) Ownable(msg.sender) EIP712(name_, version_) {}
 
     /**
