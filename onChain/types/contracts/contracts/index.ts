@@ -3,6 +3,10 @@
 /* eslint-disable */
 import type * as blockSalesSol from "./BlockSales.sol";
 export type { blockSalesSol };
+import type * as innerBlockSol from "./InnerBlock.sol";
+export type { innerBlockSol };
 import type * as security from "./security";
 export type { security };
+import type * as utils from "./utils";
+export type { utils };
 export type { BlockToken } from "./BlockToken";

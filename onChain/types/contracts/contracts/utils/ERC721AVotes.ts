@@ -21,9 +21,9 @@ import type {
   TypedLogDescription,
   TypedListener,
   TypedContractMethod,
-} from "../common";
+} from "../../common";
 
-export interface BlockTokenInterface extends Interface {
+export interface ERC721AVotesInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "CLOCK_MODE"
@@ -39,23 +39,17 @@ export interface BlockTokenInterface extends Interface {
       | "getPastVotes"
       | "getVotes"
       | "isApprovedForAll"
-      | "mintAllBlocks"
-      | "mintInnerWall"
       | "name"
       | "nonces"
-      | "owner"
       | "ownerOf"
-      | "renounceOwnership"
       | "safeTransferFrom(address,address,uint256)"
       | "safeTransferFrom(address,address,uint256,bytes)"
-      | "setActiveState"
       | "setApprovalForAll"
       | "supportsInterface"
       | "symbol"
       | "tokenURI"
       | "totalSupply"
       | "transferFrom"
-      | "transferOwnership"
   ): FunctionFragment;
 
   getEvent(
@@ -63,11 +57,9 @@ export interface BlockTokenInterface extends Interface {
       | "Approval"
       | "ApprovalForAll"
       | "ConsecutiveTransfer"
-      | "ContractActiveStateChange"
       | "DelegateChanged"
       | "DelegateVotesChanged"
       | "EIP712DomainChanged"
-      | "OwnershipTransferred"
       | "Transfer"
   ): EventFragment;
 
@@ -127,24 +119,11 @@ export interface BlockTokenInterface extends Interface {
     functionFragment: "isApprovedForAll",
     values: [AddressLike, AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "mintAllBlocks",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintInnerWall",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom(address,address,uint256)",
@@ -153,10 +132,6 @@ export interface BlockTokenInterface extends Interface {
   encodeFunctionData(
     functionFragment: "safeTransferFrom(address,address,uint256,bytes)",
     values: [AddressLike, AddressLike, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setActiveState",
-    values: [boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
@@ -178,10 +153,6 @@ export interface BlockTokenInterface extends Interface {
   encodeFunctionData(
     functionFragment: "transferFrom",
     values: [AddressLike, AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [AddressLike]
   ): string;
 
   decodeFunctionResult(functionFragment: "CLOCK_MODE", data: BytesLike): Result;
@@ -215,32 +186,15 @@ export interface BlockTokenInterface extends Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintAllBlocks",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintInnerWall",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom(address,address,uint256)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom(address,address,uint256,bytes)",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setActiveState",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -259,10 +213,6 @@ export interface BlockTokenInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
 }
@@ -332,18 +282,6 @@ export namespace ConsecutiveTransferEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace ContractActiveStateChangeEvent {
-  export type InputTuple = [newState_: boolean];
-  export type OutputTuple = [newState_: boolean];
-  export interface OutputObject {
-    newState_: boolean;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
 export namespace DelegateChangedEvent {
   export type InputTuple = [
     delegator: AddressLike,
@@ -398,19 +336,6 @@ export namespace EIP712DomainChangedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace OwnershipTransferredEvent {
-  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
-  export type OutputTuple = [previousOwner: string, newOwner: string];
-  export interface OutputObject {
-    previousOwner: string;
-    newOwner: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
 export namespace TransferEvent {
   export type InputTuple = [
     from: AddressLike,
@@ -429,11 +354,11 @@ export namespace TransferEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface BlockToken extends BaseContract {
-  connect(runner?: ContractRunner | null): BlockToken;
+export interface ERC721AVotes extends BaseContract {
+  connect(runner?: ContractRunner | null): ERC721AVotes;
   waitForDeployment(): Promise<this>;
 
-  interface: BlockTokenInterface;
+  interface: ERC721AVotesInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -539,27 +464,11 @@ export interface BlockToken extends BaseContract {
     "view"
   >;
 
-  mintAllBlocks: TypedContractMethod<
-    [salesContract_: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  mintInnerWall: TypedContractMethod<
-    [blockId_: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
   name: TypedContractMethod<[], [string], "view">;
 
   nonces: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
 
-  owner: TypedContractMethod<[], [string], "view">;
-
   ownerOf: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
-
-  renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   "safeTransferFrom(address,address,uint256)": TypedContractMethod<
     [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
@@ -576,12 +485,6 @@ export interface BlockToken extends BaseContract {
     ],
     [void],
     "payable"
-  >;
-
-  setActiveState: TypedContractMethod<
-    [newState_: boolean],
-    [void],
-    "nonpayable"
   >;
 
   setApprovalForAll: TypedContractMethod<
@@ -606,12 +509,6 @@ export interface BlockToken extends BaseContract {
     [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
     [void],
     "payable"
-  >;
-
-  transferOwnership: TypedContractMethod<
-    [newOwner: AddressLike],
-    [void],
-    "nonpayable"
   >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -695,26 +592,14 @@ export interface BlockToken extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "mintAllBlocks"
-  ): TypedContractMethod<[salesContract_: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "mintInnerWall"
-  ): TypedContractMethod<[blockId_: BigNumberish], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "nonces"
   ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: "owner"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "ownerOf"
   ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
-  getFunction(
-    nameOrSignature: "renounceOwnership"
-  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "safeTransferFrom(address,address,uint256)"
   ): TypedContractMethod<
@@ -734,9 +619,6 @@ export interface BlockToken extends BaseContract {
     [void],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "setActiveState"
-  ): TypedContractMethod<[newState_: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setApprovalForAll"
   ): TypedContractMethod<
@@ -763,9 +645,6 @@ export interface BlockToken extends BaseContract {
     [void],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "transferOwnership"
-  ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "Approval"
@@ -789,13 +668,6 @@ export interface BlockToken extends BaseContract {
     ConsecutiveTransferEvent.OutputObject
   >;
   getEvent(
-    key: "ContractActiveStateChange"
-  ): TypedContractEvent<
-    ContractActiveStateChangeEvent.InputTuple,
-    ContractActiveStateChangeEvent.OutputTuple,
-    ContractActiveStateChangeEvent.OutputObject
-  >;
-  getEvent(
     key: "DelegateChanged"
   ): TypedContractEvent<
     DelegateChangedEvent.InputTuple,
@@ -815,13 +687,6 @@ export interface BlockToken extends BaseContract {
     EIP712DomainChangedEvent.InputTuple,
     EIP712DomainChangedEvent.OutputTuple,
     EIP712DomainChangedEvent.OutputObject
-  >;
-  getEvent(
-    key: "OwnershipTransferred"
-  ): TypedContractEvent<
-    OwnershipTransferredEvent.InputTuple,
-    OwnershipTransferredEvent.OutputTuple,
-    OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
     key: "Transfer"
@@ -865,17 +730,6 @@ export interface BlockToken extends BaseContract {
       ConsecutiveTransferEvent.OutputObject
     >;
 
-    "ContractActiveStateChange(bool)": TypedContractEvent<
-      ContractActiveStateChangeEvent.InputTuple,
-      ContractActiveStateChangeEvent.OutputTuple,
-      ContractActiveStateChangeEvent.OutputObject
-    >;
-    ContractActiveStateChange: TypedContractEvent<
-      ContractActiveStateChangeEvent.InputTuple,
-      ContractActiveStateChangeEvent.OutputTuple,
-      ContractActiveStateChangeEvent.OutputObject
-    >;
-
     "DelegateChanged(address,address,address)": TypedContractEvent<
       DelegateChangedEvent.InputTuple,
       DelegateChangedEvent.OutputTuple,
@@ -907,17 +761,6 @@ export interface BlockToken extends BaseContract {
       EIP712DomainChangedEvent.InputTuple,
       EIP712DomainChangedEvent.OutputTuple,
       EIP712DomainChangedEvent.OutputObject
-    >;
-
-    "OwnershipTransferred(address,address)": TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
-    >;
-    OwnershipTransferred: TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
     >;
 
     "Transfer(address,address,uint256)": TypedContractEvent<

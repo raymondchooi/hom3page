@@ -21,28 +21,19 @@ import type {
   TypedLogDescription,
   TypedListener,
   TypedContractMethod,
-} from "../common";
+} from "../../common";
 
-export interface BlockTokenInterface extends Interface {
+export interface InnerBlockTokenInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "CLOCK_MODE"
+      | "WALL_LAYER"
       | "approve"
       | "balanceOf"
-      | "clock"
-      | "delegate"
-      | "delegateBySig"
-      | "delegates"
-      | "eip712Domain"
       | "getApproved"
-      | "getPastTotalSupply"
-      | "getPastVotes"
-      | "getVotes"
       | "isApprovedForAll"
       | "mintAllBlocks"
       | "mintInnerWall"
       | "name"
-      | "nonces"
       | "owner"
       | "ownerOf"
       | "renounceOwnership"
@@ -64,15 +55,12 @@ export interface BlockTokenInterface extends Interface {
       | "ApprovalForAll"
       | "ConsecutiveTransfer"
       | "ContractActiveStateChange"
-      | "DelegateChanged"
-      | "DelegateVotesChanged"
-      | "EIP712DomainChanged"
       | "OwnershipTransferred"
       | "Transfer"
   ): EventFragment;
 
   encodeFunctionData(
-    functionFragment: "CLOCK_MODE",
+    functionFragment: "WALL_LAYER",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -83,45 +71,9 @@ export interface BlockTokenInterface extends Interface {
     functionFragment: "balanceOf",
     values: [AddressLike]
   ): string;
-  encodeFunctionData(functionFragment: "clock", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "delegate",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "delegateBySig",
-    values: [
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BytesLike,
-      BytesLike
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "delegates",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "eip712Domain",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPastTotalSupply",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPastVotes",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getVotes",
-    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -136,7 +88,6 @@ export interface BlockTokenInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "nonces", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
@@ -184,33 +135,13 @@ export interface BlockTokenInterface extends Interface {
     values: [AddressLike]
   ): string;
 
-  decodeFunctionResult(functionFragment: "CLOCK_MODE", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "WALL_LAYER", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "clock", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "delegate", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "delegateBySig",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "delegates", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "eip712Domain",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPastTotalSupply",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPastVotes",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "getVotes", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -224,7 +155,6 @@ export interface BlockTokenInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
@@ -344,60 +274,6 @@ export namespace ContractActiveStateChangeEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace DelegateChangedEvent {
-  export type InputTuple = [
-    delegator: AddressLike,
-    fromDelegate: AddressLike,
-    toDelegate: AddressLike
-  ];
-  export type OutputTuple = [
-    delegator: string,
-    fromDelegate: string,
-    toDelegate: string
-  ];
-  export interface OutputObject {
-    delegator: string;
-    fromDelegate: string;
-    toDelegate: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace DelegateVotesChangedEvent {
-  export type InputTuple = [
-    delegate: AddressLike,
-    previousVotes: BigNumberish,
-    newVotes: BigNumberish
-  ];
-  export type OutputTuple = [
-    delegate: string,
-    previousVotes: bigint,
-    newVotes: bigint
-  ];
-  export interface OutputObject {
-    delegate: string;
-    previousVotes: bigint;
-    newVotes: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace EIP712DomainChangedEvent {
-  export type InputTuple = [];
-  export type OutputTuple = [];
-  export interface OutputObject {}
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
 export namespace OwnershipTransferredEvent {
   export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
   export type OutputTuple = [previousOwner: string, newOwner: string];
@@ -429,11 +305,11 @@ export namespace TransferEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface BlockToken extends BaseContract {
-  connect(runner?: ContractRunner | null): BlockToken;
+export interface InnerBlockToken extends BaseContract {
+  connect(runner?: ContractRunner | null): InnerBlockToken;
   waitForDeployment(): Promise<this>;
 
-  interface: BlockTokenInterface;
+  interface: InnerBlockTokenInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -472,7 +348,7 @@ export interface BlockToken extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  CLOCK_MODE: TypedContractMethod<[], [string], "view">;
+  WALL_LAYER: TypedContractMethod<[], [bigint], "view">;
 
   approve: TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
@@ -482,56 +358,7 @@ export interface BlockToken extends BaseContract {
 
   balanceOf: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
 
-  clock: TypedContractMethod<[], [bigint], "view">;
-
-  delegate: TypedContractMethod<[delegatee: AddressLike], [void], "nonpayable">;
-
-  delegateBySig: TypedContractMethod<
-    [
-      delegatee: AddressLike,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike
-    ],
-    [void],
-    "nonpayable"
-  >;
-
-  delegates: TypedContractMethod<[account: AddressLike], [string], "view">;
-
-  eip712Domain: TypedContractMethod<
-    [],
-    [
-      [string, string, string, bigint, string, string, bigint[]] & {
-        fields: string;
-        name: string;
-        version: string;
-        chainId: bigint;
-        verifyingContract: string;
-        salt: string;
-        extensions: bigint[];
-      }
-    ],
-    "view"
-  >;
-
   getApproved: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
-
-  getPastTotalSupply: TypedContractMethod<
-    [timepoint: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  getPastVotes: TypedContractMethod<
-    [account: AddressLike, timepoint: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  getVotes: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
   isApprovedForAll: TypedContractMethod<
     [owner: AddressLike, operator: AddressLike],
@@ -552,8 +379,6 @@ export interface BlockToken extends BaseContract {
   >;
 
   name: TypedContractMethod<[], [string], "view">;
-
-  nonces: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
@@ -619,8 +444,8 @@ export interface BlockToken extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "CLOCK_MODE"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "WALL_LAYER"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "approve"
   ): TypedContractMethod<
@@ -632,61 +457,8 @@ export interface BlockToken extends BaseContract {
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: "clock"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "delegate"
-  ): TypedContractMethod<[delegatee: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "delegateBySig"
-  ): TypedContractMethod<
-    [
-      delegatee: AddressLike,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike
-    ],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "delegates"
-  ): TypedContractMethod<[account: AddressLike], [string], "view">;
-  getFunction(
-    nameOrSignature: "eip712Domain"
-  ): TypedContractMethod<
-    [],
-    [
-      [string, string, string, bigint, string, string, bigint[]] & {
-        fields: string;
-        name: string;
-        version: string;
-        chainId: bigint;
-        verifyingContract: string;
-        salt: string;
-        extensions: bigint[];
-      }
-    ],
-    "view"
-  >;
-  getFunction(
     nameOrSignature: "getApproved"
   ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
-  getFunction(
-    nameOrSignature: "getPastTotalSupply"
-  ): TypedContractMethod<[timepoint: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "getPastVotes"
-  ): TypedContractMethod<
-    [account: AddressLike, timepoint: BigNumberish],
-    [bigint],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getVotes"
-  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "isApprovedForAll"
   ): TypedContractMethod<
@@ -703,9 +475,6 @@ export interface BlockToken extends BaseContract {
   getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "nonces"
-  ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
@@ -796,27 +565,6 @@ export interface BlockToken extends BaseContract {
     ContractActiveStateChangeEvent.OutputObject
   >;
   getEvent(
-    key: "DelegateChanged"
-  ): TypedContractEvent<
-    DelegateChangedEvent.InputTuple,
-    DelegateChangedEvent.OutputTuple,
-    DelegateChangedEvent.OutputObject
-  >;
-  getEvent(
-    key: "DelegateVotesChanged"
-  ): TypedContractEvent<
-    DelegateVotesChangedEvent.InputTuple,
-    DelegateVotesChangedEvent.OutputTuple,
-    DelegateVotesChangedEvent.OutputObject
-  >;
-  getEvent(
-    key: "EIP712DomainChanged"
-  ): TypedContractEvent<
-    EIP712DomainChangedEvent.InputTuple,
-    EIP712DomainChangedEvent.OutputTuple,
-    EIP712DomainChangedEvent.OutputObject
-  >;
-  getEvent(
     key: "OwnershipTransferred"
   ): TypedContractEvent<
     OwnershipTransferredEvent.InputTuple,
@@ -874,39 +622,6 @@ export interface BlockToken extends BaseContract {
       ContractActiveStateChangeEvent.InputTuple,
       ContractActiveStateChangeEvent.OutputTuple,
       ContractActiveStateChangeEvent.OutputObject
-    >;
-
-    "DelegateChanged(address,address,address)": TypedContractEvent<
-      DelegateChangedEvent.InputTuple,
-      DelegateChangedEvent.OutputTuple,
-      DelegateChangedEvent.OutputObject
-    >;
-    DelegateChanged: TypedContractEvent<
-      DelegateChangedEvent.InputTuple,
-      DelegateChangedEvent.OutputTuple,
-      DelegateChangedEvent.OutputObject
-    >;
-
-    "DelegateVotesChanged(address,uint256,uint256)": TypedContractEvent<
-      DelegateVotesChangedEvent.InputTuple,
-      DelegateVotesChangedEvent.OutputTuple,
-      DelegateVotesChangedEvent.OutputObject
-    >;
-    DelegateVotesChanged: TypedContractEvent<
-      DelegateVotesChangedEvent.InputTuple,
-      DelegateVotesChangedEvent.OutputTuple,
-      DelegateVotesChangedEvent.OutputObject
-    >;
-
-    "EIP712DomainChanged()": TypedContractEvent<
-      EIP712DomainChangedEvent.InputTuple,
-      EIP712DomainChangedEvent.OutputTuple,
-      EIP712DomainChangedEvent.OutputObject
-    >;
-    EIP712DomainChanged: TypedContractEvent<
-      EIP712DomainChangedEvent.InputTuple,
-      EIP712DomainChangedEvent.OutputTuple,
-      EIP712DomainChangedEvent.OutputObject
     >;
 
     "OwnershipTransferred(address,address)": TypedContractEvent<

@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as blockSalesSol from "./BlockSales.sol";
+export * as innerBlockSol from "./InnerBlock.sol";
 export * as security from "./security";
+export * as utils from "./utils";
 export { BlockToken__factory } from "./BlockToken__factory";
