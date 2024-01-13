@@ -2,7 +2,7 @@
 
 import { expect } from "chai";
 import hre from "hardhat";
-import ethers, { Contract, Signer } from "ethers";
+import { Contract, Signer } from "ethers";
 
 describe("BlockToken Contract Unit Test", function () {
   let BlockToken: Contract;
