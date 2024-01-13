@@ -9,8 +9,7 @@ import "hardhat-gas-reporter";
 import "tsconfig-paths/register";
 import "hardhat-ethernal";
 import "@openzeppelin/hardhat-upgrades";
-import '@nomicfoundation/hardhat-ethers';
-
+import "@nomicfoundation/hardhat-ethers";
 
 import "./tasks";
 
@@ -139,9 +138,9 @@ const config: HardhatUserConfig = {
 
   networks: {
     hardhat: {
-      chainId: 42161,
+      chainId: 1,
       forking: {
-        url: rcpEndPoints.arbitrim,
+        url: rcpEndPoints.eth,
       },
     },
     baseGoerli: {
