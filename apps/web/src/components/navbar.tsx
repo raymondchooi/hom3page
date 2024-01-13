@@ -37,8 +37,8 @@ export default function Navbar() {
         as="header"
         className={({ open }) =>
           cn(
-            open ? "fixed inset-0 z-40 overflow-y-auto" : "",
-            "shadow-sm lg:static lg:overflow-y-visible",
+            open ? "fixed inset-0 z-40 overflow-y-auto bg-white" : "",
+            "bg-white shadow-sm lg:static lg:overflow-y-visible",
           )
         }
       >
