@@ -45,4 +45,8 @@ contract BlockToken is ERC721AVotes, OnlyActive, IBlockToken {
     function burnInnerWall(uint256 tokenId_) external override {
         if (_msgSender() != ownerOf(tokenId_)) revert NotOwnerOfToken();
     }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return "override uri";
+    }
 }

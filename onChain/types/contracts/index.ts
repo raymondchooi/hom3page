@@ -56,6 +56,8 @@ export type { OnlyActive } from "./contracts/security/onlyActive.sol/OnlyActive"
 export { OnlyActive__factory } from "./factories/contracts/security/onlyActive.sol/OnlyActive__factory";
 export type { ERC721AVotes } from "./contracts/utils/ERC721AVotes";
 export { ERC721AVotes__factory } from "./factories/contracts/utils/ERC721AVotes__factory";
+export type { WallGenerator } from "./contracts/WallGenerator";
+export { WallGenerator__factory } from "./factories/contracts/WallGenerator__factory";
 export type { ERC721A__IERC721Receiver } from "./erc721a/contracts/ERC721A.sol/ERC721A__IERC721Receiver";
 export { ERC721A__IERC721Receiver__factory } from "./factories/erc721a/contracts/ERC721A.sol/ERC721A__IERC721Receiver__factory";
 export type { ERC721A } from "./erc721a/contracts/ERC721A.sol/ERC721A";
