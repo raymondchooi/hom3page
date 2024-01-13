@@ -50,8 +50,6 @@ export type { BlockToken } from "./contracts/BlockToken";
 export { BlockToken__factory } from "./factories/contracts/BlockToken__factory";
 export type { InnerBlockToken } from "./contracts/InnerBlock.sol/InnerBlockToken";
 export { InnerBlockToken__factory } from "./factories/contracts/InnerBlock.sol/InnerBlockToken__factory";
-export type { Lock } from "./contracts/Lock";
-export { Lock__factory } from "./factories/contracts/Lock__factory";
 export type { OnlyActive } from "./contracts/security/onlyActive.sol/OnlyActive";
 export { OnlyActive__factory } from "./factories/contracts/security/onlyActive.sol/OnlyActive__factory";
 export type { ERC721AVotes } from "./contracts/utils/ERC721AVotes";

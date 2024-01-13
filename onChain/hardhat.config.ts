@@ -52,9 +52,9 @@ const config: HardhatUserConfig = {
   },
   gasReporter: {
     currency: "ETH",
-    gasPrice: 1000000000 ** 9,
+    gasPrice: gasPrice,
     enabled: true,
-    outputFile: "./reports",
+    outputFile: "./reports/",
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY!,
@@ -119,10 +119,15 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
+      gas: "auto",
       chainId: 1,
       forking: {
         url: rcpEndPoints.eth,
         blockNumber: 18999099,
+      },
+      mining: {
+        auto: false,
+        interval: 5000,
       },
     },
     baseGoerli: {

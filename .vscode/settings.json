@@ -1,5 +1,5 @@
 {
   "cSpell.words": ["ethernal"],
-  "solidity.packageDefaultDependenciesDirectory": ["node_modules"],
+  "solidity.packageDefaultDependenciesDirectory": ["./onChain/node_modules"],
   "solidity-va.hover": false
 }

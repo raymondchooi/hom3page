@@ -98,10 +98,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.InnerBlockToken__factory>;
     getContractFactory(
-      name: "Lock",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock__factory>;
-    getContractFactory(
       name: "OnlyActive",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OnlyActive__factory>;
@@ -228,11 +224,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.InnerBlockToken>;
     getContractAt(
-      name: "Lock",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Lock>;
-    getContractAt(
       name: "OnlyActive",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -342,10 +333,6 @@ declare module "hardhat/types/runtime" {
       name: "InnerBlockToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.InnerBlockToken>;
-    deployContract(
-      name: "Lock",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Lock>;
     deployContract(
       name: "OnlyActive",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -472,11 +459,6 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.InnerBlockToken>;
-    deployContract(
-      name: "Lock",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Lock>;
     deployContract(
       name: "OnlyActive",
       args: any[],
