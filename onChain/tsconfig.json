@@ -20,5 +20,6 @@
     "./bin",
     "./reports"
   ],
-  "files": ["./hardhat.config.ts"]
+  "files": ["./hardhat.config.ts"],
+  "exclude": ["build"]
 }
