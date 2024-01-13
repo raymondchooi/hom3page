@@ -4,13 +4,18 @@ import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./security/onlyActive.sol";
 
-contract BlockToken is ERC721A, OnlyActive {
+contract InnerBlockToken is ERC721A, OnlyActive {
+    uint256 public immutable WALL_LAYER;
     uint256 constant MAX_SUPPLY = 288;
     bool private _mintComplete;
 
     mapping(uint256 => address) internal _innerWall;
 
-    constructor() ERC721A("Hom3Page Block", "AZUKI") Ownable(msg.sender) {}
+    constructor(
+        uint256 layer_
+    ) ERC721A("Hom3Page Block", "AZUKI") Ownable(msg.sender) {
+        WALL_LAYER = layer_;
+    }
 
     /**
      * @notice One time function to mint all the tokens to the sales contract
