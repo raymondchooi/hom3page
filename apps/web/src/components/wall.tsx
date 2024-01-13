@@ -58,5 +58,3 @@ export default function Wall() {
     </div>
   );
 }
-
-// className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden bg-green-200 py-2"
