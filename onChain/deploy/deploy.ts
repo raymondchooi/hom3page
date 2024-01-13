@@ -7,6 +7,7 @@ import {
   DeploymentStore,
 } from "../types/deploymentArguments";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { ChainName } from "../bin/tokenAddress";
 
 export default async function masterDeployer(
   hre: HardhatRuntimeEnvironment,
@@ -35,7 +36,7 @@ export default async function masterDeployer(
       network,
       constructorArguments: deploymentArgumentStore[deployment](
         deployer.address,
-        network.name
+        network.name as ChainName
       ),
       prevDeployments: deploymentAddresses,
     }).then(async (address: DeploymentReturn) => {
