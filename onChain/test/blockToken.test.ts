@@ -23,18 +23,16 @@ describe("BlockToken Contract Unit Test", function () {
 
     [owner, addr1, addr2] = await ethers.getSigners();
 
-    let [arg1, arg2, arg3] = BlockTokenArguments()[0];
+    let [arg11, arg12, arg13] = BlockTokenArguments();
 
-    blockToken = await blockTokenContract.deploy(arg1, arg2, arg3);
-    await blockToken.deployed();
+    blockToken = await blockTokenContract.deploy(arg11, arg12, arg13);
 
-    [arg1, arg2] = BlockSalesArguments(
-      blockTokenContract.target,
+    let [arg21, arg22] = BlockSalesArguments(
+      blockToken.target,
       hre.network.name as ChainName
     );
 
-    salesContract = await blockSalesContract.deploy(arg1, arg2);
-    await salesContract.deployed();
+    salesContract = await blockSalesContract.deploy(arg21, arg22);
   });
 
   // ERC721 Functionality Tests
