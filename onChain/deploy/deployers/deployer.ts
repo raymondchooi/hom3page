@@ -27,18 +27,18 @@ export default async function deploy({
     );
 
     await deployedContract.waitForDeployment();
-
-    await waitForConfirmations(
-      hre,
-      deployedContract.deploymentTransaction()?.hash!,
-      2
-    );
+    if (hre.network.name !== "localhost")
+      await waitForConfirmations(
+        hre,
+        deployedContract.deploymentTransaction()?.hash!,
+        2
+      );
 
     console.log(
       `🟢 Contract Deployed : ${contractName} to ${deployedContract.target}`
     );
 
-    if (network.name !== "hardhat") {
+    if (network.name !== "hardhat" && network.name !== "localhost") {
       await delay(delayTime);
       await verifyContractOnScan(
         hre.run,

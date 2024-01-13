@@ -2,9 +2,9 @@
 
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { deploymentArgumentStore } from "../deploymentModules";
-import delay from "~/scripts/helpers/delay";
-import verifyContractOnScan from "~/scripts/helpers/verifyOnScan";
-import { DeploymentProps } from "~/types/deployment/deploymentArguments";
+import delay from "../../scripts/helpers/delay";
+import verifyContractOnScan from "../../scripts/helpers/verifyOnScan";
+import { DeploymentProps } from "../../types/deploymentArguments";
 
 export default async function upgradeDeployedProxy({
   hre,

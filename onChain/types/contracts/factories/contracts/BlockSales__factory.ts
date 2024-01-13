@@ -13,11 +13,11 @@ import type {
   ContractDeployTransaction,
   ContractRunner,
 } from "ethers";
-import type { NonPayableOverrides } from "../../../common";
+import type { NonPayableOverrides } from "../../common";
 import type {
   BlockSales,
   BlockSalesInterface,
-} from "../../../contracts/BlockSales.sol/BlockSales";
+} from "../../contracts/BlockSales";
 
 const _abi = [
   {

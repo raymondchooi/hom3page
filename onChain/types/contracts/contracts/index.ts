@@ -9,3 +9,4 @@ import type * as utils from "./utils";
 export type { utils };
 export type { BlockSales } from "./BlockSales";
 export type { BlockToken } from "./BlockToken";
+export type { Lock } from "./Lock";

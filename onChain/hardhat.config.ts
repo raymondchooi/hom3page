@@ -5,11 +5,12 @@ import "solidity-coverage";
 import "@primitivefi/hardhat-dodoc";
 import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-verify";
+import "@nomicfoundation/hardhat-ethers";
 import "hardhat-gas-reporter";
 import "tsconfig-paths/register";
 import "hardhat-ethernal";
 import "@openzeppelin/hardhat-upgrades";
-import "@nomicfoundation/hardhat-ethers";
+import ethers from "ethers";
 
 import "./tasks";
 
@@ -20,11 +21,10 @@ import checkPrivateKeys from "./scripts/checkKeys";
 dotenv.config();
 
 console.log("🟢 Hardhat : Mounted.");
-
 // Some quick checks to make sure our .env is working.
 const { rcpEndPoints, masterMnemonic, devRecovery } = checkPrivateKeys();
 
-const gasPrice = 1000000000;
+const gasPrice = 24059329590;
 console.log("❗️Gas Price Set: ", gasPrice / 10 ** 9, "gwei");
 
 const config: HardhatUserConfig = {
@@ -37,8 +37,6 @@ const config: HardhatUserConfig = {
       },
     },
   },
-
-  //  PLUGINS
   typechain: {
     outDir: "types/contracts",
     target: "ethers-v6",
@@ -46,15 +44,18 @@ const config: HardhatUserConfig = {
     externalArtifacts: ["externalArtifacts/*.json"], // optional array of glob patterns with external artifacts to process (for example external libs from node_modules)
     dontOverrideCompile: false, // defaults to false
   },
-  dodoc: {
-    runOnCompile: true,
-    debugMode: false,
-    include: [],
-    outputDir: "./docs",
-
-    // More options...
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./build/artifacts",
   },
-
+  gasReporter: {
+    currency: "ETH",
+    gasPrice: 1000000000 ** 9,
+    enabled: true,
+    outputFile: "./reports",
+  },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY!,
     customChains: [
@@ -116,29 +117,6 @@ const config: HardhatUserConfig = {
       },
     ],
   },
-
-  //  File Structure
-  paths: {
-    sources: "./contracts",
-    tests: "./test",
-    cache: "./cache",
-    artifacts: "./build/artifacts",
-  },
-  gasReporter: {
-    currency: "ETH",
-    gasPrice: 1000000000 ** 9,
-    enabled: true,
-    outputFile: "./reports",
-  },
-  ethernal: {
-    apiToken: process.env.ETHERNAL_API_TOKEN,
-    disableSync: false, // If set to true, plugin will not sync blocks & txs
-    disableTrace: false,
-    uploadAst: true,
-    workspace: "hardhat",
-    resetOnStart: "hardhat",
-  },
-
   networks: {
     hardhat: {
       chainId: 1,
@@ -203,10 +181,22 @@ const config: HardhatUserConfig = {
     },
     localhost: {
       url: "http://127.0.0.1:8545",
-      chainId: 420,
-      accounts: { mnemonic: devRecovery, initialIndex: 0, count: 5 },
+      chainId: 1,
       gasPrice: gasPrice,
     },
+  },
+  ethernal: {
+    apiToken: process.env.ETHERNAL_API_TOKEN,
+    disableSync: false, // If set to true, plugin will not sync blocks & txs
+    disableTrace: false,
+  },
+  dodoc: {
+    runOnCompile: true,
+    debugMode: false,
+    include: [],
+    outputDir: "./docs",
+
+    // More options...
   },
 };
 

@@ -13,6 +13,6 @@ export const BlockTokenArguments = () => {
 };
 
 export const BlockSalesArguments = (
-  tokenAddress: string | Addressable,
+  blockTokenContractAddress: string | Addressable,
   network: ChainName
-) => [tokenAddress, tokenAddress.ghoToken[network]];
+) => [blockTokenContractAddress, tokenAddress.ghoToken[network]];

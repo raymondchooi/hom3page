@@ -21,9 +21,9 @@ import type {
   TypedLogDescription,
   TypedListener,
   TypedContractMethod,
-} from "../../common";
+} from "../common";
 
-export interface NFTSalesContractInterface extends Interface {
+export interface BlockSalesInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "COST_PER_BLOCK"
@@ -126,11 +126,11 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface NFTSalesContract extends BaseContract {
-  connect(runner?: ContractRunner | null): NFTSalesContract;
+export interface BlockSales extends BaseContract {
+  connect(runner?: ContractRunner | null): BlockSales;
   waitForDeployment(): Promise<this>;
 
-  interface: NFTSalesContractInterface;
+  interface: BlockSalesInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
