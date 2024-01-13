@@ -55,7 +55,7 @@ const config: HardhatUserConfig = {
     currency: "ETH",
     gasPrice: gasPrice,
     enabled: true,
-    outputFile: "./reports/",
+    outputFile: "./reports/tests",
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY!,

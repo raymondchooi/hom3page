@@ -13,10 +13,12 @@ import {
   tokenAddress,
 } from "../bin/tokenAddress";
 
+import { BlockToken, BlockSales, IERC20 } from "../types/contracts";
+
 describe("BlockToken Contract Unit Test", function () {
-  let BlockToken: Contract;
-  let SalesContract: Contract;
-  let GHOContract: Contract;
+  let BlockToken: BlockToken;
+  let SalesContract: BlockSales;
+  let GHOContract: IERC20;
   let owner: Signer;
   let addr1: Signer;
   let addr2: Signer;
@@ -24,7 +26,6 @@ describe("BlockToken Contract Unit Test", function () {
   before(async function () {
     console.log("🧪 : pre test : Mounted");
     await preTest();
-    return;
   });
 
   const preTest = async () => {
@@ -63,22 +64,32 @@ describe("BlockToken Contract Unit Test", function () {
       const minter = await addr1.getAddress();
       const user = await addr2.getAddress();
 
-      const attached = BlockToken.connect(addr1).transferFrom(
-        minter,
-        user,
-        287
-      );
-      await attached.wait();
+      const attached = BlockToken.connect(addr1);
+      const tx = await attached.transferFrom(minter, user, 287);
+      await tx.wait();
 
       const ownerOf288 = await BlockToken.ownerOf(287);
-      console.log("Owner of 287:", ownerOf288, "users: ", user);
-
-      expect(ownerOf288).equal(user);
+      expect(ownerOf288).to.equal(user);
     });
-  });
 
-  return;
-  // ERC721 Functionality Tests
+    it("Should fail with out permision", async function () {
+      const minter = await addr1.getAddress();
+      const user = await addr2.getAddress();
+
+      const attached = BlockToken.connect(addr2);
+      try {
+        const tx = await attached.transferFrom(minter, user, 100);
+        await tx.wait();
+        assert.fail("The transaction should have failed but didn't.");
+      } catch (error) {
+        expect(error.message).to.include(
+          "reverted with custom error 'TransferCallerNotOwnerNorApproved()'",
+          "Expected transaction to revert"
+        );
+      }
+    });
+
+    
 });
 
 /**
