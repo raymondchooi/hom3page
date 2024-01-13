@@ -59,6 +59,7 @@ export const productionChainImpersonators = {
     wbtc: "",
     usdt: "",
     dai: "",
+    gho: "0xE831C8903de820137c13681E78A5780afDdf7697",
   },
   arbitrum: {
     usdc: "0xb38e8c17e38363af6ebdcb3dae12e0243582891d", // Binance Hot wallet (EOA)

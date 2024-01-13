@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as innerBlockSol from "./InnerBlock.sol";
+export * as interfaces from "./interfaces";
 export * as security from "./security";
 export * as utils from "./utils";
 export { BlockSales__factory } from "./BlockSales__factory";

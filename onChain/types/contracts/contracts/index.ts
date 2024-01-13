@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as innerBlockSol from "./InnerBlock.sol";
 export type { innerBlockSol };
+import type * as interfaces from "./interfaces";
+export type { interfaces };
 import type * as security from "./security";
 export type { security };
 import type * as utils from "./utils";

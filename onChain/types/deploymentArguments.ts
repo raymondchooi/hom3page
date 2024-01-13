@@ -2,6 +2,7 @@
 import { AddressLike, Addressable, Network } from "ethers";
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { ChainName } from "../bin/tokenAddress";
 
 export interface Deployment {
   [key: string]: (
@@ -12,7 +13,7 @@ export interface Deployment {
 export interface ArgumentStore {
   [key: string]: (
     deployerAddress: string | Addressable,
-    network: string
+    network: ChainName
   ) => any;
 }
 
@@ -27,7 +28,7 @@ export interface DeploymentProps {
 }
 
 export type DeploymentStore = {
-  deployment: string | Addressable;
-  contractName: string;
+  deployment?: string | Addressable;
+  contractName?: string;
 };
 export type DeploymentReturn = string | Addressable | false;
