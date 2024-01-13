@@ -18,7 +18,7 @@ export default function Wall() {
     return (
       <>
         {Array.from(Array(WALL_TOTAL_BLOCKS).keys()).map((i) => {
-          const index = Math.max(i, 1) * parseInt(wallId);
+          const index = (Math.max(i, 1) * parseInt(wallId)) % WALL_TOTAL_BLOCKS;
           return (
             <Block
               key={index}
