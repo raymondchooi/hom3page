@@ -12,8 +12,10 @@ interface BlockProps {
 export default function Block({ onClick, blockData }: BlockProps) {
   function renderBlock() {
     return (
-      <div className="inline-flex h-full w-full items-center justify-center truncate rounded bg-gray-100 p-1 text-xs font-bold text-gray-500 hover:bg-gray-200">
-        {blockData.id}
+      <div className="inline-flex h-full w-full items-center justify-center rounded bg-gray-100 p-1  font-bold hover:bg-gray-200">
+        <div className="truncate text-xs font-bold text-gray-500">
+          {blockData.id}
+        </div>
       </div>
     );
   }

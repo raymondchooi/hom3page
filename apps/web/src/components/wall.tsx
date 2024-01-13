@@ -10,15 +10,18 @@ const WALL_TOTAL_BLOCKS = 288;
 export default function Wall() {
   const params = useParams();
 
-  const wallId = decodeURIComponent(params?.id?.toString() ?? "1")
+  const wallId = decodeURIComponent(params?.id?.toString() ?? "0")
     .toString()
     .toLowerCase();
 
+  //TODO change to real data
   function renderBlocks() {
     return (
       <>
         {Array.from(Array(WALL_TOTAL_BLOCKS).keys()).map((i) => {
-          const index = (Math.max(i, 1) * parseInt(wallId)) % WALL_TOTAL_BLOCKS;
+          const wallIdInt = parseInt(wallId);
+          const index =
+            wallIdInt === 0 ? i + 1 : i + wallIdInt * WALL_TOTAL_BLOCKS + 1;
           return (
             <Block
               key={index}
@@ -33,7 +36,7 @@ export default function Wall() {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden py-2">
-      <TransformWrapper initialScale={0.5} centerOnInit minScale={0.00001}>
+      <TransformWrapper initialScale={0.8} centerOnInit minScale={0.00001}>
         {({ zoomIn, zoomOut }) => (
           <>
             <TransformComponent>
