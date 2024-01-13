@@ -18,6 +18,26 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
     getContractFactory(
+      name: "IVotes",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IVotes__factory>;
+    getContractFactory(
+      name: "Votes",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Votes__factory>;
+    getContractFactory(
+      name: "IERC5267",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC5267__factory>;
+    getContractFactory(
+      name: "IERC5805",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC5805__factory>;
+    getContractFactory(
+      name: "IERC6372",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC6372__factory>;
+    getContractFactory(
       name: "IERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20__factory>;
@@ -26,25 +46,65 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC721__factory>;
     getContractFactory(
+      name: "ECDSA",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ECDSA__factory>;
+    getContractFactory(
+      name: "EIP712",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.EIP712__factory>;
+    getContractFactory(
       name: "IERC165",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
+    getContractFactory(
+      name: "Math",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Math__factory>;
+    getContractFactory(
+      name: "SafeCast",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SafeCast__factory>;
+    getContractFactory(
+      name: "Nonces",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Nonces__factory>;
     getContractFactory(
       name: "ReentrancyGuard",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ReentrancyGuard__factory>;
     getContractFactory(
-      name: "NFTSalesContract",
+      name: "ShortStrings",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.NFTSalesContract__factory>;
+    ): Promise<Contracts.ShortStrings__factory>;
+    getContractFactory(
+      name: "Strings",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Strings__factory>;
+    getContractFactory(
+      name: "Checkpoints",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Checkpoints__factory>;
+    getContractFactory(
+      name: "BlockSales",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BlockSales__factory>;
     getContractFactory(
       name: "BlockToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BlockToken__factory>;
     getContractFactory(
+      name: "InnerBlockToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.InnerBlockToken__factory>;
+    getContractFactory(
       name: "OnlyActive",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OnlyActive__factory>;
+    getContractFactory(
+      name: "ERC721AVotes",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721AVotes__factory>;
     getContractFactory(
       name: "ERC721A__IERC721Receiver",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -64,6 +124,31 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
     getContractAt(
+      name: "IVotes",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IVotes>;
+    getContractAt(
+      name: "Votes",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Votes>;
+    getContractAt(
+      name: "IERC5267",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC5267>;
+    getContractAt(
+      name: "IERC5805",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC5805>;
+    getContractAt(
+      name: "IERC6372",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC6372>;
+    getContractAt(
       name: "IERC20",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -74,30 +159,80 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC721>;
     getContractAt(
+      name: "ECDSA",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ECDSA>;
+    getContractAt(
+      name: "EIP712",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.EIP712>;
+    getContractAt(
       name: "IERC165",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
+    getContractAt(
+      name: "Math",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Math>;
+    getContractAt(
+      name: "SafeCast",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SafeCast>;
+    getContractAt(
+      name: "Nonces",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Nonces>;
     getContractAt(
       name: "ReentrancyGuard",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ReentrancyGuard>;
     getContractAt(
-      name: "NFTSalesContract",
+      name: "ShortStrings",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.NFTSalesContract>;
+    ): Promise<Contracts.ShortStrings>;
+    getContractAt(
+      name: "Strings",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Strings>;
+    getContractAt(
+      name: "Checkpoints",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Checkpoints>;
+    getContractAt(
+      name: "BlockSales",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BlockSales>;
     getContractAt(
       name: "BlockToken",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.BlockToken>;
     getContractAt(
+      name: "InnerBlockToken",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.InnerBlockToken>;
+    getContractAt(
       name: "OnlyActive",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.OnlyActive>;
+    getContractAt(
+      name: "ERC721AVotes",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721AVotes>;
     getContractAt(
       name: "ERC721A__IERC721Receiver",
       address: string | ethers.Addressable,
@@ -119,6 +254,26 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Ownable>;
     deployContract(
+      name: "IVotes",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IVotes>;
+    deployContract(
+      name: "Votes",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Votes>;
+    deployContract(
+      name: "IERC5267",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC5267>;
+    deployContract(
+      name: "IERC5805",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC5805>;
+    deployContract(
+      name: "IERC6372",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC6372>;
+    deployContract(
       name: "IERC20",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC20>;
@@ -127,25 +282,65 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC721>;
     deployContract(
+      name: "ECDSA",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ECDSA>;
+    deployContract(
+      name: "EIP712",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.EIP712>;
+    deployContract(
       name: "IERC165",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC165>;
+    deployContract(
+      name: "Math",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Math>;
+    deployContract(
+      name: "SafeCast",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SafeCast>;
+    deployContract(
+      name: "Nonces",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Nonces>;
     deployContract(
       name: "ReentrancyGuard",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ReentrancyGuard>;
     deployContract(
-      name: "NFTSalesContract",
+      name: "ShortStrings",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.NFTSalesContract>;
+    ): Promise<Contracts.ShortStrings>;
+    deployContract(
+      name: "Strings",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Strings>;
+    deployContract(
+      name: "Checkpoints",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Checkpoints>;
+    deployContract(
+      name: "BlockSales",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BlockSales>;
     deployContract(
       name: "BlockToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.BlockToken>;
     deployContract(
+      name: "InnerBlockToken",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.InnerBlockToken>;
+    deployContract(
       name: "OnlyActive",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.OnlyActive>;
+    deployContract(
+      name: "ERC721AVotes",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ERC721AVotes>;
     deployContract(
       name: "ERC721A__IERC721Receiver",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -165,6 +360,31 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Ownable>;
     deployContract(
+      name: "IVotes",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IVotes>;
+    deployContract(
+      name: "Votes",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Votes>;
+    deployContract(
+      name: "IERC5267",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC5267>;
+    deployContract(
+      name: "IERC5805",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC5805>;
+    deployContract(
+      name: "IERC6372",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC6372>;
+    deployContract(
       name: "IERC20",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -175,30 +395,80 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC721>;
     deployContract(
+      name: "ECDSA",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ECDSA>;
+    deployContract(
+      name: "EIP712",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.EIP712>;
+    deployContract(
       name: "IERC165",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC165>;
+    deployContract(
+      name: "Math",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Math>;
+    deployContract(
+      name: "SafeCast",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SafeCast>;
+    deployContract(
+      name: "Nonces",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Nonces>;
     deployContract(
       name: "ReentrancyGuard",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ReentrancyGuard>;
     deployContract(
-      name: "NFTSalesContract",
+      name: "ShortStrings",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.NFTSalesContract>;
+    ): Promise<Contracts.ShortStrings>;
+    deployContract(
+      name: "Strings",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Strings>;
+    deployContract(
+      name: "Checkpoints",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Checkpoints>;
+    deployContract(
+      name: "BlockSales",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BlockSales>;
     deployContract(
       name: "BlockToken",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.BlockToken>;
     deployContract(
+      name: "InnerBlockToken",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.InnerBlockToken>;
+    deployContract(
       name: "OnlyActive",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.OnlyActive>;
+    deployContract(
+      name: "ERC721AVotes",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ERC721AVotes>;
     deployContract(
       name: "ERC721A__IERC721Receiver",
       args: any[],

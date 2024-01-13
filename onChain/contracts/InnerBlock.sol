@@ -1,20 +1,26 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-import "erc721a/contracts/ERC721A.sol";
+import "./utils/ERC721AVotes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./security/onlyActive.sol";
 
-contract InnerBlockToken is ERC721A, OnlyActive {
+contract InnerBlockToken is ERC721AVotes, OnlyActive {
     uint256 public immutable WALL_LAYER;
+    uint256 public immutable MOTHER_BLOCK;
     uint256 constant MAX_SUPPLY = 288;
     bool private _mintComplete;
 
     mapping(uint256 => address) internal _innerWall;
 
     constructor(
-        uint256 layer_
-    ) ERC721A("Hom3Page Block", "HOM3") Ownable(msg.sender) {
+        string memory name_,
+        string memory symbol_,
+        string memory version_,
+        uint256 motherBlock_,
+        uint8 layer_
+    ) ERC721A(name_, symbol_) Ownable(msg.sender) EIP712(name_, version_) {
         WALL_LAYER = layer_;
+        MOTHER_BLOCK = motherBlock_;
     }
 
     /**

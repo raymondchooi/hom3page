@@ -3,7 +3,7 @@
 import { Addressable } from "ethers";
 import delay from "../../scripts/helpers/delay";
 import verifyContractOnScan from "../../scripts/helpers/verifyOnScan";
-import { DeploymentProps } from "~/types/deployment/deploymentArguments";
+import { DeploymentProps } from "../../types/deploymentArguments";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 export default async function deployProxy({
