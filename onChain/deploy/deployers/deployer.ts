@@ -5,6 +5,7 @@ import delay from "../../scripts/helpers/delay";
 import verifyContractOnScan from "../../scripts/helpers/verifyOnScan";
 import { DeploymentProps } from "../../types/deploymentArguments";
 import waitForConfirmations from "../../scripts/helpers/waitForConformations";
+import ethernal from "hardhat-ethernal";
 
 export default async function deploy({
   hre,
@@ -19,7 +20,7 @@ export default async function deploy({
     const deployedContract = await hre.ethers.deployContract(
       contractName,
       constructorArguments,
-      deployer 
+      deployer
     );
     console.log(
       `🟠 Deployment confirming : ${contractName} to ${deployedContract.target}`

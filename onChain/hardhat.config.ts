@@ -134,6 +134,9 @@ const config: HardhatUserConfig = {
     apiToken: process.env.ETHERNAL_API_TOKEN,
     disableSync: false, // If set to true, plugin will not sync blocks & txs
     disableTrace: false,
+    uploadAst: true,
+    workspace: "hardhat",
+    resetOnStart: "hardhat",
   },
 
   networks: {
@@ -141,6 +144,7 @@ const config: HardhatUserConfig = {
       chainId: 1,
       forking: {
         url: rcpEndPoints.eth,
+        blockNumber: 18999099,
       },
     },
     baseGoerli: {

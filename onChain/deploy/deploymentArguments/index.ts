@@ -1,3 +1,3 @@
 /** @format */
 
-export { BlockTokenArguments } from "./tokens.arguments";
+export { BlockTokenArguments, BlockSalesArguments } from "./tokens.arguments";

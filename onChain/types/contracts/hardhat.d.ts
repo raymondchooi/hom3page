@@ -86,9 +86,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Checkpoints__factory>;
     getContractFactory(
-      name: "NFTSalesContract",
+      name: "BlockSales",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.NFTSalesContract__factory>;
+    ): Promise<Contracts.BlockSales__factory>;
     getContractFactory(
       name: "BlockToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -209,10 +209,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Checkpoints>;
     getContractAt(
-      name: "NFTSalesContract",
+      name: "BlockSales",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.NFTSalesContract>;
+    ): Promise<Contracts.BlockSales>;
     getContractAt(
       name: "BlockToken",
       address: string | ethers.Addressable,
@@ -322,9 +322,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Checkpoints>;
     deployContract(
-      name: "NFTSalesContract",
+      name: "BlockSales",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.NFTSalesContract>;
+    ): Promise<Contracts.BlockSales>;
     deployContract(
       name: "BlockToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -445,10 +445,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Checkpoints>;
     deployContract(
-      name: "NFTSalesContract",
+      name: "BlockSales",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.NFTSalesContract>;
+    ): Promise<Contracts.BlockSales>;
     deployContract(
       name: "BlockToken",
       args: any[],

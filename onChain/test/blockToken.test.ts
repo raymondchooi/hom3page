@@ -1,8 +1,13 @@
 /** @format */
 
 import { expect } from "chai";
-import hre from "hardhat";
+import hre, { ethers } from "hardhat";
 import { Contract, Signer } from "ethers";
+import {
+  BlockTokenArguments,
+  BlockSalesArguments,
+} from "../deploy/deploymentArguments";
+import { ChainName } from "../bin/tokenAddress";
 
 describe("BlockToken Contract Unit Test", function () {
   let BlockToken: Contract;
@@ -10,20 +15,26 @@ describe("BlockToken Contract Unit Test", function () {
   let owner: Signer;
   let addr1: Signer;
   let addr2: Signer;
-  let salesContract: Signer;
+  let salesContract: Contract;
 
   beforeEach(async function () {
-    const blockTokenFactory = await hre.ethers.getContractFactory("BlockToken");
-    console.log("Check contract", blockTokenFactory);
+    const blockTokenContract = await ethers.getContractFactory("BlockToken");
+    const blockSalesContract = await ethers.getContractFactory("BlockSales");
 
-    [owner, addr1, addr2, salesContract] = await hre.ethers.getSigners();
+    [owner, addr1, addr2] = await ethers.getSigners();
 
-    blockToken = await hre.ethers.deploy("BlockToken", [
-      "BlockToken",
-      "HOM3",
-      "1",
-    ]);
+    let [arg1, arg2, arg3] = BlockTokenArguments()[0];
+
+    blockToken = await blockTokenContract.deploy(arg1, arg2, arg3);
     await blockToken.deployed();
+
+    [arg1, arg2] = BlockSalesArguments(
+      blockTokenContract.target,
+      hre.network.name as ChainName
+    );
+
+    salesContract = await blockSalesContract.deploy(arg1, arg2);
+    await salesContract.deployed();
   });
 
   // ERC721 Functionality Tests
@@ -37,15 +48,33 @@ describe("BlockToken Contract Unit Test", function () {
 
     // Additional ERC721 tests can be implemented here
   });
-
+  /* 
   // Votes Functionality Tests
   describe("Votes Functionality", function () {
     it("Should assign voting power after minting", async function () {
-      // Implement your test logic here
+      await blockToken.mintAllBlocks(salesContract.address);
+      const salesContractVotingPower = await blockToken.getVotes(
+        salesContract.address
+      );
+      expect(salesContractVotingPower).to.equal(288);
+    });
+
+    it("Should transfer voting power on token transfer", async function () {
+      await blockToken.mintAllBlocks(salesContract.address);
+      await blockToken
+        .connect(salesContract)
+        .transferFrom(salesContract.address, addr1.address, 1);
+
+      const addr1VotingPower = await blockToken.getVotes(addr1.address);
+      const salesContractVotingPower = await blockToken.getVotes(
+        salesContract.address
+      );
+      expect(addr1VotingPower).to.equal(1);
+      expect(salesContractVotingPower).to.equal(287);
     });
 
     // Additional Votes tests can be implemented here
-  });
+  }); */
 
   // Further tests for transfer, ownership, delegation, etc.
 });

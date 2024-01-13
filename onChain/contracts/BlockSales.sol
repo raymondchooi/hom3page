@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./security/onlyActive.sol";
 
-contract NFTSalesContract is ReentrancyGuard, OnlyActive {
+contract BlockSales is ReentrancyGuard, OnlyActive {
     IERC721 public immutable NFT;
     IERC20 public immutable GHO;
 

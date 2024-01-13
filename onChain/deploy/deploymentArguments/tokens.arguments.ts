@@ -11,3 +11,8 @@ export const BlockTokenArguments = () => {
 
   return [name_, symbol_, version_];
 };
+
+export const BlockSalesArguments = (
+  tokenAddress: string | Addressable,
+  network: ChainName
+) => [tokenAddress, tokenAddress.ghoToken[network]];
