@@ -131,6 +131,11 @@ const config: HardhatUserConfig = {
     enabled: true,
     outputFile: "./reports",
   },
+  ethernal: {
+    apiToken: process.env.ETHERNAL_API_TOKEN,
+    disableSync: false, // If set to true, plugin will not sync blocks & txs
+    disableTrace: false,
+  },
 
   networks: {
     hardhat: {
