@@ -1,17 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-import "../node_modules/erc721a/contracts/ERC721A.sol";
-import "./security/onlyActive.sol";
+import "erc721a/contracts/ERC721A.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract BlockToken is ERC721A, OnlyActive {
-    uint256 constant MAX_SUPPLY = 1000;
+contract BlockToken is ERC721A, Ownable {
+    uint256 constant MAX_SUPPLY = 288;
     bool private _mintComplete;
 
-    constructor() ERC721A("Hom3Page Block", "AZUKI") Ownable(_msgSender()) {}
+    constructor() ERC721A("Hom3Page Block", "AZUKI") Ownable(msg.sender) {}
 
-    function mintAllBlocks(uint256 quantity) external {
+    /**
+     * @notice One time function to mint all the tokens to the sales contract
+     */
+    function mintAllBlocks(address salesContract_) external onlyOwner {
         require(!_mintComplete);
         _mintComplete = true;
-        _mint(msg.sender, quantity);
+
+        _mint(salesContract_, MAX_SUPPLY);
     }
 }

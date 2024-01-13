@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "../node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "../node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "../node_modules/@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "./security/onlyActive.sol";
 
-contract NFTSalesContract is ReentrancyGuard, Ownable {
+contract NFTSalesContract is ReentrancyGuard, OnlyActive {
     IERC721 public immutable NFT;
     IERC20 public immutable GHO;
 
@@ -19,12 +19,12 @@ contract NFTSalesContract is ReentrancyGuard, Ownable {
     constructor(
         address NFTAddress_,
         address ghoTokenAddress_
-    ) Ownable(_msgSender()) {
+    ) Ownable(msg.sender) {
         NFT = IERC721(NFTAddress_);
         GHO = IERC20(ghoTokenAddress_);
     }
 
-    function buyNFT(uint256 tokenId) public nonReentrant {
+    function buyNFT(uint256 tokenId) public nonReentrant is_active {
         require(NFT.ownerOf(tokenId) == address(this), "Token not available");
         require(
             GHO.balanceOf(_msgSender()) > COST_PER_BLOCK,
@@ -40,7 +40,9 @@ contract NFTSalesContract is ReentrancyGuard, Ownable {
         }
     }
 
-    function buyBatchNFTs(uint256[] calldata tokenIds) public nonReentrant {
+    function buyBatchNFTs(
+        uint256[] calldata tokenIds
+    ) public nonReentrant is_active {
         uint256 cost = COST_PER_BLOCK * (tokenIds.length);
         require(GHO.balanceOf(_msgSender()) > cost, "Incorrect payment");
         bool succsess = GHO.transferFrom(_msgSender(), address(this), cost);
