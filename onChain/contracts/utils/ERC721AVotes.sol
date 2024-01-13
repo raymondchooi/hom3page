@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/governance/utils/Votes.sol";
+import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 
 abstract contract ERC721AVotes is ERC721A, Votes {
     /**
@@ -30,5 +31,13 @@ abstract contract ERC721AVotes is ERC721A, Votes {
         address account
     ) internal view virtual override returns (uint256) {
         return balanceOf(account);
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC721A) returns (bool) {
+        return
+            interfaceId == type(IVotes).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 }

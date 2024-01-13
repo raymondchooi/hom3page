@@ -29,6 +29,7 @@ export interface BlockTokenInterface extends Interface {
       | "CLOCK_MODE"
       | "approve"
       | "balanceOf"
+      | "burnInnerWall"
       | "clock"
       | "delegate"
       | "delegateBySig"
@@ -82,6 +83,10 @@ export interface BlockTokenInterface extends Interface {
   encodeFunctionData(
     functionFragment: "balanceOf",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "burnInnerWall",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "clock", values?: undefined): string;
   encodeFunctionData(
@@ -187,6 +192,10 @@ export interface BlockTokenInterface extends Interface {
   decodeFunctionResult(functionFragment: "CLOCK_MODE", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "burnInnerWall",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "clock", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "delegate", data: BytesLike): Result;
   decodeFunctionResult(
@@ -482,6 +491,12 @@ export interface BlockToken extends BaseContract {
 
   balanceOf: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
 
+  burnInnerWall: TypedContractMethod<
+    [tokenId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   clock: TypedContractMethod<[], [bigint], "view">;
 
   delegate: TypedContractMethod<[delegatee: AddressLike], [void], "nonpayable">;
@@ -546,7 +561,7 @@ export interface BlockToken extends BaseContract {
   >;
 
   mintInnerWall: TypedContractMethod<
-    [blockId_: BigNumberish],
+    [tokenId_: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -632,6 +647,9 @@ export interface BlockToken extends BaseContract {
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
   getFunction(
+    nameOrSignature: "burnInnerWall"
+  ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "clock"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -699,7 +717,7 @@ export interface BlockToken extends BaseContract {
   ): TypedContractMethod<[salesContract_: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "mintInnerWall"
-  ): TypedContractMethod<[blockId_: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;

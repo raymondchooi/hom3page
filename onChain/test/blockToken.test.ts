@@ -15,13 +15,14 @@ import {
 
 import { BlockToken, BlockSales, IERC20 } from "../types/contracts";
 
-describe("BlockToken Contract Unit Test", function () {
+describe("🧪 BlockToken Contract Test", function () {
   let BlockToken: BlockToken;
   let SalesContract: BlockSales;
   let GHOContract: IERC20;
   let owner: Signer;
   let addr1: Signer;
   let addr2: Signer;
+  let addr3: Signer;
 
   before(async function () {
     console.log("🧪 : pre test : Mounted");
@@ -30,13 +31,23 @@ describe("BlockToken Contract Unit Test", function () {
 
   const preTest = async () => {
     const blockTokenContract = await ethers.getContractFactory("BlockToken");
-    [owner, addr1, addr2] = await ethers.getSigners();
+    [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
     let [arg11, arg12, arg13] = BlockTokenArguments();
     BlockToken = await blockTokenContract.deploy(arg11, arg12, arg13);
     await BlockToken.waitForDeployment();
     console.log("🧪 : Deployed BlockToken", BlockToken.target);
     return;
+  };
+
+  const addresses = async () => {
+    const addresses = {
+      minter: { address: await addr1.getAddress(), signer: addr1 },
+      user1: { address: await addr2.getAddress(), signer: addr2 },
+      user2: { address: await addr3.getAddress(), signer: addr3 },
+    };
+
+    return addresses;
   };
 
   describe("ERC721 Functionality", function () {
@@ -88,35 +99,49 @@ describe("BlockToken Contract Unit Test", function () {
         );
       }
     });
+  });
 
-    
-});
-
-/**
- * 
- *   // Votes Functionality Tests
-  describe("Votes Functionality", function () {
-    it("Should assign voting power after minting", async function () {
-      await blockToken.mintAllBlocks(salesContract.address);
-      const salesContractVotingPower = await blockToken.getVotes(
-        salesContract.address
+  // Votes Functionality Tests
+  describe("🧪 ERC721AVotes Functionality", function () {
+    it("Should has same amount of tokens to voting power", async function () {
+      const { minter } = await addresses();
+      const minterVotingPower = await BlockToken.getVotes(minter.address);
+      const minterBlance = await BlockToken.balanceOf(minter.address);
+      console.log(
+        "minter voting power: ",
+        minterVotingPower.toString(),
+        "token balance",
+        minterBlance
       );
-      expect(salesContractVotingPower).to.equal(288);
+
+      expect(minterVotingPower).to.equal(minterBlance);
     });
 
-    it("Should transfer voting power on token transfer", async function () {
-      await blockToken.mintAllBlocks(salesContract.address);
-      await blockToken
-        .connect(salesContract)
-        .transferFrom(salesContract.address, addr1.address, 1);
+    it("Should deligate 1 vote to User", async function () {
+      const { minter, user2 } = await addresses();
 
-      const addr1VotingPower = await blockToken.getVotes(addr1.address);
-      const salesContractVotingPower = await blockToken.getVotes(
-        salesContract.address
+      let user2VotingPower = await BlockToken.getVotes(user2.address);
+      let minterVotingPower = await BlockToken.getVotes(minter.address);
+      console.log(
+        "Check voting 1:",
+        user2VotingPower.toString(),
+        minterVotingPower.toString()
       );
-      expect(addr1VotingPower).to.equal(1);
-      expect(salesContractVotingPower).to.equal(287);
+
+      const tx = await BlockToken.connect(addr1).delegate(user2.address);
+      await tx.wait();
+
+      user2VotingPower = await BlockToken.getVotes(user2.address);
+      minterVotingPower = await BlockToken.getVotes(minter.address);
+      console.log(
+        "Check voting:",
+        user2VotingPower.toString(),
+        minterVotingPower.toString()
+      );
+      expect(minterVotingPower).to.equal(1);
+      expect(user2VotingPower).to.equal(287);
     });
 
     // Additional Votes tests can be implemented here
-  }); */
+  });
+});
