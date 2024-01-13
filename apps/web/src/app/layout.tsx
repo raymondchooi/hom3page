@@ -3,6 +3,7 @@ import "styles/global.css";
 import { Inter } from "next/font/google";
 
 import { Navbar } from "components";
+import { ConnectkitProvider } from "utils/connectkit";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,8 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable} relative`}>
-        <>{children}</>
-        <Navbar />
+        <ConnectkitProvider>
+          <>{children}</>
+          <Navbar />
+        </ConnectkitProvider>
       </body>
     </html>
   );

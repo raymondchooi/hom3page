@@ -15,6 +15,7 @@
     "@t3-oss/env-nextjs": "^0.7.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "connectkit": "^1.6.0",
     "lucide-react": "^0.309.0",
     "next": "^14.0.4",
     "react": "18.2.0",
@@ -22,6 +23,8 @@
     "react-zoom-pan-pinch": "^3.3.0",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
+    "viem": "1.x",
+    "wagmi": "1.x",
     "zod": "^3.22.4"
   },
   "devDependencies": {

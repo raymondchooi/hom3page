@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { Menu, Popover, Transition } from "@headlessui/react";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useModal, Avatar } from "connectkit";
+import { useAccount, useDisconnect } from "wagmi";
 
 import { cn } from "utils/tailwind";
 
@@ -28,8 +28,10 @@ const userNavigation = [
 ];
 
 export default function Navbar() {
-  //TODO add connect wallet
-  const [connectedWallet, setConnectedWallet] = useState<string | null>(null);
+  const { isConnected, address } = useAccount();
+  const { setOpen } = useModal();
+  const { disconnect } = useDisconnect();
+
   return (
     <>
       {/* When the mobile menu is open, add `overflow-hidden` to the `body` element to prevent double scrollbars */}
@@ -43,7 +45,7 @@ export default function Navbar() {
           )
         }
       >
-        {({ open }) => (
+        {() => (
           <>
             <div className="mx-auto px-4 py-2">
               <div className="relative flex w-full justify-between">
@@ -65,21 +67,15 @@ export default function Navbar() {
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-5 flex-shrink-0 ">
                     <div>
-                      {connectedWallet ? (
+                      {isConnected ? (
                         <Menu.Button className="relative flex rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                           <span className="absolute -inset-1.5" />
                           <span className="sr-only">Open user menu</span>
-                          <Image
-                            className="h-8 w-8 rounded-full"
-                            src={user.imageUrl}
-                            alt=""
-                            width={32}
-                            height={32}
-                          />
+                          <Avatar address={address} size={32} radius={16} />
                         </Menu.Button>
                       ) : (
                         <button
-                          onClick={() => setConnectedWallet("test")}
+                          onClick={() => setOpen(true)}
                           className="ml-6 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
                           Connect Wallet
@@ -99,7 +95,7 @@ export default function Navbar() {
                         <Menu.Item>
                           {({ active }) => (
                             <button
-                              onClick={() => setConnectedWallet(null)}
+                              onClick={() => disconnect()}
                               className={cn(
                                 "w-full",
                                 active ? "bg-gray-100" : "",
