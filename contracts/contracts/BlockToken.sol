@@ -1,13 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-import "erc721a/contracts/ERC721A.sol";
+import "../node_modules/erc721a/contracts/ERC721A.sol";
 import "./security/onlyActive.sol";
 
 contract BlockToken is ERC721A, OnlyActive {
-    constructor() ERC721A("Hom3Page Block", "AZUKI") {}
+    uint256 constant MAX_SUPPLY = 1000;
+    bool private _mintComplete;
 
-    function mint(uint256 quantity) external payable {
-        // `_mint`'s second argument now takes in a `quantity`, not a `tokenId`.
+    constructor() ERC721A("Hom3Page Block", "AZUKI") Ownable(_msgSender()) {}
+
+    function mintAllBlocks(uint256 quantity) external {
+        require(!_mintComplete);
+        _mintComplete = true;
         _mint(msg.sender, quantity);
     }
 }
