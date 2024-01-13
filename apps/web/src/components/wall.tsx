@@ -1,23 +1,38 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 import { Block, Button } from "components";
 
+const WALL_TOTAL_BLOCKS = 288;
+
 export default function Wall() {
+  const params = useParams();
+
+  const wallId = decodeURIComponent(params?.id?.toString() ?? "1")
+    .toString()
+    .toLowerCase();
+
   function renderBlocks() {
     return (
       <>
-        {Array.from(Array(288).keys()).map((i) => (
-          <Block
-            key={i}
-            blockData={{ id: i.toString() }}
-            onClick={(id) => console.log(id)}
-          />
-        ))}
+        {Array.from(Array(WALL_TOTAL_BLOCKS * parseInt(wallId)).keys()).map(
+          (i) => {
+            const index = i + 1;
+            return (
+              <Block
+                key={index}
+                blockData={{ id: index.toString(), link: `/${index}` }}
+                onClick={(id) => console.log(id)}
+              />
+            );
+          },
+        )}
       </>
     );
   }
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden py-2">
       <TransformWrapper initialScale={0.5} centerOnInit minScale={0.00001}>
