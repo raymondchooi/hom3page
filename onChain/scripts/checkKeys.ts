@@ -26,3 +26,4 @@ export default function checkPrivateKeys() {
 
   return { masterMnemonic, rcpEndPoints, devRecovery };
 }
+  

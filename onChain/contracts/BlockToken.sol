@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
+// Base Contracts
 import "erc721a/contracts/ERC721A.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+// Security
 import "./security/onlyActive.sol";
+// Extentions
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Votes.sol";
 
-contract BlockToken is ERC721A, OnlyActive {
+contract BlockToken is ERC721A, ERC721Votes, OnlyActive {
     uint256 constant MAX_SUPPLY = 288;
     bool private _mintComplete;
 
