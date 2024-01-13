@@ -12,8 +12,8 @@ interface BlockProps {
 
 export default function Block({ blockData }: BlockProps) {
   function renderBlock() {
-    if (blockData?.wallLink) return <WallLink blockData={blockData} />;
     if (!blockData?.owner) return <Available blockData={blockData} />;
+    if (!!blockData?.wallLink) return <WallLink blockData={blockData} />;
 
     return (
       <div className="inline-flex h-full w-full items-center justify-center rounded bg-gray-100 p-1 font-bold hover:bg-gray-200">

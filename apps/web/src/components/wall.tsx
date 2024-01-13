@@ -6,6 +6,7 @@ import { HomeIcon } from "@heroicons/react/24/outline";
 
 import { Block, Button } from "components";
 import { WALL_TOTAL_BLOCKS } from "constants/wall";
+import type { BlockData } from "models/BlockData";
 
 export default function Wall() {
   const params = useParams();
@@ -23,12 +24,15 @@ export default function Wall() {
           const wallIdInt = parseInt(wallId);
           const index =
             wallIdInt === 0 ? i + 1 : i + wallIdInt * WALL_TOTAL_BLOCKS + 1;
-          return (
-            <Block
-              key={index}
-              blockData={{ id: index.toString(), wallLink: `/${index}` }}
-            />
-          );
+
+          const blockData: BlockData = { id: index.toString() };
+
+          if (Math.random() < 0.5) {
+            blockData.wallLink = `/${index}`;
+            blockData.owner = `0x${index}`;
+          }
+
+          return <Block key={index} blockData={blockData} />;
         })}
       </>
     );

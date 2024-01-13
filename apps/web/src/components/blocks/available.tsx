@@ -10,7 +10,13 @@ import {
   DialogDescription,
   DialogTitle,
 } from "components/dialog";
-
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "components/carousel";
 import type { BlockData } from "models/BlockData";
 
 interface AvailableProps {
@@ -19,25 +25,33 @@ interface AvailableProps {
 
 function Available({ blockData }: AvailableProps) {
   const [open, setOpen] = useState(false);
+  //TODO add mint logic
+  const [minted, setMinted] = useState(false);
 
   return (
     <>
-      <Button type="button" onClick={() => setOpen(true)}>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="flex h-full w-full cursor-pointer items-center justify-center rounded-none bg-gray-800"
+      >
         <Image
+          className="opacity-70"
           src="/logo_plain.jpg"
           alt="Hom3page Logo"
           width={40}
           height={40}
         />
-      </Button>
+      </button>
 
       <Dialog open={open} onClose={setOpen}>
         <DialogTitle className="flex items-center justify-between">
           <div className="flex items-center justify-start">
-            <span className="mr-2 inline-block h-3 w-3 rounded-full bg-green-500"></span>
-            <div className="text-xl font-semibold text-zinc-950">Available</div>
-
-            <div className="truncate text-xl font-semibold text-zinc-950">{`#${blockData.id}`}</div>
+            <div className="mr-4 truncate text-xl font-semibold text-zinc-950">{`#${blockData.id}`}</div>
+            <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span>
+            <div className="text-base font-semibold text-zinc-500">
+              Available
+            </div>
           </div>
           <Button plain onClick={() => setOpen(false)}>
             <svg
@@ -59,12 +73,53 @@ function Available({ blockData }: AvailableProps) {
         </DialogTitle>
         <DialogBody>
           <DialogDescription>
-            <ol>
-              <li>
-                <Button>Mint Block</Button>
+            <ol className="list-decimal space-y-4 pl-4 text-lg">
+              <li className="pl-4">
+                {minted ? (
+                  <div>Minted!</div>
+                ) : (
+                  <Button onClick={() => setMinted(true)}>Mint Block</Button>
+                )}
               </li>
-              <li>Add bApp</li>
+              <li className="pl-4">Add bApp</li>
             </ol>
+
+            <div className="mt-4 w-full text-right">Explore more</div>
+
+            <Carousel
+              opts={{
+                align: "start",
+              }}
+              className="mt-2 w-full"
+            >
+              <CarouselContent>
+                <CarouselItem className="basis-1/3">
+                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
+                    Text
+                  </div>
+                </CarouselItem>
+                <CarouselItem className="basis-1/3">
+                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
+                    Image
+                  </div>
+                </CarouselItem>
+                <CarouselItem className="basis-1/3">
+                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
+                    bApp1
+                  </div>
+                </CarouselItem>
+                <CarouselItem className="basis-1/3">
+                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
+                    bApp2
+                  </div>
+                </CarouselItem>
+                <CarouselItem className="basis-1/3">
+                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
+                    bApp3
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+            </Carousel>
           </DialogDescription>
         </DialogBody>
       </Dialog>
