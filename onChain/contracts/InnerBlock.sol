@@ -13,7 +13,7 @@ contract InnerBlockToken is ERC721A, OnlyActive {
 
     constructor(
         uint256 layer_
-    ) ERC721A("Hom3Page Block", "AZUKI") Ownable(msg.sender) {
+    ) ERC721A("Hom3Page Block", "HOM3") Ownable(msg.sender) {
         WALL_LAYER = layer_;
     }
 

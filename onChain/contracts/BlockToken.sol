@@ -1,19 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 // Base Contracts
-import "erc721a/contracts/ERC721A.sol";
+import "./utils/ERC721AVotes.sol";
 // Security
 import "./security/onlyActive.sol";
-// Extentions
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Votes.sol";
 
-contract BlockToken is ERC721A, ERC721Votes, OnlyActive {
+// Extentions
+
+contract BlockToken is ERC721AVotes, OnlyActive {
     uint256 constant MAX_SUPPLY = 288;
     bool private _mintComplete;
 
     mapping(uint256 => address) internal _innerWall;
 
-    constructor() ERC721A("Hom3Page Block", "AZUKI") Ownable(msg.sender) {}
+    constructor(
+        string name_,
+        string symbol_,
+        string version_
+    ) ERC721A(name_, symbol_) Ownable(msg.sender) EIP712(name_, version_) {}
 
     /**
      * @notice One time function to mint all the tokens to the sales contract
