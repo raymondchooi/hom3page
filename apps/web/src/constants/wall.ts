@@ -1,0 +1,4 @@
+const WALL_TOTAL_BLOCKS = 288;
+const WALL_WIDTH = 24;
+
+export { WALL_TOTAL_BLOCKS, WALL_WIDTH  };
