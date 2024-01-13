@@ -43,7 +43,7 @@ export default function Wall() {
         minScale={0.00001}
         limitToBounds={false}
       >
-        {({ zoomIn, zoomOut, resetTransform }) => (
+        {({ zoomIn, zoomOut, centerView }) => (
           <>
             <TransformComponent>
               <div className="flex h-[calc(100vh-52px)] w-screen  items-center justify-center">
@@ -56,7 +56,7 @@ export default function Wall() {
               <Button onClick={() => zoomIn()} color="purple">
                 +
               </Button>
-              <Button onClick={() => resetTransform()} color="purple">
+              <Button onClick={() => centerView()} color="purple">
                 <HomeIcon className="h-5 w-5 text-white" />
               </Button>
               <Button onClick={() => zoomOut()} color="purple">

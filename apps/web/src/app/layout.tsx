@@ -22,9 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
-        <Navbar />
+      <body className={`font-sans ${inter.variable} relative`}>
         <>{children}</>
+        <Navbar />
       </body>
     </html>
   );
