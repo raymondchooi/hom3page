@@ -29,8 +29,8 @@ const userNavigation = [
 ];
 
 export default function Navbar() {
-  const { isConnected, address, connector } = useAccount();
-  const { setOpen, openSwitchNetworks } = useModal();
+  const { isConnected, address } = useAccount();
+  const { setOpen } = useModal();
   const { disconnect } = useDisconnect();
 
   return (

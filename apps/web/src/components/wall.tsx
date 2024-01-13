@@ -26,8 +26,7 @@ export default function Wall() {
           return (
             <Block
               key={index}
-              blockData={{ id: index.toString(), link: `/${index}` }}
-              onClick={(id) => console.log(id)}
+              blockData={{ id: index.toString(), wallLink: `/${index}` }}
             />
           );
         })}
