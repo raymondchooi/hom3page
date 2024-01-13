@@ -17,18 +17,16 @@ export default function Wall() {
   function renderBlocks() {
     return (
       <>
-        {Array.from(Array(WALL_TOTAL_BLOCKS * parseInt(wallId)).keys()).map(
-          (i) => {
-            const index = i + 1;
-            return (
-              <Block
-                key={index}
-                blockData={{ id: index.toString(), link: `/${index}` }}
-                onClick={(id) => console.log(id)}
-              />
-            );
-          },
-        )}
+        {Array.from(Array(WALL_TOTAL_BLOCKS).keys()).map((i) => {
+          const index = Math.max(i, 1) * parseInt(wallId);
+          return (
+            <Block
+              key={index}
+              blockData={{ id: index.toString(), link: `/${index}` }}
+              onClick={(id) => console.log(id)}
+            />
+          );
+        })}
       </>
     );
   }
