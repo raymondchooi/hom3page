@@ -12,8 +12,8 @@ const deployedContracts: {
     InnerBlockFactory: "",
   },
   ethSepolia: {
-    BlockToken: "0x8414FDEd1f0033fDfBD87206d69723f2EE72dde1",
-    BlockSales: "",
+    BlockToken: "0x3365a2d81F272CFFd0D899E470781F609221EF4c",
+    BlockSales: "0x34f222790BEC2838c23CA24E332954A0dF375326",
     InnerBlockToken: "",
     InnerBlockFactory: "",
   },
