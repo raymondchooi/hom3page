@@ -27,7 +27,11 @@ export default function Wall() {
 
           const blockData: BlockData = { id: index.toString() };
 
-          if (Math.random() < 0.5) {
+          const randomTypeIndex = Math.floor(Math.random() * 3);
+          if (randomTypeIndex === 0) {
+            blockData.type = "text";
+            blockData.content = `Hello  ${index}`;
+          } else if (randomTypeIndex === 1) {
             blockData.wallLink = `/${index}`;
             blockData.owner = `0x${index}`;
           }

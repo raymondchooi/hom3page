@@ -6,6 +6,7 @@ import type { BlockData } from "models/BlockData";
 import Available from "./blocks/available";
 import WallLink from "./blocks/wallLink";
 import Profile from "./blocks/profile";
+import Text from "./blocks/text";
 import { BLOCK_WIDTH, BLOCK_HEIGHT } from "constants/block";
 import { cn } from "utils/tailwind";
 
@@ -16,16 +17,10 @@ interface BlockProps {
 export default function Block({ blockData }: BlockProps) {
   function renderBlock() {
     if (blockData?.type === "profile") return <Profile blockData={blockData} />;
-    else if (!blockData?.owner) return <Available blockData={blockData} />;
+    else if (blockData?.type === "text") return <Text blockData={blockData} />;
     else if (!!blockData?.wallLink) return <WallLink blockData={blockData} />;
 
-    return (
-      <div className="inline-flex h-full w-full items-center justify-center rounded bg-gray-100 p-1 font-bold hover:bg-gray-200">
-        <div className="truncate text-xs font-bold text-gray-500">
-          {blockData.id}
-        </div>
-      </div>
-    );
+    return <Available blockData={blockData} />;
   }
 
   if (blockData?.link) {
