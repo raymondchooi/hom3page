@@ -106,6 +106,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20__factory>;
     getContractFactory(
+      name: "IWallGenerator",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IWallGenerator__factory>;
+    getContractFactory(
       name: "OnlyActive",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OnlyActive__factory>;
@@ -113,6 +117,10 @@ declare module "hardhat/types/runtime" {
       name: "ERC721AVotes",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721AVotes__factory>;
+    getContractFactory(
+      name: "WallGenerator",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.WallGenerator__factory>;
     getContractFactory(
       name: "ERC721A__IERC721Receiver",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -242,6 +250,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC20>;
     getContractAt(
+      name: "IWallGenerator",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IWallGenerator>;
+    getContractAt(
       name: "OnlyActive",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -251,6 +264,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ERC721AVotes>;
+    getContractAt(
+      name: "WallGenerator",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.WallGenerator>;
     getContractAt(
       name: "ERC721A__IERC721Receiver",
       address: string | ethers.Addressable,
@@ -360,6 +378,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC20>;
     deployContract(
+      name: "IWallGenerator",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IWallGenerator>;
+    deployContract(
       name: "OnlyActive",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.OnlyActive>;
@@ -367,6 +389,10 @@ declare module "hardhat/types/runtime" {
       name: "ERC721AVotes",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC721AVotes>;
+    deployContract(
+      name: "WallGenerator",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.WallGenerator>;
     deployContract(
       name: "ERC721A__IERC721Receiver",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -496,6 +522,11 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC20>;
     deployContract(
+      name: "IWallGenerator",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IWallGenerator>;
+    deployContract(
       name: "OnlyActive",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -505,6 +536,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC721AVotes>;
+    deployContract(
+      name: "WallGenerator",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.WallGenerator>;
     deployContract(
       name: "ERC721A__IERC721Receiver",
       args: any[],

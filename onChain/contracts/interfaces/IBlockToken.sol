@@ -5,8 +5,4 @@ interface IBlockToken {
     error InnerWallNotEmpty();
 
     function mintAllBlocks(address salesContract_) external;
-
-    function mintInnerWall(uint256 tokenId_) external;
-
-    function burnInnerWall(uint256 tokenId_) external;
 }

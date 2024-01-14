@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 // Base Contracts
-import "./utils/ERC721AVotes.sol";
-import "./interfaces/IBlockToken.sol";
+import "../utils/ERC721AVotes.sol";
+import "../interfaces/IBlockToken.sol";
 // Security
-import "./security/onlyActive.sol";
+import "../security/onlyActive.sol";
 
 // Extentions
 
 contract BlockToken is ERC721AVotes, OnlyActive, IBlockToken {
     uint256 constant MAX_SUPPLY = 288;
     bool private _mintComplete;
-
-    mapping(uint256 => address) internal _innerWall;
 
     /**
      * @param name_ Name of the Token
@@ -35,14 +33,7 @@ contract BlockToken is ERC721AVotes, OnlyActive, IBlockToken {
         _mint(salesContract_, MAX_SUPPLY);
     }
 
-    function mintInnerWall(uint256 tokenId_) external override is_active {
-        if (_msgSender() != ownerOf(tokenId_)) revert NotOwnerOfToken();
-
-        // Allow the block owner to mint an inner wall.
-        // Will deploy a new BLock contract fron a factory.
-    }
-
-    function burnInnerWall(uint256 tokenId_) external override {
-        if (_msgSender() != ownerOf(tokenId_)) revert NotOwnerOfToken();
+    function _baseURI() internal view virtual override returns (string memory) {
+        return "override uri";
     }
 }

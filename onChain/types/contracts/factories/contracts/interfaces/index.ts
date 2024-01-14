@@ -3,3 +3,4 @@
 /* eslint-disable */
 export { IBlockToken__factory } from "./IBlockToken__factory";
 export { IERC20__factory } from "./IERC20__factory";
+export { IWallGenerator__factory } from "./IWallGenerator__factory";

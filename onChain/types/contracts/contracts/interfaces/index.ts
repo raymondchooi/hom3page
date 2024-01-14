@@ -3,3 +3,4 @@
 /* eslint-disable */
 export type { IBlockToken } from "./IBlockToken";
 export type { IERC20 } from "./IERC20";
+export type { IWallGenerator } from "./IWallGenerator";
