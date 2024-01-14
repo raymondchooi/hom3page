@@ -39,7 +39,9 @@ contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
             COST_PER_BLOCK
         );
         if (succsess) {
-            NFT.transferFrom(address(this), msg.sender, tokenId);
+            NFT.transferFrom(address(this), _msgSender(), tokenId);
+            _totalSold++;
+            emit SaleMade(_msgSender(), 1);
         }
     }
 
@@ -76,6 +78,7 @@ contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
                     );
             }
             _totalSold += totalOrder;
+            emit SaleMade(_msgSender(), totalOrder);
         }
     }
 
@@ -89,5 +92,11 @@ contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
         uint256 tokenId_
     ) external override onlyOwner {}
 
-    // Additional functions like setting prices, handling auctions, etc., can be added here.
+    function getBlockCost() public pure returns (uint256) {
+        return COST_PER_BLOCK;
+    }
+
+    function getTotalSold() public view returns (uint256) {
+        return _totalSold;
+    }
 }

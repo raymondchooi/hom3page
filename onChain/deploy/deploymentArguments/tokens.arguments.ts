@@ -19,6 +19,6 @@ export const BlockSalesArguments = (
   deployer?: string | Addressable,
   networkName?: ChainName
 ) => {
-  const tokenContract = "";
-  return [tokenContract, tokenAddress.ghoToken[networkName!]];
+  const tokenContract = "0xAE246E208ea35B3F23dE72b697D47044FC594D5F";
+  return [tokenContract, tokenAddress.ghoToken[networkName]];
 };
