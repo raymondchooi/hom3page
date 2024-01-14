@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useParams } from "next/navigation";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { HomeIcon } from "@heroicons/react/24/outline";
@@ -10,14 +11,13 @@ import type { BlockData } from "models/BlockData";
 
 export default function Wall() {
   const params = useParams();
-  0;
 
   const wallId = decodeURIComponent(params?.id?.toString() ?? "0")
     .toString()
     .toLowerCase();
 
   //TODO change to real data
-  function renderBlocks() {
+  const renderBlocks = useMemo(() => {
     return (
       <>
         {Array.from(Array(WALL_TOTAL_BLOCKS).keys()).map((i) => {
@@ -36,7 +36,7 @@ export default function Wall() {
         })}
       </>
     );
-  }
+  }, [wallId]);
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-x-auto">
@@ -51,7 +51,7 @@ export default function Wall() {
             <TransformComponent>
               <div className="flex h-[calc(100vh-52px)] w-screen  items-center justify-center">
                 <div className="grid min-w-[960px] grid-cols-24 gap-0">
-                  {renderBlocks()}
+                  {renderBlocks}
                 </div>
               </div>
             </TransformComponent>
