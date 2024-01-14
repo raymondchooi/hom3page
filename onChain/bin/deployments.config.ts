@@ -3,7 +3,7 @@
 // BlockToken BlockSales
 
 export default function deploymentConfig() {
-  const deployCue: string[] = ["BlockSales"];
+  const deployCue: string[] = ["BlockToken"];
 
   const updateCue = (deployedContract: string) => {
     let i = deployCue.indexOf(deployedContract);

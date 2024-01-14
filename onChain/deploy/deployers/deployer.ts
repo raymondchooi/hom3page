@@ -27,12 +27,12 @@ export default async function deploy({
     );
 
     await deployedContract.waitForDeployment();
-    if (hre.network.name !== "localhost")
-      await waitForConfirmations(
-        hre,
-        deployedContract.deploymentTransaction()?.hash!,
-        2
-      );
+    //if (hre.network.name !== "localhost")
+    /* await waitForConfirmations(
+      hre,
+      deployedContract.deploymentTransaction()?.hash!,
+      2
+    ); */
 
     console.log(
       `🟢 Contract Deployed : ${contractName} to ${deployedContract.target}`

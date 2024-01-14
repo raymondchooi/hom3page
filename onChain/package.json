@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npx hardhat test",
     "dev": "npx hardhat deployContracts --network localhost",
-    "deploy-sepolia": "npx hardhat deployContracts --network sepolia",
+    "deploy-sepolia": "npx hardhat deployContracts --network ethSepolia",
     "compile": "npx hardhat compile"
   },
   "keywords": [],

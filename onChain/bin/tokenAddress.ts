@@ -15,7 +15,7 @@ const productionChainAddresses = {
     compoundV3Usdc: "",
     aaveV3Pool: "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
     universalRouter: "",
-    ghoToken: "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+    gho: "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
   },
   arbitrum: {
     swapRouter: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
@@ -151,14 +151,14 @@ export const tokenAddress: TokenAddressList = {
     opGoerli: "",
     hardhat: productionChainAddresses[forkedNetwork].aaveV3Pool,
   },
-  ghoToken: {
-    eth: productionChainAddresses.eth.ghoToken,
+  gho: {
+    eth: productionChainAddresses.eth.gho,
     ethGoerli: "",
     ethSepolia: "0xc4bF5CbDaBE595361438F8c6a187bDc330539c60",
-    arbGoerli: "0x20fa38a4f8Af2E36f1Cc14caad2E603fbA5C535c",
+    arbGoerli: "",
     arbitrum: "",
     opGoerli: "",
-    hardhat: productionChainAddresses[forkedNetwork].ghoToken,
+    hardhat: productionChainAddresses[forkedNetwork].gho,
   },
 };
 
