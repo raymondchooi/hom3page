@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./security/onlyActive.sol";
+import "./interfaces/IBlockSale.sol";
 
-contract BlockSales is ReentrancyGuard, OnlyActive {
+contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
     IERC721 public immutable NFT;
     IERC20 public immutable GHO;
 
@@ -24,7 +25,9 @@ contract BlockSales is ReentrancyGuard, OnlyActive {
         GHO = IERC20(ghoTokenAddress_);
     }
 
-    function buyBlock(uint256 tokenId) public nonReentrant is_active {
+    function buyBlock(
+        uint256 tokenId
+    ) external override nonReentrant is_active {
         require(NFT.ownerOf(tokenId) == address(this), "Token not available");
         require(
             GHO.balanceOf(_msgSender()) > COST_PER_BLOCK,
@@ -41,25 +44,50 @@ contract BlockSales is ReentrancyGuard, OnlyActive {
     }
 
     function buyBatchBlock(
-        uint256[] calldata tokenIds
-    ) public nonReentrant is_active {
-        uint256 cost = COST_PER_BLOCK * (tokenIds.length);
-        require(GHO.balanceOf(_msgSender()) > cost, "Incorrect payment");
-        bool succsess = GHO.transferFrom(_msgSender(), address(this), cost);
+        uint256[][] calldata tokenIds_
+    ) external override nonReentrant is_active {
+        (uint totalOrder, uint index, uint numElements) = (
+            0,
+            0,
+            tokenIds_.length
+        );
 
-        for (uint i = 0; i < tokenIds.length; i++) {
-            require(
-                NFT.ownerOf(tokenIds[i]) == address(this),
-                "Token not available"
-            );
-            NFT.transferFrom(address(this), msg.sender, tokenIds[i]);
+        if (numElements > 5) revert ToManyElementsInBuyArray();
+
+        unchecked {
+            while (totalOrder < 10 && index < numElements) {
+                totalOrder = tokenIds_[index].length;
+                index++;
+            }
+            if (totalOrder > 10) revert OrderToLargeMax10();
+        }
+
+        uint256 cost = COST_PER_BLOCK * (totalOrder);
+        require(GHO.balanceOf(_msgSender()) >= cost, "Insufficient Funds");
+
+        bool succsess = GHO.transferFrom(_msgSender(), address(this), cost);
+        if (succsess) {
+            for (uint i = 0; i < numElements; i++) {
+                for (uint x = 0; x < tokenIds_[i].length; x++)
+                    NFT.transferFrom(
+                        address(this),
+                        msg.sender,
+                        tokenIds_[i][x]
+                    );
+            }
+            _totalSold += totalOrder;
         }
     }
 
-    function withdraw(address withdrawAddress_) public onlyOwner {
+    function withdrawFunds(address withdrawAddress_) external onlyOwner {
         uint balance = GHO.balanceOf(address(this));
         GHO.transfer(withdrawAddress_, balance);
     }
+
+    function withdrawBlock(
+        address withdrawAddress_,
+        uint256 tokenId_
+    ) external override onlyOwner {}
 
     // Additional functions like setting prices, handling auctions, etc., can be added here.
 }

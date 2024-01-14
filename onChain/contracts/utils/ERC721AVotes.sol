@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 import "erc721a/contracts/ERC721A.sol";
-import {Votes} from "@openzeppelin/contracts/governance/utils/Votes.sol";
+import {Votes, EIP712} from "@openzeppelin/contracts/governance/utils/Votes.sol";
 import {IVotes} from "@openzeppelin/contracts/governance/utils/IVotes.sol";
 
 abstract contract ERC721AVotes is ERC721A, Votes {

@@ -94,6 +94,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.WallGenerator__factory>;
     getContractFactory(
+      name: "IBlockSale",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IBlockSale__factory>;
+    getContractFactory(
       name: "IBlockToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IBlockToken__factory>;
@@ -121,6 +125,10 @@ declare module "hardhat/types/runtime" {
       name: "StINRWL",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.StINRWL__factory>;
+    getContractFactory(
+      name: "StINRWLToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.StINRWLToken__factory>;
     getContractFactory(
       name: "ERC721AVotes",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -239,6 +247,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.WallGenerator>;
     getContractAt(
+      name: "IBlockSale",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IBlockSale>;
+    getContractAt(
       name: "IBlockToken",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -273,6 +286,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.StINRWL>;
+    getContractAt(
+      name: "StINRWLToken",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.StINRWLToken>;
     getContractAt(
       name: "ERC721AVotes",
       address: string | ethers.Addressable,
@@ -375,6 +393,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.WallGenerator>;
     deployContract(
+      name: "IBlockSale",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IBlockSale>;
+    deployContract(
       name: "IBlockToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IBlockToken>;
@@ -402,6 +424,10 @@ declare module "hardhat/types/runtime" {
       name: "StINRWL",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.StINRWL>;
+    deployContract(
+      name: "StINRWLToken",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.StINRWLToken>;
     deployContract(
       name: "ERC721AVotes",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -520,6 +546,11 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.WallGenerator>;
     deployContract(
+      name: "IBlockSale",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IBlockSale>;
+    deployContract(
       name: "IBlockToken",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -554,6 +585,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.StINRWL>;
+    deployContract(
+      name: "StINRWLToken",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.StINRWLToken>;
     deployContract(
       name: "ERC721AVotes",
       args: any[],

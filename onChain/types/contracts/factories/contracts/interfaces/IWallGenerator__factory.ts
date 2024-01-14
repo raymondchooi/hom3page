@@ -400,6 +400,13 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "placeVote",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",

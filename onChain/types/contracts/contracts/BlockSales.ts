@@ -35,7 +35,8 @@ export interface BlockSalesInterface extends Interface {
       | "renounceOwnership"
       | "setActiveState"
       | "transferOwnership"
-      | "withdraw"
+      | "withdrawBlock"
+      | "withdrawFunds"
   ): FunctionFragment;
 
   getEvent(
@@ -50,7 +51,7 @@ export interface BlockSalesInterface extends Interface {
   encodeFunctionData(functionFragment: "NFT", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "buyBatchBlock",
-    values: [BigNumberish[]]
+    values: [BigNumberish[][]]
   ): string;
   encodeFunctionData(
     functionFragment: "buyBlock",
@@ -70,7 +71,11 @@ export interface BlockSalesInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "withdraw",
+    functionFragment: "withdrawBlock",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawFunds",
     values: [AddressLike]
   ): string;
 
@@ -98,7 +103,14 @@ export interface BlockSalesInterface extends Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawBlock",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFunds",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace ContractActiveStateChangeEvent {
@@ -176,7 +188,7 @@ export interface BlockSales extends BaseContract {
   NFT: TypedContractMethod<[], [string], "view">;
 
   buyBatchBlock: TypedContractMethod<
-    [tokenIds: BigNumberish[]],
+    [tokenIds_: BigNumberish[][]],
     [void],
     "nonpayable"
   >;
@@ -199,7 +211,13 @@ export interface BlockSales extends BaseContract {
     "nonpayable"
   >;
 
-  withdraw: TypedContractMethod<
+  withdrawBlock: TypedContractMethod<
+    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  withdrawFunds: TypedContractMethod<
     [withdrawAddress_: AddressLike],
     [void],
     "nonpayable"
@@ -220,7 +238,7 @@ export interface BlockSales extends BaseContract {
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "buyBatchBlock"
-  ): TypedContractMethod<[tokenIds: BigNumberish[]], [void], "nonpayable">;
+  ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "buyBlock"
   ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
@@ -237,7 +255,14 @@ export interface BlockSales extends BaseContract {
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "withdraw"
+    nameOrSignature: "withdrawBlock"
+  ): TypedContractMethod<
+    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "withdrawFunds"
   ): TypedContractMethod<[withdrawAddress_: AddressLike], [void], "nonpayable">;
 
   getEvent(

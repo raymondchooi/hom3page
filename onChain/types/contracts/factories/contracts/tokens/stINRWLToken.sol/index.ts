@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { StINRWL__factory } from "./StINRWL__factory";
+export { StINRWLToken__factory } from "./StINRWLToken__factory";
