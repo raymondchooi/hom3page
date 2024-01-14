@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 // Base Contracts
-import "./utils/ERC721AVotes.sol";
-import "./interfaces/IBlockToken.sol";
+import "../utils/ERC721AVotes.sol";
+import "../interfaces/IBlockToken.sol";
 // Security
-import "./security/onlyActive.sol";
+import "../security/onlyActive.sol";
 
 // Extentions
 

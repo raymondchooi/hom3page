@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-import "./utils/ERC721AVotes.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "./security/onlyActive.sol";
+import {ERC721A} from "../utils/ERC721AVotes.sol";
+import {OnlyActive, Ownable} from "../security/onlyActive.sol";
 
-contract InnerBlockToken is ERC721AVotes, OnlyActive {
+contract InnerBlockToken is ERC721A, OnlyActive {
     uint256 public immutable WALL_LAYER;
     uint256 public immutable MOTHER_BLOCK;
     uint256 constant MAX_SUPPLY = 288;
@@ -15,10 +14,9 @@ contract InnerBlockToken is ERC721AVotes, OnlyActive {
     constructor(
         string memory name_,
         string memory symbol_,
-        string memory version_,
         uint256 motherBlock_,
         uint8 layer_
-    ) ERC721A(name_, symbol_) Ownable(msg.sender) EIP712(name_, version_) {
+    ) ERC721A(name_, symbol_) Ownable(msg.sender) {
         WALL_LAYER = layer_;
         MOTHER_BLOCK = motherBlock_;
     }
@@ -26,11 +24,16 @@ contract InnerBlockToken is ERC721AVotes, OnlyActive {
     /**
      * @notice One time function to mint all the tokens to the sales contract
      */
-    function mintAllBlocks(address salesContract_) external onlyOwner {
+    function mintNBlock(uint256 amount_) external onlyOwner {
         require(!_mintComplete);
-        _mintComplete = true;
+        uint256 newSupply = totalSupply() + amount_;
+        require(newSupply <= MAX_SUPPLY, "Exceeds Maximum Supply");
 
-        _mint(salesContract_, MAX_SUPPLY);
+        if (newSupply == MAX_SUPPLY) {
+            _mintComplete = true;
+        }
+
+        _mint(_msgSender(), amount_);
     }
 
     function mintInnerWall(uint256 blockId_) external is_active {
