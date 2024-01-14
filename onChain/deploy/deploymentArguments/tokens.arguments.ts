@@ -20,11 +20,9 @@ export const BlockSalesArguments = (
   deployer: string | Addressable,
   networkName: ChainName
 ) => {
-  let netName: ChainName = !networkName
-    ? "hardhat"
-    : networkName === "hardhat" || networkName === "localhost"
-    ? "hardhat"
-    : networkName;
+  let netName: ChainName =
+    networkName === "localhost" ? "hardhat" : networkName;
+
   const tokenContract = deployedContracts[netName]?.BlockToken;
   return [tokenContract, tokenAddress.gho[netName]];
 };

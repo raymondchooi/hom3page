@@ -13,7 +13,7 @@ contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
     IERC20 public immutable GHO;
 
     //  Set token cost to 100 $GHO
-    uint256 public constant COST_PER_BLOCK = 100 * 10 ** 18;
+    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18;
 
     uint256 internal _totalSold;
 
