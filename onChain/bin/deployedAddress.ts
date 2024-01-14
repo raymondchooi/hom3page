@@ -6,14 +6,14 @@ const deployedContracts: {
   [chain in ChainName]?: { [name in ContractNames]?: string };
 } = {
   hardhat: {
-    BlockToken: "0xAE246E208ea35B3F23dE72b697D47044FC594D5F",
+    BlockToken: "",
     BlockSales: "",
     InnerBlockToken: "",
     InnerBlockFactory: "",
   },
   ethSepolia: {
-    BlockToken: "",
-    BlockSales: "",
+    BlockToken: "0x8414FDEd1f0033fDfBD87206d69723f2EE72dde1",
+    BlockSales: "0x20B78b7a1f59692AAf1f02eAADAB851b588e8121",
     InnerBlockToken: "",
     InnerBlockFactory: "",
   },

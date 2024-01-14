@@ -17,8 +17,8 @@ export const BlockTokenArguments = (
 };
 
 export const BlockSalesArguments = (
-  deployer?: string | Addressable,
-  networkName?: ChainName
+  deployer: string | Addressable,
+  networkName: ChainName
 ) => {
   let netName: ChainName = !networkName
     ? "hardhat"
@@ -26,5 +26,5 @@ export const BlockSalesArguments = (
     ? "hardhat"
     : networkName;
   const tokenContract = deployedContracts[netName]?.BlockToken;
-  return [tokenContract, tokenAddress.ghoToken[netName]];
+  return [tokenContract, tokenAddress.gho[netName]];
 };
