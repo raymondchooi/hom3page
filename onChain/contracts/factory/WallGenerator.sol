@@ -17,7 +17,7 @@ contract WallGenerator is ERC721A, OnlyActive, IWallGenerator {
         address blockTokenContract_
     ) ERC721A("Hom3Page WallGenerator", "WALL") Ownable(msg.sender) {
         BLOCK_TOKEN = ERC721AVotes(blockTokenContract_);
-        INNER_WALL_TOKEN = new stINRWL();
+        INNER_WALL_TOKEN = new stINRWLToken();
     }
 
     function createFirstInnerWall(
@@ -76,6 +76,8 @@ contract WallGenerator is ERC721A, OnlyActive, IWallGenerator {
     ) external override {}
 
     function updateWallSetting() external override {}
+
+    function placeVote() external override {}
 
     function _isSenderIsBlockOwner(
         address msgSender_,

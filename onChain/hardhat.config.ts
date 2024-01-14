@@ -54,9 +54,8 @@ const config: HardhatUserConfig = {
   gasReporter: {
     token: "ETH",
     currency: "USD",
-    gasPrice: gasPrice,
     enabled: true,
-    outputFile: "./reports/tests.txt",
+    outputFile: "./reports/report",
     gasPriceApi: process.env.ETHERSCAN_MAINNET_GAS_POINT,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
