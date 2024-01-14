@@ -93,8 +93,7 @@ describe("🧪 BlockToken Contract Test 1", function () {
 
     it("Should retunr the holding URI string", async function () {
       const uri = await BlockToken.tokenURI(1);
-      console.log("get url reutnr", uri);
-      expect(uri).to.equal("override uri");
+      expect(uri).to.equal("override uri1");
     });
   });
 });
