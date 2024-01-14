@@ -26,8 +26,7 @@ contract WallGenerator is ERC721A, OnlyActive, IWallGenerator {
     ) external override is_active {
         // Check that the call is the block owner
         // Check if the contract can spend the token
-        if (BLOCK_TOKEN.ownerOf(motherBlock_) != _msgSender())
-            revert NotBlockOwner();
+        _isSenderIsBlockOwner(_msgSender(), motherBlock_);
 
         if (BLOCK_TOKEN.getApproved(motherBlock_) != address(this))
             revert SpendNotApproved();
@@ -75,4 +74,13 @@ contract WallGenerator is ERC721A, OnlyActive, IWallGenerator {
         uint256 wallId_,
         address delegatee_
     ) external override {}
+
+    function updateWallSetting() external override {}
+
+    function _isSenderIsBlockOwner(
+        address msgSender_,
+        uint256 blockId_
+    ) internal view {
+        if (BLOCK_TOKEN.ownerOf(blockId_) != msgSender_) revert NotBlockOwner();
+    }
 }

@@ -3,7 +3,6 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
@@ -22,33 +21,15 @@ import type {
 } from "../../common";
 
 export interface IBlockTokenInterface extends Interface {
-  getFunction(
-    nameOrSignature: "burnInnerWall" | "mintAllBlocks" | "mintInnerWall"
-  ): FunctionFragment;
+  getFunction(nameOrSignature: "mintAllBlocks"): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "burnInnerWall",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "mintAllBlocks",
     values: [AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "mintInnerWall",
-    values: [BigNumberish]
-  ): string;
 
   decodeFunctionResult(
-    functionFragment: "burnInnerWall",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "mintAllBlocks",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintInnerWall",
     data: BytesLike
   ): Result;
 }
@@ -96,20 +77,8 @@ export interface IBlockToken extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  burnInnerWall: TypedContractMethod<
-    [tokenId_: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
   mintAllBlocks: TypedContractMethod<
     [salesContract_: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  mintInnerWall: TypedContractMethod<
-    [tokenId_: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -119,14 +88,8 @@ export interface IBlockToken extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "burnInnerWall"
-  ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "mintAllBlocks"
   ): TypedContractMethod<[salesContract_: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "mintInnerWall"
-  ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
 
   filters: {};
 }

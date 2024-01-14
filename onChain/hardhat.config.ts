@@ -52,10 +52,13 @@ const config: HardhatUserConfig = {
     artifacts: "./build/artifacts",
   },
   gasReporter: {
-    currency: "ETH",
+    token: "ETH",
+    currency: "USD",
     gasPrice: gasPrice,
     enabled: true,
-    outputFile: "./reports/tests",
+    outputFile: "./reports/tests.txt",
+    gasPriceApi: process.env.ETHERSCAN_MAINNET_GAS_POINT,
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY!,

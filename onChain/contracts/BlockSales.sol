@@ -24,7 +24,7 @@ contract BlockSales is ReentrancyGuard, OnlyActive {
         GHO = IERC20(ghoTokenAddress_);
     }
 
-    function buyNFT(uint256 tokenId) public nonReentrant is_active {
+    function buyBlock(uint256 tokenId) public nonReentrant is_active {
         require(NFT.ownerOf(tokenId) == address(this), "Token not available");
         require(
             GHO.balanceOf(_msgSender()) > COST_PER_BLOCK,
@@ -40,7 +40,7 @@ contract BlockSales is ReentrancyGuard, OnlyActive {
         }
     }
 
-    function buyBatchNFTs(
+    function buyBatchBlock(
         uint256[] calldata tokenIds
     ) public nonReentrant is_active {
         uint256 cost = COST_PER_BLOCK * (tokenIds.length);

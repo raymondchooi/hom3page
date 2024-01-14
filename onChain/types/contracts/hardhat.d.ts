@@ -90,13 +90,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BlockSales__factory>;
     getContractFactory(
-      name: "BlockToken",
+      name: "WallGenerator",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BlockToken__factory>;
-    getContractFactory(
-      name: "InnerBlockToken",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.InnerBlockToken__factory>;
+    ): Promise<Contracts.WallGenerator__factory>;
     getContractFactory(
       name: "IBlockToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -114,13 +110,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OnlyActive__factory>;
     getContractFactory(
+      name: "BlockToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BlockToken__factory>;
+    getContractFactory(
+      name: "InnerBlockToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.InnerBlockToken__factory>;
+    getContractFactory(
+      name: "StINRWL",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.StINRWL__factory>;
+    getContractFactory(
       name: "ERC721AVotes",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721AVotes__factory>;
-    getContractFactory(
-      name: "WallGenerator",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.WallGenerator__factory>;
     getContractFactory(
       name: "ERC721A__IERC721Receiver",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -230,15 +234,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.BlockSales>;
     getContractAt(
-      name: "BlockToken",
+      name: "WallGenerator",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.BlockToken>;
-    getContractAt(
-      name: "InnerBlockToken",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.InnerBlockToken>;
+    ): Promise<Contracts.WallGenerator>;
     getContractAt(
       name: "IBlockToken",
       address: string | ethers.Addressable,
@@ -260,15 +259,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.OnlyActive>;
     getContractAt(
+      name: "BlockToken",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BlockToken>;
+    getContractAt(
+      name: "InnerBlockToken",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.InnerBlockToken>;
+    getContractAt(
+      name: "StINRWL",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.StINRWL>;
+    getContractAt(
       name: "ERC721AVotes",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ERC721AVotes>;
-    getContractAt(
-      name: "WallGenerator",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.WallGenerator>;
     getContractAt(
       name: "ERC721A__IERC721Receiver",
       address: string | ethers.Addressable,
@@ -362,13 +371,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.BlockSales>;
     deployContract(
-      name: "BlockToken",
+      name: "WallGenerator",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.BlockToken>;
-    deployContract(
-      name: "InnerBlockToken",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.InnerBlockToken>;
+    ): Promise<Contracts.WallGenerator>;
     deployContract(
       name: "IBlockToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -386,13 +391,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.OnlyActive>;
     deployContract(
+      name: "BlockToken",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BlockToken>;
+    deployContract(
+      name: "InnerBlockToken",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.InnerBlockToken>;
+    deployContract(
+      name: "StINRWL",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.StINRWL>;
+    deployContract(
       name: "ERC721AVotes",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC721AVotes>;
-    deployContract(
-      name: "WallGenerator",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.WallGenerator>;
     deployContract(
       name: "ERC721A__IERC721Receiver",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -502,15 +515,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.BlockSales>;
     deployContract(
-      name: "BlockToken",
+      name: "WallGenerator",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.BlockToken>;
-    deployContract(
-      name: "InnerBlockToken",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.InnerBlockToken>;
+    ): Promise<Contracts.WallGenerator>;
     deployContract(
       name: "IBlockToken",
       args: any[],
@@ -532,15 +540,25 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.OnlyActive>;
     deployContract(
+      name: "BlockToken",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BlockToken>;
+    deployContract(
+      name: "InnerBlockToken",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.InnerBlockToken>;
+    deployContract(
+      name: "StINRWL",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.StINRWL>;
+    deployContract(
       name: "ERC721AVotes",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC721AVotes>;
-    deployContract(
-      name: "WallGenerator",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.WallGenerator>;
     deployContract(
       name: "ERC721A__IERC721Receiver",
       args: any[],

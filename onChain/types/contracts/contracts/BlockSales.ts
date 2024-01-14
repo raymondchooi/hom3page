@@ -29,8 +29,8 @@ export interface BlockSalesInterface extends Interface {
       | "COST_PER_BLOCK"
       | "GHO"
       | "NFT"
-      | "buyBatchNFTs"
-      | "buyNFT"
+      | "buyBatchBlock"
+      | "buyBlock"
       | "owner"
       | "renounceOwnership"
       | "setActiveState"
@@ -49,11 +49,11 @@ export interface BlockSalesInterface extends Interface {
   encodeFunctionData(functionFragment: "GHO", values?: undefined): string;
   encodeFunctionData(functionFragment: "NFT", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "buyBatchNFTs",
+    functionFragment: "buyBatchBlock",
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "buyNFT",
+    functionFragment: "buyBlock",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -81,10 +81,10 @@ export interface BlockSalesInterface extends Interface {
   decodeFunctionResult(functionFragment: "GHO", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "NFT", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "buyBatchNFTs",
+    functionFragment: "buyBatchBlock",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "buyNFT", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "buyBlock", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -175,13 +175,13 @@ export interface BlockSales extends BaseContract {
 
   NFT: TypedContractMethod<[], [string], "view">;
 
-  buyBatchNFTs: TypedContractMethod<
+  buyBatchBlock: TypedContractMethod<
     [tokenIds: BigNumberish[]],
     [void],
     "nonpayable"
   >;
 
-  buyNFT: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+  buyBlock: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
@@ -219,10 +219,10 @@ export interface BlockSales extends BaseContract {
     nameOrSignature: "NFT"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "buyBatchNFTs"
+    nameOrSignature: "buyBatchBlock"
   ): TypedContractMethod<[tokenIds: BigNumberish[]], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "buyNFT"
+    nameOrSignature: "buyBlock"
   ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "owner"

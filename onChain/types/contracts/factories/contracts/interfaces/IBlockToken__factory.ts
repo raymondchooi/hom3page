@@ -22,38 +22,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "tokenId_",
-        type: "uint256",
-      },
-    ],
-    name: "burnInnerWall",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "address",
         name: "salesContract_",
         type: "address",
       },
     ],
     name: "mintAllBlocks",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId_",
-        type: "uint256",
-      },
-    ],
-    name: "mintInnerWall",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
