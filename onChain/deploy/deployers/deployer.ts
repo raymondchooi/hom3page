@@ -27,7 +27,8 @@ export default async function deploy({
     );
 
     await deployedContract.waitForDeployment();
-    if (hre.network.name !== "localhost")
+    
+    if (hre.network.name !== "localhost" && hre.network.name !== "hardhat")
       await waitForConfirmations(
         hre,
         deployedContract.deploymentTransaction()?.hash!,

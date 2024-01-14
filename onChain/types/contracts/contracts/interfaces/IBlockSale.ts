@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type {
   BaseContract,
+  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
@@ -20,25 +21,52 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
-export interface IBlockTokenInterface extends Interface {
-  getFunction(nameOrSignature: "mintAllBlocks"): FunctionFragment;
+export interface IBlockSaleInterface extends Interface {
+  getFunction(
+    nameOrSignature:
+      | "buyBatchBlock"
+      | "buyBlock"
+      | "withdrawBlock"
+      | "withdrawFunds"
+  ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "mintAllBlocks",
+    functionFragment: "buyBatchBlock",
+    values: [BigNumberish[][]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "buyBlock",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawBlock",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawFunds",
     values: [AddressLike]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "mintAllBlocks",
+    functionFragment: "buyBatchBlock",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "buyBlock", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawBlock",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFunds",
     data: BytesLike
   ): Result;
 }
 
-export interface IBlockToken extends BaseContract {
-  connect(runner?: ContractRunner | null): IBlockToken;
+export interface IBlockSale extends BaseContract {
+  connect(runner?: ContractRunner | null): IBlockSale;
   waitForDeployment(): Promise<this>;
 
-  interface: IBlockTokenInterface;
+  interface: IBlockSaleInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -77,8 +105,22 @@ export interface IBlockToken extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  mintAllBlocks: TypedContractMethod<
-    [salesContract_: AddressLike],
+  buyBatchBlock: TypedContractMethod<
+    [tokenIds_: BigNumberish[][]],
+    [void],
+    "nonpayable"
+  >;
+
+  buyBlock: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+
+  withdrawBlock: TypedContractMethod<
+    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  withdrawFunds: TypedContractMethod<
+    [withdrawAddress_: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -88,8 +130,21 @@ export interface IBlockToken extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "mintAllBlocks"
-  ): TypedContractMethod<[salesContract_: AddressLike], [void], "nonpayable">;
+    nameOrSignature: "buyBatchBlock"
+  ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "buyBlock"
+  ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawBlock"
+  ): TypedContractMethod<
+    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "withdrawFunds"
+  ): TypedContractMethod<[withdrawAddress_: AddressLike], [void], "nonpayable">;
 
   filters: {};
 }

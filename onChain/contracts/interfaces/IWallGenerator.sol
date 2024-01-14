@@ -43,5 +43,7 @@ interface IWallGenerator is IERC721A {
 
     function delegateBlockVote(uint256 wallId_, address delegatee_) external;
 
+    function placeVote() external;
+
     function updateWallSetting() external;
 }

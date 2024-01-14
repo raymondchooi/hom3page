@@ -29,13 +29,14 @@ export interface BlockSalesInterface extends Interface {
       | "COST_PER_BLOCK"
       | "GHO"
       | "NFT"
-      | "buyBatchNFTs"
-      | "buyNFT"
+      | "buyBatchBlock"
+      | "buyBlock"
       | "owner"
       | "renounceOwnership"
       | "setActiveState"
       | "transferOwnership"
-      | "withdraw"
+      | "withdrawBlock"
+      | "withdrawFunds"
   ): FunctionFragment;
 
   getEvent(
@@ -49,11 +50,11 @@ export interface BlockSalesInterface extends Interface {
   encodeFunctionData(functionFragment: "GHO", values?: undefined): string;
   encodeFunctionData(functionFragment: "NFT", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "buyBatchNFTs",
-    values: [BigNumberish[]]
+    functionFragment: "buyBatchBlock",
+    values: [BigNumberish[][]]
   ): string;
   encodeFunctionData(
-    functionFragment: "buyNFT",
+    functionFragment: "buyBlock",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -70,7 +71,11 @@ export interface BlockSalesInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "withdraw",
+    functionFragment: "withdrawBlock",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawFunds",
     values: [AddressLike]
   ): string;
 
@@ -81,10 +86,10 @@ export interface BlockSalesInterface extends Interface {
   decodeFunctionResult(functionFragment: "GHO", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "NFT", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "buyBatchNFTs",
+    functionFragment: "buyBatchBlock",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "buyNFT", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "buyBlock", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -98,7 +103,14 @@ export interface BlockSalesInterface extends Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawBlock",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFunds",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace ContractActiveStateChangeEvent {
@@ -175,13 +187,13 @@ export interface BlockSales extends BaseContract {
 
   NFT: TypedContractMethod<[], [string], "view">;
 
-  buyBatchNFTs: TypedContractMethod<
-    [tokenIds: BigNumberish[]],
+  buyBatchBlock: TypedContractMethod<
+    [tokenIds_: BigNumberish[][]],
     [void],
     "nonpayable"
   >;
 
-  buyNFT: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+  buyBlock: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
@@ -199,7 +211,13 @@ export interface BlockSales extends BaseContract {
     "nonpayable"
   >;
 
-  withdraw: TypedContractMethod<
+  withdrawBlock: TypedContractMethod<
+    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  withdrawFunds: TypedContractMethod<
     [withdrawAddress_: AddressLike],
     [void],
     "nonpayable"
@@ -219,10 +237,10 @@ export interface BlockSales extends BaseContract {
     nameOrSignature: "NFT"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "buyBatchNFTs"
-  ): TypedContractMethod<[tokenIds: BigNumberish[]], [void], "nonpayable">;
+    nameOrSignature: "buyBatchBlock"
+  ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "buyNFT"
+    nameOrSignature: "buyBlock"
   ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "owner"
@@ -237,7 +255,14 @@ export interface BlockSales extends BaseContract {
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "withdraw"
+    nameOrSignature: "withdrawBlock"
+  ): TypedContractMethod<
+    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "withdrawFunds"
   ): TypedContractMethod<[withdrawAddress_: AddressLike], [void], "nonpayable">;
 
   getEvent(

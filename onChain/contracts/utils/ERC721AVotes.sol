@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 import "erc721a/contracts/ERC721A.sol";
-import "@openzeppelin/contracts/governance/utils/Votes.sol";
-import "@openzeppelin/contracts/governance/utils/IVotes.sol";
+import {Votes, EIP712} from "@openzeppelin/contracts/governance/utils/Votes.sol";
+import {IVotes} from "@openzeppelin/contracts/governance/utils/IVotes.sol";
 
 abstract contract ERC721AVotes is ERC721A, Votes {
+    /**
+     * @notice  Contract to wrap ERC721A with Votes
+     *          Allows for 1-to-1 NFT voting logic
+     */
+
     /**
      * @dev Override function for '_afterTokenTransfers' to include Voting logic
      * @param from_ Address to transfer the token from

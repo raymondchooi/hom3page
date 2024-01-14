@@ -16,7 +16,7 @@ export default async function masterDeployer(
   const [deployer] = await hre.ethers.getSigners();
   const network = await hre.ethers.provider.getNetwork();
 
-  const delayTime = 2000;
+  const delayTime = 15000;
 
   console.log("🟠 Master Deployer: Mounted");
   console.log(`🟠 Master Deployer: ${deployer.address}`);

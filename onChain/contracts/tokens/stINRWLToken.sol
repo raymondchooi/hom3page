@@ -2,7 +2,7 @@ pragma solidity ^0.8.20;
 import "erc721a/contracts/ERC721A.sol";
 import "../security/onlyActive.sol";
 
-contract stINRWL is ERC721A, OnlyActive {
+contract stINRWLToken is ERC721A, OnlyActive {
     mapping(uint256 => uint256) internal _motherBlockNumberToWrapped;
 
     constructor()
@@ -11,6 +11,6 @@ contract stINRWL is ERC721A, OnlyActive {
     {}
 
     function mint() external onlyOwner {
-        
+
     }
 }

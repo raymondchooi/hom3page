@@ -35,9 +35,11 @@ export declare namespace IWallGenerator {
   ] & { allowNWalls_: boolean; wallName_: string };
 }
 
-export interface IWallGeneratorInterface extends Interface {
+export interface WallGeneratorInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "BLOCK_TOKEN"
+      | "INNER_WALL_TOKEN"
       | "approve"
       | "balanceOf"
       | "createFirstInnerWall"
@@ -46,16 +48,20 @@ export interface IWallGeneratorInterface extends Interface {
       | "getApproved"
       | "isApprovedForAll"
       | "name"
+      | "owner"
       | "ownerOf"
       | "placeVote"
+      | "renounceOwnership"
       | "safeTransferFrom(address,address,uint256)"
       | "safeTransferFrom(address,address,uint256,bytes)"
+      | "setActiveState"
       | "setApprovalForAll"
       | "supportsInterface"
       | "symbol"
       | "tokenURI"
       | "totalSupply"
       | "transferFrom"
+      | "transferOwnership"
       | "updateWallSetting"
   ): FunctionFragment;
 
@@ -64,10 +70,20 @@ export interface IWallGeneratorInterface extends Interface {
       | "Approval"
       | "ApprovalForAll"
       | "ConsecutiveTransfer"
+      | "ContractActiveStateChange"
       | "NewInnerWallCreated"
+      | "OwnershipTransferred"
       | "Transfer"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "BLOCK_TOKEN",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "INNER_WALL_TOKEN",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [AddressLike, BigNumberish]
@@ -97,11 +113,16 @@ export interface IWallGeneratorInterface extends Interface {
     values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "placeVote", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom(address,address,uint256)",
     values: [AddressLike, AddressLike, BigNumberish]
@@ -109,6 +130,10 @@ export interface IWallGeneratorInterface extends Interface {
   encodeFunctionData(
     functionFragment: "safeTransferFrom(address,address,uint256,bytes)",
     values: [AddressLike, AddressLike, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setActiveState",
+    values: [boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
@@ -132,10 +157,22 @@ export interface IWallGeneratorInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "updateWallSetting",
     values?: undefined
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "BLOCK_TOKEN",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "INNER_WALL_TOKEN",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
@@ -159,14 +196,23 @@ export interface IWallGeneratorInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "placeVote", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom(address,address,uint256)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom(address,address,uint256,bytes)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setActiveState",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -185,6 +231,10 @@ export interface IWallGeneratorInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -258,6 +308,18 @@ export namespace ConsecutiveTransferEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace ContractActiveStateChangeEvent {
+  export type InputTuple = [newState_: boolean];
+  export type OutputTuple = [newState_: boolean];
+  export interface OutputObject {
+    newState_: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace NewInnerWallCreatedEvent {
   export type InputTuple = [
     motherBlock_: BigNumberish,
@@ -283,6 +345,19 @@ export namespace NewInnerWallCreatedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace TransferEvent {
   export type InputTuple = [
     from: AddressLike,
@@ -301,11 +376,11 @@ export namespace TransferEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface IWallGenerator extends BaseContract {
-  connect(runner?: ContractRunner | null): IWallGenerator;
+export interface WallGenerator extends BaseContract {
+  connect(runner?: ContractRunner | null): WallGenerator;
   waitForDeployment(): Promise<this>;
 
-  interface: IWallGeneratorInterface;
+  interface: WallGeneratorInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -343,6 +418,10 @@ export interface IWallGenerator extends BaseContract {
   removeAllListeners<TCEvent extends TypedContractEvent>(
     event?: TCEvent
   ): Promise<this>;
+
+  BLOCK_TOKEN: TypedContractMethod<[], [string], "view">;
+
+  INNER_WALL_TOKEN: TypedContractMethod<[], [string], "view">;
 
   approve: TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
@@ -383,9 +462,13 @@ export interface IWallGenerator extends BaseContract {
 
   name: TypedContractMethod<[], [string], "view">;
 
+  owner: TypedContractMethod<[], [string], "view">;
+
   ownerOf: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
 
   placeVote: TypedContractMethod<[], [void], "nonpayable">;
+
+  renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   "safeTransferFrom(address,address,uint256)": TypedContractMethod<
     [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
@@ -398,14 +481,20 @@ export interface IWallGenerator extends BaseContract {
       from: AddressLike,
       to: AddressLike,
       tokenId: BigNumberish,
-      data: BytesLike
+      _data: BytesLike
     ],
     [void],
     "payable"
   >;
 
+  setActiveState: TypedContractMethod<
+    [newState_: boolean],
+    [void],
+    "nonpayable"
+  >;
+
   setApprovalForAll: TypedContractMethod<
-    [operator: AddressLike, _approved: boolean],
+    [operator: AddressLike, approved: boolean],
     [void],
     "nonpayable"
   >;
@@ -428,12 +517,24 @@ export interface IWallGenerator extends BaseContract {
     "payable"
   >;
 
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   updateWallSetting: TypedContractMethod<[], [void], "nonpayable">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "BLOCK_TOKEN"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "INNER_WALL_TOKEN"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "approve"
   ): TypedContractMethod<
@@ -482,10 +583,16 @@ export interface IWallGenerator extends BaseContract {
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "owner"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "ownerOf"
   ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
   getFunction(
     nameOrSignature: "placeVote"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "safeTransferFrom(address,address,uint256)"
@@ -501,15 +608,18 @@ export interface IWallGenerator extends BaseContract {
       from: AddressLike,
       to: AddressLike,
       tokenId: BigNumberish,
-      data: BytesLike
+      _data: BytesLike
     ],
     [void],
     "payable"
   >;
   getFunction(
+    nameOrSignature: "setActiveState"
+  ): TypedContractMethod<[newState_: boolean], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "setApprovalForAll"
   ): TypedContractMethod<
-    [operator: AddressLike, _approved: boolean],
+    [operator: AddressLike, approved: boolean],
     [void],
     "nonpayable"
   >;
@@ -532,6 +642,9 @@ export interface IWallGenerator extends BaseContract {
     [void],
     "payable"
   >;
+  getFunction(
+    nameOrSignature: "transferOwnership"
+  ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "updateWallSetting"
   ): TypedContractMethod<[], [void], "nonpayable">;
@@ -558,11 +671,25 @@ export interface IWallGenerator extends BaseContract {
     ConsecutiveTransferEvent.OutputObject
   >;
   getEvent(
+    key: "ContractActiveStateChange"
+  ): TypedContractEvent<
+    ContractActiveStateChangeEvent.InputTuple,
+    ContractActiveStateChangeEvent.OutputTuple,
+    ContractActiveStateChangeEvent.OutputObject
+  >;
+  getEvent(
     key: "NewInnerWallCreated"
   ): TypedContractEvent<
     NewInnerWallCreatedEvent.InputTuple,
     NewInnerWallCreatedEvent.OutputTuple,
     NewInnerWallCreatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "OwnershipTransferred"
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
     key: "Transfer"
@@ -606,6 +733,17 @@ export interface IWallGenerator extends BaseContract {
       ConsecutiveTransferEvent.OutputObject
     >;
 
+    "ContractActiveStateChange(bool)": TypedContractEvent<
+      ContractActiveStateChangeEvent.InputTuple,
+      ContractActiveStateChangeEvent.OutputTuple,
+      ContractActiveStateChangeEvent.OutputObject
+    >;
+    ContractActiveStateChange: TypedContractEvent<
+      ContractActiveStateChangeEvent.InputTuple,
+      ContractActiveStateChangeEvent.OutputTuple,
+      ContractActiveStateChangeEvent.OutputObject
+    >;
+
     "NewInnerWallCreated(uint256,address,uint256,address)": TypedContractEvent<
       NewInnerWallCreatedEvent.InputTuple,
       NewInnerWallCreatedEvent.OutputTuple,
@@ -615,6 +753,17 @@ export interface IWallGenerator extends BaseContract {
       NewInnerWallCreatedEvent.InputTuple,
       NewInnerWallCreatedEvent.OutputTuple,
       NewInnerWallCreatedEvent.OutputObject
+    >;
+
+    "OwnershipTransferred(address,address)": TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
     >;
 
     "Transfer(address,address,uint256)": TypedContractEvent<
