@@ -27,13 +27,16 @@ export default function Wall() {
 
           const blockData: BlockData = { id: index.toString() };
 
-          const randomTypeIndex = Math.floor(Math.random() * 3);
+          const randomTypeIndex = Math.floor(Math.random() * 4);
           if (randomTypeIndex === 0) {
             blockData.type = "text";
             blockData.content = `Hello  ${index}`;
           } else if (randomTypeIndex === 1) {
             blockData.wallLink = `/${index}`;
             blockData.owner = `0x${index}`;
+          } else if (randomTypeIndex === 2) {
+            blockData.type = "image";
+            blockData.content = "/ateam.png";
           }
 
           if (i === 212) {
