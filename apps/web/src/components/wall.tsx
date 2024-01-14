@@ -32,6 +32,13 @@ export default function Wall() {
             blockData.owner = `0x${index}`;
           }
 
+          if (i === 212) {
+            blockData.type = "profile";
+            blockData.isFirstBlock = true;
+            blockData.width = 4;
+            blockData.height = 4;
+          }
+
           return <Block key={index} blockData={blockData} />;
         })}
       </>
