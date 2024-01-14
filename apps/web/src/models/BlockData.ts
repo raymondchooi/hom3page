@@ -4,4 +4,5 @@ export interface BlockData {
   link?: string;
   owner?: string;
   wallLink?: string;
+  content?: string;
 }
