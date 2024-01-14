@@ -9,6 +9,7 @@ export default {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
     },
+    plugins: [require("@tailwindcss/forms")],
   },
   plugins: [],
 } satisfies Config;
