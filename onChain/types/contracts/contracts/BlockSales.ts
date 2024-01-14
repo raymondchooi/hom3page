@@ -26,11 +26,12 @@ import type {
 export interface BlockSalesInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "COST_PER_BLOCK"
       | "GHO"
       | "NFT"
       | "buyBatchBlock"
       | "buyBlock"
+      | "getBlockCost"
+      | "getTotalSold"
       | "owner"
       | "renounceOwnership"
       | "setActiveState"
@@ -40,13 +41,12 @@ export interface BlockSalesInterface extends Interface {
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic: "ContractActiveStateChange" | "OwnershipTransferred"
+    nameOrSignatureOrTopic:
+      | "ContractActiveStateChange"
+      | "OwnershipTransferred"
+      | "SaleMade"
   ): EventFragment;
 
-  encodeFunctionData(
-    functionFragment: "COST_PER_BLOCK",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "GHO", values?: undefined): string;
   encodeFunctionData(functionFragment: "NFT", values?: undefined): string;
   encodeFunctionData(
@@ -56,6 +56,14 @@ export interface BlockSalesInterface extends Interface {
   encodeFunctionData(
     functionFragment: "buyBlock",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBlockCost",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTotalSold",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -79,10 +87,6 @@ export interface BlockSalesInterface extends Interface {
     values: [AddressLike]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "COST_PER_BLOCK",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "GHO", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "NFT", data: BytesLike): Result;
   decodeFunctionResult(
@@ -90,6 +94,14 @@ export interface BlockSalesInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "buyBlock", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getBlockCost",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalSold",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -131,6 +143,19 @@ export namespace OwnershipTransferredEvent {
   export interface OutputObject {
     previousOwner: string;
     newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SaleMadeEvent {
+  export type InputTuple = [buyer_: AddressLike, amount_: BigNumberish];
+  export type OutputTuple = [buyer_: string, amount_: bigint];
+  export interface OutputObject {
+    buyer_: string;
+    amount_: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -181,8 +206,6 @@ export interface BlockSales extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  COST_PER_BLOCK: TypedContractMethod<[], [bigint], "view">;
-
   GHO: TypedContractMethod<[], [string], "view">;
 
   NFT: TypedContractMethod<[], [string], "view">;
@@ -194,6 +217,10 @@ export interface BlockSales extends BaseContract {
   >;
 
   buyBlock: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+
+  getBlockCost: TypedContractMethod<[], [bigint], "view">;
+
+  getTotalSold: TypedContractMethod<[], [bigint], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
@@ -228,9 +255,6 @@ export interface BlockSales extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "COST_PER_BLOCK"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "GHO"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
@@ -242,6 +266,12 @@ export interface BlockSales extends BaseContract {
   getFunction(
     nameOrSignature: "buyBlock"
   ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "getBlockCost"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getTotalSold"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
@@ -279,6 +309,13 @@ export interface BlockSales extends BaseContract {
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
   >;
+  getEvent(
+    key: "SaleMade"
+  ): TypedContractEvent<
+    SaleMadeEvent.InputTuple,
+    SaleMadeEvent.OutputTuple,
+    SaleMadeEvent.OutputObject
+  >;
 
   filters: {
     "ContractActiveStateChange(bool)": TypedContractEvent<
@@ -301,6 +338,17 @@ export interface BlockSales extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "SaleMade(address,uint256)": TypedContractEvent<
+      SaleMadeEvent.InputTuple,
+      SaleMadeEvent.OutputTuple,
+      SaleMadeEvent.OutputObject
+    >;
+    SaleMade: TypedContractEvent<
+      SaleMadeEvent.InputTuple,
+      SaleMadeEvent.OutputTuple,
+      SaleMadeEvent.OutputObject
     >;
   };
 }

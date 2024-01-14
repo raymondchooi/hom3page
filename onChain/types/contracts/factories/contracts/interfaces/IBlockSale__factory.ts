@@ -10,6 +10,40 @@ import type {
 
 const _abi = [
   {
+    inputs: [],
+    name: "OrderExceedsMaxAmount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OrderToLargeMax10",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ToManyElementsInBuyArray",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "buyer_",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "amount_",
+        type: "uint256",
+      },
+    ],
+    name: "SaleMade",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "uint256[][]",

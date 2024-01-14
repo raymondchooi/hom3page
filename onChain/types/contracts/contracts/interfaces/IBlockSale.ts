@@ -8,6 +8,7 @@ import type {
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
   AddressLike,
   ContractRunner,
   ContractMethod,
@@ -17,6 +18,7 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "../../common";
@@ -29,6 +31,8 @@ export interface IBlockSaleInterface extends Interface {
       | "withdrawBlock"
       | "withdrawFunds"
   ): FunctionFragment;
+
+  getEvent(nameOrSignatureOrTopic: "SaleMade"): EventFragment;
 
   encodeFunctionData(
     functionFragment: "buyBatchBlock",
@@ -60,6 +64,19 @@ export interface IBlockSaleInterface extends Interface {
     functionFragment: "withdrawFunds",
     data: BytesLike
   ): Result;
+}
+
+export namespace SaleMadeEvent {
+  export type InputTuple = [buyer_: AddressLike, amount_: BigNumberish];
+  export type OutputTuple = [buyer_: string, amount_: bigint];
+  export interface OutputObject {
+    buyer_: string;
+    amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export interface IBlockSale extends BaseContract {
@@ -146,5 +163,24 @@ export interface IBlockSale extends BaseContract {
     nameOrSignature: "withdrawFunds"
   ): TypedContractMethod<[withdrawAddress_: AddressLike], [void], "nonpayable">;
 
-  filters: {};
+  getEvent(
+    key: "SaleMade"
+  ): TypedContractEvent<
+    SaleMadeEvent.InputTuple,
+    SaleMadeEvent.OutputTuple,
+    SaleMadeEvent.OutputObject
+  >;
+
+  filters: {
+    "SaleMade(address,uint256)": TypedContractEvent<
+      SaleMadeEvent.InputTuple,
+      SaleMadeEvent.OutputTuple,
+      SaleMadeEvent.OutputObject
+    >;
+    SaleMade: TypedContractEvent<
+      SaleMadeEvent.InputTuple,
+      SaleMadeEvent.OutputTuple,
+      SaleMadeEvent.OutputObject
+    >;
+  };
 }

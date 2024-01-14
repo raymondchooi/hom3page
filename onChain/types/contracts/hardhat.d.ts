@@ -122,10 +122,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.InnerBlockToken__factory>;
     getContractFactory(
-      name: "StINRWL",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.StINRWL__factory>;
-    getContractFactory(
       name: "StINRWLToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.StINRWLToken__factory>;
@@ -282,11 +278,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.InnerBlockToken>;
     getContractAt(
-      name: "StINRWL",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.StINRWL>;
-    getContractAt(
       name: "StINRWLToken",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -420,10 +411,6 @@ declare module "hardhat/types/runtime" {
       name: "InnerBlockToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.InnerBlockToken>;
-    deployContract(
-      name: "StINRWL",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.StINRWL>;
     deployContract(
       name: "StINRWLToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -580,11 +567,6 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.InnerBlockToken>;
-    deployContract(
-      name: "StINRWL",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.StINRWL>;
     deployContract(
       name: "StINRWLToken",
       args: any[],
