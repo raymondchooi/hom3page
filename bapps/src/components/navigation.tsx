@@ -20,13 +20,35 @@ import { cn } from "utils/tailwind";
 
 const navigation = [
   { name: "All", href: "/", icon: GlobeAltIcon, current: true },
-  { name: "Prebuilt", href: "/prebuilt", icon: HomeIcon, current: false },
-  { name: "Community", href: "/community", icon: UsersIcon, current: false },
+  {
+    name: "Prebuilt",
+    href: "/?category=prebuilt",
+    icon: HomeIcon,
+    current: false,
+  },
+  {
+    name: "Community",
+    href: "/?category=community",
+    icon: UsersIcon,
+    current: false,
+  },
 ];
 const categories = [
-  { id: 1, name: "Ads", href: "#", initial: "A", current: false },
-  { id: 2, name: "Entertainment", href: "#", initial: "E", current: false },
-  { id: 3, name: "Information", href: "#", initial: "I", current: false },
+  { id: 1, name: "Ads", href: "/?category=ads", initial: "A", current: false },
+  {
+    id: 2,
+    name: "Entertainment",
+    href: "/?category=entertainment",
+    initial: "E",
+    current: false,
+  },
+  {
+    id: 3,
+    name: "Information",
+    href: "/?category=information",
+    initial: "I",
+    current: false,
+  },
 ];
 
 export default function Navigation({
