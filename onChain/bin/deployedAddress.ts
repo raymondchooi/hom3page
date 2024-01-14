@@ -2,11 +2,11 @@
 
 import { ChainName } from "./tokenAddress";
 
-const deployedDCAContracts: {
+const deployedContracts: {
   [chain in ChainName]?: { [name in ContractNames]?: string };
 } = {
   hardhat: {
-    BlockToken: "",
+    BlockToken: "0xAE246E208ea35B3F23dE72b697D47044FC594D5F",
     BlockSales: "",
     InnerBlockToken: "",
     InnerBlockFactory: "",
@@ -24,4 +24,4 @@ export type ContractNames =
   | "BlockSales"
   | "InnerBlockToken"
   | "InnerBlockFactory";
-export default deployedDCAContracts;
+export default deployedContracts;

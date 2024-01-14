@@ -25,6 +25,14 @@ contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
         GHO = IERC20(ghoTokenAddress_);
     }
 
+    fallback() external payable {
+        revert("BlockSales : [fallback] - We don't want your ETH");
+    }
+
+    receive() external payable {
+        revert("BlockSales : [receive] - You can keep you tokens");
+    }
+
     function buyBlock(
         uint256 tokenId
     ) external override nonReentrant is_active {

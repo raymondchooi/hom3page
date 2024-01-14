@@ -180,4 +180,5 @@ export type ChainName =
   | "opGoerli"
   | "arbitrum"
   | "baseGoerli"
-  | "hardhat";
+  | "hardhat"
+  | "localhost";

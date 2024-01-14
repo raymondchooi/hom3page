@@ -1,13 +1,42 @@
-# Sample Hardhat Project
+<!-- @format -->
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+# HOM3PAGE Contract Set
 
-Try running some of the following tasks:
+In this repo you will find all teh contracts used in the Hom3Page ecosyste (V1).
 
-```shell
+We have build the project using HardHat and a range of
+
+## Install & Run
+
+To use this set of contracts first clone the repo from Github
+
+Then from inside the onChain directory
+
+```bash
+npm install
+
+npm run compile
+
+npx hardhat deployContracts contractsName1 contractName2 (--network [netowrkName])
+
 npx hardhat help
 npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
 ```
+
+Besure to setup a .env with the following
+
+```bash
+
+ALCHEMY_KEY=
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=
+ETHERSCAN_MAINNET_GAS_POINT=
+COINMARKETCAP_API_KEY=
+
+PRIVATE_DEV_KEY=
+DEV_WALLETSET=
+
+ETHERNAL_API_TOKEN=
+ETHERSCAN_API_KEY=
+```
+
+
