@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Button } from "components";
+import { Button, BappSummary } from "components";
 import {
   Dialog,
   DialogBody,
@@ -102,28 +102,53 @@ function Available({ blockData }: AvailableProps) {
             >
               <CarouselContent>
                 <CarouselItem className="basis-1/3">
-                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
-                    Text
+                  <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
+                    <BappSummary
+                      id="1"
+                      title="Text"
+                      description="Add text to your block"
+                      image="/logo_plain.jpg"
+                    />
                   </div>
                 </CarouselItem>
                 <CarouselItem className="basis-1/3">
-                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
-                    Image
+                  <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
+                    <BappSummary
+                      id="2"
+                      title="Image"
+                      description="Add an image to your block"
+                      image="/logo_plain.jpg"
+                    />
                   </div>
                 </CarouselItem>
                 <CarouselItem className="basis-1/3">
-                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
-                    bApp1
+                  <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
+                    <BappSummary
+                      id="3"
+                      title="Text2"
+                      description="Add text2 to your block"
+                      image="/logo_plain.jpg"
+                    />
                   </div>
                 </CarouselItem>
                 <CarouselItem className="basis-1/3">
-                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
-                    bApp2
+                  <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
+                    <BappSummary
+                      id="4"
+                      title="Text3"
+                      description="Add text3 to your block"
+                      image="/logo_plain.jpg"
+                    />
                   </div>
                 </CarouselItem>
                 <CarouselItem className="basis-1/3">
-                  <div className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 p-1">
-                    bApp3
+                  <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
+                    <BappSummary
+                      id="5"
+                      title="Text4"
+                      description="Add text4 to your block"
+                      image="/logo_plain.jpg"
+                    />
                   </div>
                 </CarouselItem>
               </CarouselContent>
