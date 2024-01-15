@@ -5,6 +5,17 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  webpack: (config, context) => {
+    if (config.plugins) {
+      config.plugins.push(
+        new context.webpack.IgnorePlugin({
+          resourceRegExp: /^(lokijs|pino-pretty|encoding)$/,
+        }),
+      );
+    }
+    return config;
+  },
+};
 
 export default config;
