@@ -1,0 +1,16 @@
+
+
+
+{
+    "name" : "Hom3Page Blocks - Testing",
+    "description": "This is a test Block for the Hom3Page wall",
+    "external_url": "https://hom3page.com", 
+    "image": "https://hom3page.com/logo_plain.jpg",
+    "attributes" : [{
+         "trait_type": "Website", 
+        "value": "https://hom3page.com"
+    },{
+        "trait_type": "Block Number", 
+        "value": "TEST"
+    }]
+}

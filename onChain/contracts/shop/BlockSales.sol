@@ -5,13 +5,15 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "./security/onlyActive.sol";
-import "./interfaces/IBlockSale.sol";
-import {IGhoToken} from "./interfaces/IGhoToken.sol";
+import "../security/onlyActive.sol";
+import "../interfaces/IBlockSales.sol";
+import {IGhoToken} from "../interfaces/IGhoToken.sol";
 
-contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
+contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSales {
     IERC721 public immutable NFT;
     IGhoToken public immutable GHO;
+
+    uint64 constant OP_CHAIN_SELECTOR = 2664363617261496610;
 
     //  Set token cost to 100 $GHO
     uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18;
@@ -31,9 +33,10 @@ contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
     }
 
     receive() external payable {
-        revert("BlockSales : [receive] - You can keep you tokens");
+        revert("BlockSales : [receive] - You can keep your tokens");
     }
 
+    /** @notice SALES MECHANICS */
     function buyBlock(
         uint256 tokenId
     ) external override nonReentrant is_active {
@@ -91,6 +94,9 @@ contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
         }
     }
 
+    function externalPurchase() external override {}
+
+    /** @notice WITHDRAWING MECHANICS */
     function withdrawFunds(address withdrawAddress_) external onlyOwner {
         uint balance = GHO.balanceOf(address(this));
         GHO.transfer(withdrawAddress_, balance);
@@ -100,6 +106,8 @@ contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
         address withdrawAddress_,
         uint256 tokenId_
     ) external override onlyOwner {}
+
+    /** @notice GETTERS */
 
     function getBlockCost() public pure returns (uint256) {
         return COST_PER_BLOCK;

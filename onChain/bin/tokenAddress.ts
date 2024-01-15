@@ -160,6 +160,11 @@ export const tokenAddress: TokenAddressList = {
     opGoerli: "",
     hardhat: productionChainAddresses[forkedNetwork].gho,
   },
+  ccipRouter: {
+    opGoerli: "0xcc5a0B910D9E9504A7561934bed294c51285a78D",
+    ethSepolia: "0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59",
+    
+  },
 };
 
 export interface TokenAddressList {
