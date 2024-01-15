@@ -34,6 +34,18 @@ contract BlockToken is ERC721AVotes, OnlyActive, IBlockToken {
     }
 
     /**
+     * @dev this is only for inital testing phases
+     * @param tokenId tokenId to get URI of
+     */
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override(ERC721A) returns (string memory) {
+        if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
+
+        return _baseURI();
+    }
+
+    /**
      * @dev Set the base URI address for all tokens
      */
     function _baseURI() internal view virtual override returns (string memory) {
