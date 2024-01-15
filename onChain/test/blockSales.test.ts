@@ -2,6 +2,7 @@
 
 import { expect, assert } from "chai";
 import hre, { ethers } from "hardhat";
+import ERC20ABI from "../bin/abi/ERC20.abi.json";
 import { AddressLike, Addressable, Contract, Signer } from "ethers";
 import {
   BlockTokenArguments,
@@ -59,20 +60,24 @@ describe("🧪 BlockSales Contract Test 1", function () {
     console.log("🧪 : Deployed SalesToken", SalesContract.target);
 
     //  Steal some GHO
-
     const victim = await ethers.getImpersonatedSigner(
       "0xE831C8903de820137c13681E78A5780afDdf7697"
     );
+    console.log("🧪 : Got Victem: ", victim.address);
 
-    console.log("Got Victem: ", victim);
+    const ghoContract: IERC20 = await ethers.Contract(
+      "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+      ERC20ABI,
+      victim
+    );
+    console.log("🧪 :  Connected to GHO contract :", ghoContract);
 
-    const ghoContract = await ethers.getContractFactory("IERC20");
-    await ghoContract.attached("0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f");
     const transferAmount = 10000 * 10 ** 18;
-    const tx = await ghoContract
-      .connect(victim)
-      .transfer(addressStore.owner.address, transferAmount);
-    await tx.await();
+    const tx = await ghoContract.transfer(
+      addressStore.owner.address,
+      transferAmount
+    );
+    await tx.wait();
     console.log("🧪 : Transfered GHO");
 
     return;
@@ -81,6 +86,7 @@ describe("🧪 BlockSales Contract Test 1", function () {
   before(async function () {
     console.log("🧪 : pre test : Mounted");
     await preTest();
+    console.log("🧪 : pre test : Complete");
   });
 
   describe("ERC721 Functionality", function () {
