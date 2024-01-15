@@ -3,6 +3,8 @@
 import { expect, assert } from "chai";
 import hre, { ethers } from "hardhat";
 import ERC20ABI from "../bin/abi/ERC20.abi.json";
+import GHOABI from "../bin/abi/IGhoToken.abi.json";
+
 import { AddressLike, Addressable, Contract, Signer } from "ethers";
 import {
   BlockTokenArguments,
@@ -60,17 +62,17 @@ describe("🧪 BlockSales Contract Test 1", function () {
     console.log("🧪 : Deployed SalesToken", SalesContract.target);
 
     //  Steal some GHO
-    const victim = await ethers.getImpersonatedSigner(
+    const victim: Signer = await ethers.getSigner(
       "0xE831C8903de820137c13681E78A5780afDdf7697"
     );
     console.log("🧪 : Got Victem: ", victim.address);
 
-    const ghoContract: IERC20 = await ethers.Contract(
-      "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
-      ERC20ABI,
-      victim
-    );
+    const ghoContract: Contract = await ethers.getContractFactory("IGhoToken");
     console.log("🧪 :  Connected to GHO contract :", ghoContract);
+
+    await ghoContract
+      .attach("0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f")
+      .connect(victim);
 
     const transferAmount = 10000 * 10 ** 18;
     const tx = await ghoContract.transfer(
