@@ -38,12 +38,10 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
 
     constructor(
         address router_,
-        address link_,
         address ghoTokenAddress_,
         address blockSalesContract_
     ) CCIPReceiver(router_) Ownable(msg.sender) {
         s_router = IRouterClient(router_);
-        s_linkToken = LinkTokenInterface(link_);
         GHO = IGhoToken(ghoTokenAddress_);
         SALES_CONTRACT_ADDRESS = blockSalesContract_;
     }
@@ -234,7 +232,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
 
     function getSaleStatus(
         bytes32 saleId_
-    ) external override returns (SaleStore memory) {
+    ) external view override returns (SaleStore memory) {
         return _saleRecipes[saleId_];
     }
 }

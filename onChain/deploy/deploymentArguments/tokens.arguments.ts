@@ -1,5 +1,4 @@
 /** @format */
-
 import { AddressLike, Addressable, ZeroAddress } from "ethers";
 import { ChainName, tokenAddress } from "../../bin/tokenAddress";
 import deployedDCAContracts from "../../bin/deployedAddress";
@@ -14,15 +13,4 @@ export const BlockTokenArguments = (
   const version_: string = "1";
 
   return [name_, symbol_, version_];
-};
-
-export const BlockSalesArguments = (
-  deployer: string | Addressable,
-  networkName: ChainName
-) => {
-  let netName: ChainName =
-    networkName === "localhost" ? "hardhat" : networkName;
-
-  const tokenContract = deployedContracts[netName]?.BlockToken;
-  return [tokenContract, tokenAddress.gho[netName]];
 };
