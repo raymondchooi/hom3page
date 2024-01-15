@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { Button } from "components";
 import {
@@ -18,6 +19,7 @@ import {
   CarouselPrevious,
 } from "components/carousel";
 import type { BlockData } from "models/BlockData";
+import { BAPPS_BASE_URL } from "constants/urls";
 
 interface AvailableProps {
   blockData: BlockData;
@@ -83,8 +85,14 @@ function Available({ blockData }: AvailableProps) {
               </li>
               <li className="pl-4">Add bApp</li>
             </ol>
-
-            <div className="mt-4 w-full text-right">Explore more</div>
+            <div className="mt-4 flex justify-end">
+              <Link
+                className="cursor-pointer text-right underline"
+                href={BAPPS_BASE_URL}
+              >
+                Explore more
+              </Link>
+            </div>
 
             <Carousel
               opts={{

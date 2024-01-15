@@ -15,6 +15,7 @@ import { Dialog, Menu, Transition } from "@headlessui/react";
 import { useModal, Avatar } from "connectkit";
 import { useAccount, useDisconnect } from "wagmi";
 
+import { BASE_URL } from "constants/urls";
 import { shortenWalletAddress } from "utils/text";
 import { cn } from "utils/tailwind";
 
@@ -119,7 +120,7 @@ export default function Navigation({
                   {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                     <div className="flex h-16 shrink-0 items-center">
-                      <Link href="/">
+                      <Link href={BASE_URL}>
                         <Image
                           className="h-8 w-auto"
                           src="/logo_plain.jpg"
@@ -195,7 +196,7 @@ export default function Navigation({
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
-              <Link href="/">
+              <Link href={BASE_URL}>
                 <Image
                   className="h-8 w-auto"
                   src="/logo_plain.jpg"
