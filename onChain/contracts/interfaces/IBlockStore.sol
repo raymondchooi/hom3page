@@ -32,18 +32,25 @@ interface IBlockShore {
     error ToManyElementsInBuyArray();
     error OrderToLargeMax10();
     //          Sales Events
+
     event SaleMade(
         address indexed buyer_,
         uint256 indexed amount_,
         uint64 indexed chainId_
     );
 
-    struct Sale {
-        address buyer_;
-        bool multiBuy_;
-        uint256[][] singleToken_;
+    struct SaleRecept {
+        Sale saleData_;
+        bytes32 messageId_;
         bool saleComplete_;
         bool saleFailed_;
+    }
+
+    struct Sale {
+        uint256[][] tokens_;
+        uint256 totalItems_;
+        address buyer_;
+        bool multiBuy_;
     }
 
     function buyBlock(uint256 tokenId) external;
@@ -51,4 +58,8 @@ interface IBlockShore {
     function buyBatchBlock(uint256[][] calldata tokenIds_) external;
 
     function withdrawFunds(address withdrawAddress_) external;
+
+    function getSaleStatus(
+        bytes32 saleId_
+    ) external returns (SaleRecept memory);
 }

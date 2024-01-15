@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {OnlyActive, Ownable} from "../security/onlyActive.sol";
-import {IBlockShore} from "../interfaces/IBlockShop.sol";
+import {IBlockShore} from "../interfaces/IBlockStore.sol";
 import {IGhoToken} from "../interfaces/IGhoToken.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
@@ -21,14 +21,12 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
     LinkTokenInterface private s_linkToken;
     IGhoToken public immutable GHO;
 
-
     //  BlockSales Contract
     //  Optimism Goerli
     uint64 constant SALES_CONTRACT_CHAIN = 2664363617261496610;
     address immutable SALES_CONTRACT_ADDRESS;
 
     mapping(uint256 => Sale) _saleRecipes;
-
 
     modifier onlySalesContract(address sender_, uint64 chain_) {
         if (sender_ != SALES_CONTRACT_ADDRESS)
@@ -57,6 +55,16 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
             GHO.balanceOf(_msgSender()) > COST_PER_BLOCK,
             "Incorrect payment"
         );
+
+        bool succsess = GHO.transferFrom(
+            _msgSender(),
+            address(this),
+            COST_PER_BLOCK
+        );
+        if (succsess) {
+            Sale memory saleData = Sale([[tokenId]], 1, _msgSender(), false);
+            _startCrossChainPurchase(saleData);
+        }
     }
 
     function buyBatchBlock(
@@ -84,14 +92,17 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
         if (succsess) {}
     }
 
-    function _startCrossChainPurchase(
-        uint256[][] tokenIds_,
-        address buyer_
-    ) internal {
+    function _startCrossChainPurchase(Sale memory saleData_) internal {
         bytes32 messageId = _sendMessage(
             SALES_CONTRACT_CHAIN,
             SALES_CONTRACT_ADDRESS,
-            text
+            saleData_
+        );
+        _saleRecipes[messageId] = SaleRecept(
+            saleData_,
+            messageId,
+            false,
+            false
         );
     }
 
@@ -142,6 +153,32 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
         return messageId;
     }
 
+    /// @notice Construct a CCIP message.
+    /// @dev This function will create an EVM2AnyMessage struct with all the necessary information for sending a text.
+    /// @param receiver_ The address of the receiver.
+    /// @param payload_ The string data to be sent.
+    /// @param feeTokenAddress_ The address of the token used for fees. Set address(0) for native gas.
+    /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
+    function _buildCCIPMessage(
+        address receiver_,
+        Sale calldata payload_,
+        address feeTokenAddress_
+    ) internal pure returns (Client.EVM2AnyMessage memory) {
+        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
+        return
+            Client.EVM2AnyMessage({
+                receiver: abi.encode(receiver_), // ABI-encoded receiver address
+                data: keccak256(abi.encode(payload_)),
+                tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
+                extraArgs: Client._argsToBytes(
+                    // Additional arguments, setting gas limit
+                    Client.EVMExtraArgsV1({gasLimit: 200_000})
+                ),
+                // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
+                feeToken: feeTokenAddress_
+            });
+    }
+
     /// handle a received message
     function _ccipReceive(
         Client.Any2EVMMessage memory any2EvmMessage
@@ -152,8 +189,8 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
             abi.decode(any2EvmMessage.sender, (address))
         )
     {
-        s_lastReceivedMessageId = any2EvmMessage.messageId; // fetch the messageId
-        s_lastReceivedText = abi.decode(any2EvmMessage.data, (string)); // abi-decoding of the sent text
+        bytes32 messageId = any2EvmMessage.messageId; // fetch the messageId
+        SaleRecept memory payload = abi.decode(any2EvmMessage.data, (string)); // abi-decoding of the sent text
 
         emit MessageReceived(
             any2EvmMessage.messageId,
@@ -176,5 +213,11 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
     ) external override onlyOwner {
         uint balance = GHO.balanceOf(address(this));
         GHO.transfer(withdrawAddress_, balance);
+    }
+
+    function getSaleStatus(
+        bytes32 saleId_
+    ) external override returns (SaleRecept memory) {
+        return _saleRecipes[saleId_];
     }
 }
