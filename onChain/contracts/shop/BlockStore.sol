@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {OnlyActive, Ownable} from "../security/onlyActive.sol";
-import {IBlockShore} from "../interfaces/IBlockStore.sol";
+import {IBlockStore} from "../interfaces/IBlockStore.sol";
 import {IGhoToken} from "../interfaces/IGhoToken.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
@@ -11,7 +11,7 @@ import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.s
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
-contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
+contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
     //  Set token cost to 100 $GHO
     //  Var to track contract sales
     uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18;
@@ -26,13 +26,13 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
     uint64 constant SALES_CONTRACT_CHAIN = 2664363617261496610;
     address immutable SALES_CONTRACT_ADDRESS;
 
-    mapping(uint256 => Sale) _saleRecipes;
+    mapping(bytes32 => SaleStore) _saleRecipes;
 
     modifier onlySalesContract(address sender_, uint64 chain_) {
         if (sender_ != SALES_CONTRACT_ADDRESS)
             revert MessageNotFromBLockSales(sender_);
-        if (chain_ != SALES_CONTRACT_CHAIN) revert();
-        MessageNotFromSalesChain(chain_);
+        if (chain_ != SALES_CONTRACT_CHAIN)
+            revert MessageNotFromSalesChain(chain_);
         _;
     }
 
@@ -41,7 +41,7 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
         address link_,
         address ghoTokenAddress_,
         address blockSalesContract_
-    ) Ownable(msg.sender) {
+    ) CCIPReceiver(router_) Ownable(msg.sender) {
         s_router = IRouterClient(router_);
         s_linkToken = LinkTokenInterface(link_);
         GHO = IGhoToken(ghoTokenAddress_);
@@ -49,7 +49,7 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
     }
 
     function buyBlock(
-        uint256 tokenId
+        uint256 tokenId_
     ) external override nonReentrant is_active {
         require(
             GHO.balanceOf(_msgSender()) > COST_PER_BLOCK,
@@ -62,8 +62,15 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
             COST_PER_BLOCK
         );
         if (succsess) {
-            Sale memory saleData = Sale([[tokenId]], 1, _msgSender(), false);
-            _startCrossChainPurchase(saleData);
+            unchecked {
+                uint256[] memory batch = new uint256[](1);
+                batch[0] = tokenId_;
+                uint256[][] memory order = new uint256[][](1);
+                order[0] = batch;
+
+                Sale memory saleData = Sale(order, 1, _msgSender(), false);
+                _startCrossChainPurchase(saleData);
+            }
         }
     }
 
@@ -98,12 +105,7 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
             SALES_CONTRACT_ADDRESS,
             saleData_
         );
-        _saleRecipes[messageId] = SaleRecept(
-            saleData_,
-            messageId,
-            false,
-            false
-        );
+        _saleRecipes[messageId] = SaleStore(saleData_, messageId, false, false);
     }
 
     /// @notice Sends data to receiver on the destination chain.
@@ -115,7 +117,7 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
     function _sendMessage(
         uint64 destinationChainSelector_,
         address receiver_,
-        string calldata payload_
+        Sale memory payload_
     ) internal onlyOwner returns (bytes32 messageId) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(
@@ -161,14 +163,14 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
     /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
     function _buildCCIPMessage(
         address receiver_,
-        Sale calldata payload_,
+        Sale memory payload_,
         address feeTokenAddress_
     ) internal pure returns (Client.EVM2AnyMessage memory) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         return
             Client.EVM2AnyMessage({
                 receiver: abi.encode(receiver_), // ABI-encoded receiver address
-                data: keccak256(abi.encode(payload_)),
+                data: abi.encode(payload_),
                 tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
                 extraArgs: Client._argsToBytes(
                     // Additional arguments, setting gas limit
@@ -184,20 +186,35 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
         Client.Any2EVMMessage memory any2EvmMessage
     )
         internal
+        override
         onlySalesContract(
-            any2EvmMessage.sourceChainSelector,
-            abi.decode(any2EvmMessage.sender, (address))
+            abi.decode(any2EvmMessage.sender, (address)),
+            any2EvmMessage.sourceChainSelector
         )
     {
         bytes32 messageId = any2EvmMessage.messageId; // fetch the messageId
-        SaleRecept memory payload = abi.decode(any2EvmMessage.data, (string)); // abi-decoding of the sent text
+        SaleRecipe memory payload = abi.decode(
+            any2EvmMessage.data,
+            (SaleRecipe)
+        );
 
+        // will remove after test
         emit MessageReceived(
-            any2EvmMessage.messageId,
+            messageId,
             any2EvmMessage.sourceChainSelector, // fetch the source chain identifier (aka selector)
             abi.decode(any2EvmMessage.sender, (address)), // abi-decoding of the sender address,
-            abi.decode(any2EvmMessage.data, (string))
+            payload
         );
+        _saleRecipes[messageId].saleComplete_ = true;
+
+        if (payload.success) {
+            _saleRecipes[messageId].saleFailed_ = false;
+        } else {
+            GHO.transfer(
+                _saleRecipes[messageId].saleData_.buyer_,
+                COST_PER_BLOCK * _saleRecipes[messageId].saleData_.totalItems_
+            );
+        }
     }
 
     function getBlockCost() public pure returns (uint256) {
@@ -217,7 +234,7 @@ contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShore {
 
     function getSaleStatus(
         bytes32 saleId_
-    ) external override returns (SaleRecept memory) {
+    ) external override returns (SaleStore memory) {
         return _saleRecipes[saleId_];
     }
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IBlockShore {
+interface IBlockStore {
     //          CCIP Errors
     // Custom errors to provide more descriptive revert messages.
     error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
@@ -14,7 +14,7 @@ interface IBlockShore {
         bytes32 indexed messageId, // The unique ID of the CCIP message.
         uint64 indexed destinationChainSelector, // The chain selector of the destination chain.
         address receiver, // The address of the receiver on the destination chain.
-        string text, // The text being sent.
+        Sale payload, // The text being sent.
         address feeToken, // the token address used to pay CCIP fees.
         uint256 fees // The fees paid for sending the CCIP message.
     );
@@ -24,7 +24,7 @@ interface IBlockShore {
         bytes32 indexed messageId, // The unique ID of the CCIP message.
         uint64 indexed sourceChainSelector, // The chain selector of the source chain.
         address sender, // The address of the sender from the source chain.
-        string text // The text that was received.
+        SaleRecipe payload // The text that was received.
     );
 
     //          Sales Errors
@@ -39,7 +39,7 @@ interface IBlockShore {
         uint64 indexed chainId_
     );
 
-    struct SaleRecept {
+    struct SaleStore {
         Sale saleData_;
         bytes32 messageId_;
         bool saleComplete_;
@@ -53,13 +53,16 @@ interface IBlockShore {
         bool multiBuy_;
     }
 
+    struct SaleRecipe {
+        bytes32 salesMessageId_;
+        bool success;
+    }
+
     function buyBlock(uint256 tokenId) external;
 
     function buyBatchBlock(uint256[][] calldata tokenIds_) external;
 
     function withdrawFunds(address withdrawAddress_) external;
 
-    function getSaleStatus(
-        bytes32 saleId_
-    ) external returns (SaleRecept memory);
+    function getSaleStatus(bytes32 saleId_) external returns (SaleStore memory);
 }
