@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IBlockSale {
+interface IBlockSales {
     error OrderExceedsMaxAmount();
     error ToManyElementsInBuyArray();
     error OrderToLargeMax10();
@@ -15,4 +15,6 @@ interface IBlockSale {
     function withdrawFunds(address withdrawAddress_) external;
 
     function withdrawBlock(address withdrawAddress_, uint256 tokenId_) external;
+
+    function externalPurchase() external;
 }

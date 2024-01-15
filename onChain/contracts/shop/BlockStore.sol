@@ -1,20 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "../security/onlyActive.sol";
-import "../interfaces/IBlockSale.sol";
-
+import {OnlyActive, Ownable} from "../security/onlyActive.sol";
+import {IBlockShop} from "../interfaces/IBlockShop.sol";
 import {IGhoToken} from "../interfaces/IGhoToken.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
+import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
-contract BlockStore is ReentrancyGuard, OnlyActive {
+contract BlockStore is ReentrancyGuard, OnlyActive, IBlockShop {
     //  Set token cost to 100 $GHO
     //  Var to track contract sales
     uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18;
@@ -23,6 +20,10 @@ contract BlockStore is ReentrancyGuard, OnlyActive {
     IRouterClient private s_router;
     LinkTokenInterface private s_linkToken;
     IGhoToken public immutable GHO;
+    //  BlockSales Contract
+    //  Optimism Goerli
+    uint64 constant SALES_CONTRACT_CHAIN = 2664363617261496610;
+    address immutable SALES_CONTRACT_ADDRESS;
 
     //          CCIP DEMO FUNCTIONS
     // Custom errors to provide more descriptive revert messages.
@@ -37,21 +38,59 @@ contract BlockStore is ReentrancyGuard, OnlyActive {
         uint256 fees // The fees paid for sending the CCIP message.
     );
 
+    // Event emitted when a message is received from another chain.
+    event MessageReceived(
+        bytes32 indexed messageId, // The unique ID of the CCIP message.
+        uint64 indexed sourceChainSelector, // The chain selector of the source chain.
+        address sender, // The address of the sender from the source chain.
+        string text // The text that was received.
+    );
+
     constructor(
         address router_,
         address link_,
-        address ghoTokenAddress_
+        address ghoTokenAddress_,
+        address blockSalesContract_
     ) Ownable(msg.sender) {
         s_router = IRouterClient(router_);
         s_linkToken = LinkTokenInterface(link_);
         GHO = IGhoToken(ghoTokenAddress_);
+        SALES_CONTRACT_ADDRESS = blockSalesContract_;
     }
 
-    function buyBlock(uint256 tokenId) external nonReentrant is_active {}
+    function buyBlock(
+        uint256 tokenId
+    ) external override nonReentrant is_active {
+        require(
+            GHO.balanceOf(_msgSender()) > COST_PER_BLOCK,
+            "Incorrect payment"
+        );
+    }
 
     function buyBatchBlock(
         uint256[][] calldata tokenIds_
-    ) external nonReentrant is_active {}
+    ) external override nonReentrant is_active {
+        (uint totalOrder, uint index, uint numElements) = (
+            0,
+            0,
+            tokenIds_.length
+        );
+
+        if (numElements > 5) revert ToManyElementsInBuyArray();
+
+        unchecked {
+            while (totalOrder < 10 && index < numElements) {
+                totalOrder = tokenIds_[index].length;
+                index++;
+            }
+            if (totalOrder > 10) revert OrderToLargeMax10();
+        }
+
+        uint256 cost = COST_PER_BLOCK * (totalOrder);
+        require(GHO.balanceOf(_msgSender()) >= cost, "Insufficient Funds");
+        bool succsess = GHO.transferFrom(_msgSender(), address(this), cost);
+        if (succsess) {}
+    }
 
     /// @notice Sends data to receiver on the destination chain.
     /// @dev Assumes your contract has sufficient LINK.
@@ -114,7 +153,9 @@ contract BlockStore is ReentrancyGuard, OnlyActive {
         return _totalSold;
     }
 
-    function withdrawFunds(address withdrawAddress_) external onlyOwner {
+    function withdrawFunds(
+        address withdrawAddress_
+    ) external override onlyOwner {
         uint balance = GHO.balanceOf(address(this));
         GHO.transfer(withdrawAddress_, balance);
     }
