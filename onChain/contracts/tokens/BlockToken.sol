@@ -46,10 +46,12 @@ contract BlockToken is ERC721AVotes, OnlyActive, IBlockToken {
     }
 
     /**
-     * @dev Set the base URI address for all tokens
+     * @notice Set the base URI address for all tokens
+     * @dev replace this for real deployments
      */
     function _baseURI() internal view virtual override returns (string memory) {
-        return "override uri";
+        return
+            "https://hom3page.vercel.app/metadata/blockTokenHoldingMetadata.json";
     }
 
     /**

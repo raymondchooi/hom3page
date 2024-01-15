@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "./security/onlyActive.sol";
-import "./interfaces/IBlockSale.sol";
-import {IGhoToken} from "./interfaces/IGhoToken.sol";
+import "../security/onlyActive.sol";
+import "../interfaces/IBlockSale.sol";
+import {IGhoToken} from "../interfaces/IGhoToken.sol";
 
 contract BlockSales is ReentrancyGuard, OnlyActive, IBlockSale {
     IERC721 public immutable NFT;
