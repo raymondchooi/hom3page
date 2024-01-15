@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test",
+    "testLocal": "hardhat test --network localhost",
     "dev": "npx hardhat deployContracts --network localhost",
     "deploy-sepolia": "npx hardhat deployContracts --network ethSepolia",
     "compile": "npx hardhat compile"

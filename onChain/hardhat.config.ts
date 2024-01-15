@@ -18,6 +18,7 @@ import "./tasks";
 import { HardhatUserConfig } from "hardhat/config";
 import dotenv from "dotenv";
 import checkPrivateKeys from "./scripts/checkKeys";
+import deploymentConfig from "./bin/deployments.config";
 
 dotenv.config();
 
@@ -126,7 +127,6 @@ const config: HardhatUserConfig = {
       chainId: 1,
       forking: {
         url: rcpEndPoints.eth,
-        blockNumber: 18999099,
       },
       mining: {
         auto: false,
@@ -199,7 +199,7 @@ const config: HardhatUserConfig = {
     disableTrace: false, // If set to true, plugin won't trace transaction
     workspace: "hardhat", // Set the workspace to use, will default to the default workspace (latest one used in the dashboard). It is also possible to set it through the ETHERNAL_WORKSPACE env variable
     uploadAst: true, // If set to true, plugin will upload AST, and you'll be able to use the storage feature (longer sync time though)
-    disabled: true, // If set to true, the plugin will be disabled, nohting will be synced, ethernal.push won't do anything either
+    disabled: deploymentConfig().ethernalEnabled, // If set to true, the plugin will be disabled, nohting will be synced, ethernal.push won't do anything either
     resetOnStart: "hardhat", // Pass a workspace name to reset it automatically when restarting the node, note that if the workspace doesn't exist it won't error
     serverSync: false, // Only available on public explorer plans - If set to true, blocks & txs will be synced by the server. For this to work, your chain needs to be accessible from the internet. Also, trace won't be synced for now when this is enabled.
     skipFirstBlock: false, // If set to true, the first block will be skipped. This is mostly useful to avoid having the first block synced with its tx when starting a mainnet fork

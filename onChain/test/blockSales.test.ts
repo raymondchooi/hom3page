@@ -1,6 +1,7 @@
 /** @format */
 
 import { expect, assert } from "chai";
+import helpers from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import hre, { ethers } from "hardhat";
 import ERC20ABI from "../bin/abi/ERC20.abi.json";
 import GHOABI from "../bin/abi/IGhoToken.abi.json";
@@ -30,6 +31,8 @@ describe("🧪 BlockSales Contract Test 1", function () {
 
   const preTest = async () => {
     //  Setup Addresses and Signers
+    console.log("🧪 : Pre-Test : ", hre.network.name);
+
     const [owner, addr1, addr2, addr3] = await ethers.getSigners();
     addressStore = {
       owner: { address: await owner.getAddress(), signer: owner },
@@ -62,10 +65,19 @@ describe("🧪 BlockSales Contract Test 1", function () {
     console.log("🧪 : Deployed SalesToken", SalesContract.target);
 
     //  Steal some GHO
-    const victim: Signer = await ethers.getSigner(
+    const victim: Signer = await ethers.getImpersonatedSigner(
       "0xE831C8903de820137c13681E78A5780afDdf7697"
     );
-    console.log("🧪 : Got Victem: ", victim.address);
+    console.log("🧪 : Got Victem: ", victim);
+
+    const ethTx = await victim.sendTransaction({
+      to: addressStore.owner.address,
+      value: ethers.utils.parseUnits("1", "ether"),
+    });
+    console.log("Transfered ETH from Victem pre wait :", ethTx);
+
+    await ethTx.wait();
+    console.log("Transfered ETH from Victem");
 
     const ghoContract: Contract = await ethers.getContractFactory("IGhoToken");
     console.log("🧪 :  Connected to GHO contract :", ghoContract);

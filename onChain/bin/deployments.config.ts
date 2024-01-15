@@ -5,6 +5,8 @@
 export default function deploymentConfig() {
   const deployCue: string[] = ["BlockSales"];
 
+  const ethernalEnabled: boolean = true;
+
   const updateCue = (deployedContract: string) => {
     let i = deployCue.indexOf(deployedContract);
     let total = deployCue.length;
@@ -15,5 +17,5 @@ export default function deploymentConfig() {
     deployCue.pop();
   };
 
-  return { deployCue, updateCue };
+  return { deployCue, updateCue, ethernalEnabled };
 }
