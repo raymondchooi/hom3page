@@ -13,18 +13,19 @@ function Profile({}: ProfileProps) {
   const { setOpen } = useModal();
 
   return (
-    <button onClick={() => setOpen(true)} className="flex cursor-pointer h-full w-full items-center justify-center p-1">
+    <button
+      onClick={() => setOpen(true)}
+      className="flex h-full w-full cursor-pointer items-center justify-center bg-gray-200 p-1"
+    >
       {isConnected ? (
-        <div  className="flex justify-center items-center flex-col ">
+        <div className="flex flex-col items-center justify-center ">
           <Avatar address={address} size={32} radius={16} />
-          <div className="truncate text-xs font-bold text-gray-500 mt-2">
+          <div className="mt-2 truncate text-xs font-bold text-gray-500">
             {shortenWalletAddress(address)}
           </div>
         </div>
       ) : (
-        <div
-          className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
+        <div className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Connect Wallet
         </div>
       )}

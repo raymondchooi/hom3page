@@ -1,4 +1,4 @@
-const BLOCK_WIDTH = 42;
-const BLOCK_HEIGHT = 42;
+const BLOCK_WIDTH = 40;
+const BLOCK_HEIGHT = 40;
 
 export { BLOCK_WIDTH, BLOCK_HEIGHT };
