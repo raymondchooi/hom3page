@@ -56,7 +56,6 @@ const config: HardhatUserConfig = {
     token: "ETH",
     currency: "USD",
     enabled: true,
-    outputFile: "./reports/report",
     gasPriceApi: process.env.ETHERSCAN_MAINNET_GAS_POINT,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },

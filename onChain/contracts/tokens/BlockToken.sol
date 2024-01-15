@@ -33,7 +33,23 @@ contract BlockToken is ERC721AVotes, OnlyActive, IBlockToken {
         _mint(salesContract_, MAX_SUPPLY);
     }
 
+    /**
+     * @dev Set the base URI address for all tokens
+     */
     function _baseURI() internal view virtual override returns (string memory) {
         return "override uri";
+    }
+
+    /**
+     * @dev starts the mint at token id '1'
+     */
+    function _startTokenId()
+        internal
+        view
+        virtual
+        override(ERC721A)
+        returns (uint256)
+    {
+        return 1;
     }
 }
