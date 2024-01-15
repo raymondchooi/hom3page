@@ -19,7 +19,7 @@ import {
 
 import { BlockToken, BlockSales, IERC20 } from "../types/contracts";
 
-describe("🧪 BlockSales Contract Test 1", function () {
+describe("> BlockSales Contract Test 1", function () {
   let BlockToken: BlockToken;
   let SalesContract: BlockSales;
   let addressStore: {
@@ -31,7 +31,7 @@ describe("🧪 BlockSales Contract Test 1", function () {
 
   const preTest = async () => {
     //  Setup Addresses and Signers
-    console.log("🧪 : Pre-Test : ", hre.network.name);
+    console.log("🧪 Pre-Test : ", hre.network.name);
 
     const [owner, addr1, addr2, addr3] = await ethers.getSigners();
     addressStore = {
@@ -53,7 +53,7 @@ describe("🧪 BlockSales Contract Test 1", function () {
     let [arg1, arg2, arg3]: any[] = BlockTokenArguments();
     BlockToken = await blockTokenContract.deploy(arg1, arg2, arg3);
     await BlockToken.waitForDeployment();
-    console.log("🧪 : Deployed BlockToken", BlockToken.target);
+    console.log("🧪 Deployed BlockToken", BlockToken.target);
     //  Sales Contract
     [arg1, arg2] = [
       BlockToken.target,
@@ -62,25 +62,25 @@ describe("🧪 BlockSales Contract Test 1", function () {
 
     SalesContract = await salesContract.deploy(arg1, arg2);
     await SalesContract.waitForDeployment();
-    console.log("🧪 : Deployed SalesToken", SalesContract.target);
+    console.log("🧪 Deployed SalesToken", SalesContract.target);
 
     //  Steal some GHO
     const victim: Signer = await ethers.getImpersonatedSigner(
       "0xE831C8903de820137c13681E78A5780afDdf7697"
     );
-    console.log("🧪 : Got Victem: ", victim);
+    console.log("🧪 Got Victem: ", victim);
 
     const ethTx = await victim.sendTransaction({
       to: addressStore.owner.address,
       value: ethers.utils.parseUnits("1", "ether"),
     });
-    console.log("Transfered ETH from Victem pre wait :", ethTx);
+    console.log("🧪 Transfered ETH from Victem pre wait ", ethTx);
 
     await ethTx.wait();
     console.log("Transfered ETH from Victem");
 
     const ghoContract: Contract = await ethers.getContractFactory("IGhoToken");
-    console.log("🧪 :  Connected to GHO contract :", ghoContract);
+    console.log("🧪  Connected to GHO contract :", ghoContract);
 
     await ghoContract
       .attach("0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f")
@@ -92,18 +92,18 @@ describe("🧪 BlockSales Contract Test 1", function () {
       transferAmount
     );
     await tx.wait();
-    console.log("🧪 : Transfered GHO");
+    console.log("🧪 Transfered GHO");
 
     return;
   };
 
   before(async function () {
-    console.log("🧪 : pre test : Mounted");
+    console.log("🧪 pre test : Mounted");
     await preTest();
-    console.log("🧪 : pre test : Complete");
+    console.log("🧪 pre test : Complete");
   });
 
-  describe("ERC721 Functionality", function () {
+  describe("💡 ERC721 Functionality", function () {
     it("Should mint all tokens to the minter", async function () {
       const mint = await BlockToken.mintAllBlocks(SalesContract.target);
       await mint.wait();

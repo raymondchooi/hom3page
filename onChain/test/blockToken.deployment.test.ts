@@ -15,7 +15,7 @@ import {
 
 import { BlockToken, BlockSales, IERC20 } from "../types/contracts";
 
-describe("🧪 BlockToken Contract Deployment test", function () {
+describe("> BlockToken Contract Deployment test", function () {
   let BlockToken: BlockToken;
   let addressStore: {
     [wallet: string]: { address: string | AddressLike; signer: Signer };
@@ -41,11 +41,11 @@ describe("🧪 BlockToken Contract Deployment test", function () {
   };
 
   before(async function () {
-    console.log("🧪 : pre test : Mounted");
+    console.log("🧪 pre test : Mounted");
     await preTest();
   });
 
-  describe("BlockToken Deployment Checks", function () {
+  describe("💡 BlockToken Deployment Checks", function () {
     it("Should deploy the contract onChain", async function () {
       // Get Factory Contracts
       const blockTokenContract = await ethers.getContractFactory("BlockToken");

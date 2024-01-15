@@ -15,7 +15,7 @@ import {
 
 import { BlockToken, BlockSales, IERC20 } from "../types/contracts";
 
-describe("🧪 BlockToken Contract Test 2", function () {
+describe("> BlockToken Contract Test 2", function () {
   let BlockToken: BlockToken;
   let SalesContract: BlockSales;
   let GHOContract: IERC20;
@@ -48,17 +48,18 @@ describe("🧪 BlockToken Contract Test 2", function () {
     BlockToken = await blockTokenContract.deploy(arg11, arg12, arg13);
     await BlockToken.waitForDeployment();
 
-    console.log("🧪 : Deployed BlockToken", BlockToken.target);
+    console.log("🧪 Deployed BlockToken", BlockToken.target);
     return;
   };
 
   before(async function () {
-    console.log("🧪 : pre test : Mounted");
+    console.log("🧪 pre test : Mounted");
     await preTest();
+    console.log("🧪 pre test : Complete");
   });
 
   // Votes Functionality Tests
-  describe("🧪 ERC721AVotes Functionality", function () {
+  describe("💡 ERC721AVotes Functionality", function () {
     it("Should mint all tokens to the minter", async function () {
       const { minter } = await addresses();
       const mint = await BlockToken.mintAllBlocks(minter.address);

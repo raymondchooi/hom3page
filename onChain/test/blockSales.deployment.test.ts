@@ -1,8 +1,8 @@
 /** @format */
 
 import { expect, assert } from "chai";
-import hre, { ethers } from "hardhat";
-import { AddressLike, Contract, Signer } from "ethers";
+import hre, { ethers, network } from "hardhat";
+import { AddressLike, Addressable, Contract, Signer } from "ethers";
 import {
   BlockTokenArguments,
   BlockSalesArguments,
@@ -15,10 +15,12 @@ import {
 
 import { BlockToken, BlockSales, IERC20 } from "../types/contracts";
 
-describe("🧪 BlockToken Contract Deployment test", function () {
+describe("> BlockSales Contract Deployment test", function () {
   let BlockToken: BlockToken;
+  let SalesContract: BlockSales;
+
   let addressStore: {
-    [wallet: string]: { address: string | AddressLike; signer: Signer };
+    [wallet: string]: { address: string | Addressable; signer: Signer };
   };
   const addresses = () => {
     return addressStore;
@@ -37,54 +39,55 @@ describe("🧪 BlockToken Contract Deployment test", function () {
       },
     };
 
+    // Get Factory Contracts
+    const blockTokenContract = await ethers.getContractFactory("BlockToken");
+
+    //  Deploy contracts
+    let [arg11, arg12, arg13] = BlockTokenArguments();
+    BlockToken = await blockTokenContract.deploy(arg11, arg12, arg13);
+    await BlockToken.waitForDeployment();
+
     return;
   };
 
   before(async function () {
-    console.log("🧪 : pre test : Mounted");
+    console.log("🧪 pre test : Mounted");
     await preTest();
   });
 
-  describe("BlockToken Deployment Checks", function () {
+  describe("💡 Deployment Checks", function () {
     it("Should deploy the contract onChain", async function () {
       // Get Factory Contracts
-      const blockTokenContract = await ethers.getContractFactory("BlockToken");
+      const contract = await ethers.getContractFactory("BlockSales");
 
       //  Deploy contracts
-      let [arg11, arg12, arg13] = BlockTokenArguments();
-      BlockToken = await blockTokenContract.deploy(arg11, arg12, arg13);
-      await BlockToken.waitForDeployment();
+      let [arg11, arg12] = BlockSalesArguments(
+        addressStore.owner.address,
+        network.name as ChainName
+      );
+      SalesContract = await contract.deploy(BlockToken.target, arg12);
+      await SalesContract.waitForDeployment();
 
-      const version = await BlockToken.symbol();
-      expect(version).equal("HOM3");
-    });
-
-    it("Should mint all tokens to the minter", async function () {
-      const { minter } = addresses();
-
-      const mint = await BlockToken.mintAllBlocks(minter.address);
-      await mint.wait();
-      const totalSupply = await BlockToken.totalSupply();
-      const ownerBalance = await BlockToken.balanceOf(minter.address);
-      expect(totalSupply).to.equal(ownerBalance);
-    });
-
-    it("Total Supply should equal 288", async function () {
-      const totalSupply = await BlockToken.totalSupply();
-      expect(totalSupply).to.equal(288);
-    });
-
-    it("Should prove Owner as Owner", async function () {
-      const owner = await BlockToken.owner();
+      const owner = await SalesContract.owner();
       expect(owner).to.equal(addressStore.owner.address);
     });
 
+    it("Should get total sold blocks (0)", async function () {
+      const owner = await SalesContract.getTotalSold();
+      expect(owner).to.equal(0);
+    });
+
+    it("Should get cost of block (100 * 10 ** 18)", async function () {
+      const cost = await SalesContract.getBlockCost();
+      expect(cost).to.equal(ethers.parseUnits("100", "ether"));
+    });
+
     it("Should Transfer OWnership to Minter", async function () {
-      const transfer = await BlockToken.transferOwnership(
+      const transfer = await SalesContract.transferOwnership(
         addressStore.minter.address
       );
       await transfer.wait();
-      const newOwner = await BlockToken.owner();
+      const newOwner = await SalesContract.owner();
       expect(newOwner).to.equal(addressStore.minter.address);
     });
   });

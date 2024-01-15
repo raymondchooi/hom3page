@@ -15,7 +15,7 @@ import {
 
 import { BlockToken, BlockSales, IERC20 } from "../types/contracts";
 
-describe("🧪 BlockToken Contract Test 1", function () {
+describe("> BlockToken Contract Test 1", function () {
   let BlockToken: BlockToken;
   let addressStore: {
     [wallet: string]: { address: string | AddressLike; signer: Signer };
@@ -45,16 +45,16 @@ describe("🧪 BlockToken Contract Test 1", function () {
     BlockToken = await blockTokenContract.deploy(arg11, arg12, arg13);
     await BlockToken.waitForDeployment();
 
-    console.log("🧪 : Deployed BlockToken", BlockToken.target);
+    console.log("🧪 Deployed BlockToken", BlockToken.target);
     return;
   };
 
   before(async function () {
-    console.log("🧪 : pre test : Mounted");
+    console.log("🧪 pre test : Mounted");
     await preTest();
   });
 
-  describe("ERC721 Functionality", function () {
+  describe("💡 ERC721 Functionality", function () {
     it("Should mint all tokens to the minter", async function () {
       const { minter } = addresses();
 
