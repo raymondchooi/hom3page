@@ -6,6 +6,9 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
+  images: {
+    domains: ["via.placeholder.com"],
+  },
   webpack: (config, context) => {
     if (config.plugins) {
       config.plugins.push(
