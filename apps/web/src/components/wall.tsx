@@ -56,12 +56,12 @@ export default function Wall() {
           selectedBlocks ? Array.from(selectedBlocks.keys()).join(",") : "",
         );
       } else {
-        if (selectMultipleBlocksOn) currentParams.delete("editBlock");
+        currentParams.delete("editBlock");
       }
 
       router.push(`${pathname}?${currentParams.toString()}`);
     },
-    [pathname, router, searchParams, selectMultipleBlocksOn, selectedBlocks],
+    [pathname, router, searchParams, selectedBlocks],
   );
 
   //TODO change to real data (maybe shouldn't be array?)
