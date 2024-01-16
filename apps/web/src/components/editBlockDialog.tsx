@@ -46,9 +46,7 @@ function EditBlockDialog({ open, setOpen, blockIds }: EditBlockDialogProps) {
       if (i === 0 || currentBlockId !== Number(blockIds[i - 1]) + 1) {
         result.push([blockIds[i]]);
       } else {
-        if (result?.[result?.length - 1]) {
-          result[result.length - 1].push(blockIds[i]);
-        }
+        result[result.length - 1]!.push(blockIds[i]);
       }
     }
     return result.map((item) => (item.length === 1 ? item[0] : item));
