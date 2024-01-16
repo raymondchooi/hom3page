@@ -6,6 +6,7 @@ import verifyContractOnScan from "../../scripts/helpers/verifyOnScan";
 import { DeploymentProps } from "../../types/deploymentArguments";
 import waitForConfirmations from "../../scripts/helpers/waitForConformations";
 import ethernal from "hardhat-ethernal";
+import { BlockToken } from "../../types/contracts";
 
 export default async function deploy({
   hre,
@@ -17,8 +18,8 @@ export default async function deploy({
   prevDeployments,
 }: DeploymentProps): Promise<string | Addressable | false> {
   try {
-    if (contractName === "BlockStore")
-      constructorArguments[3] = prevDeployments[1].deployment;
+    if (contractName === "BlockSales")
+      constructorArguments[0] = prevDeployments[0].deployment;
 
     const deployedContract: Contract = await hre.ethers.deployContract(
       contractName,
@@ -60,6 +61,18 @@ export default async function deploy({
         address: deployedContract.target as string,
         workspace: "hardhat",
       });
+    }
+
+    if (contractName === "BlockSales") {
+      const tokenContract = (await hre.ethers.getContractFactory("BlockToken"))
+        .attach(prevDeployments[0].deployment!)
+        .connect(deployer);
+
+      const tx = await tokenContract.mintAllBlocks(deployedContract.targets);
+      await tx.wait();
+      console.log(
+        `🟢 Minted to Sales : ${deployedContract.targets} to ${tx.hash}`
+      );
     }
 
     return deployedContract.target;

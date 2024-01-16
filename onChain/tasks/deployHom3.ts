@@ -22,17 +22,15 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   const maticMumbai: ContractNames[] = ["BlockStore"];
   const deploys: { network: ChainName; deploys: ContractNames[] }[] = [
     { network: "opGoerli", deploys: opGoerli },
-    { network: "maticMumbai", deploys: maticMumbai },
   ];
 
   for (let y = 0; y < deploys.length; y++) {
     console.log(
       `🟠 [TASK] ${taskId} : Connecting to network ${deploys[y].network}`
     );
-
-    hre.changeNetwork(deploys[y].network);
-    const [deployer] = await hre.ethers.getSigners();
     const network = await hre.ethers.provider.getNetwork();
+    if (deploys[y].network != network.name) throw "Wrong Network";
+    const [deployer] = await hre.ethers.getSigners();
 
     for (let i = 0; i < opGoerli.length; i++) {
       console.log(
@@ -54,8 +52,11 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
       if (tx)
         deploymentAddresses.push({
           contractName: deployment,
+          deployment: tx,
         });
     }
+
+    
   }
 
   console.log(`🟢 [TASK] ${taskId} : Finished`);
