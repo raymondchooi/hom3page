@@ -16,7 +16,7 @@ const deployedContracts: {
   },
   opGoerli: {
     BlockToken: "0xD08487f956Ba89A3dd70ad37DeF5822f61B9d63a",
-    BlockSales: "0x50c89A3BA32E91d57B277296F486F4C270f585e2",
+    BlockSales: "0x82e78eEBb897A0C6c393FD47eEb5B8F1F37516A4",
   },
 };
 

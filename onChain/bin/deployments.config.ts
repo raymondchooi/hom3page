@@ -2,10 +2,11 @@
 
 import { ContractNames } from "./deployedAddress";
 
-// BlockToken BlockSales 
+// BlockToken BlockSales
 
 export default function deploymentConfig() {
-  const deployCue: ContractNames[] = ["BlockSales"];
+  const deployCue: ContractNames[] = ["BlockToken"];
   const ethernalEnabled: boolean = true;
 
   return { deployCue, ethernalEnabled };
+}

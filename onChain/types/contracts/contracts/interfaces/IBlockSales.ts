@@ -42,6 +42,16 @@ export declare namespace IBlockSales {
     buyer_: string;
     multiBuy_: boolean;
   };
+
+  export type SaleRecipeStruct = {
+    salesMessageId_: BytesLike;
+    success: boolean;
+  };
+
+  export type SaleRecipeStructOutput = [
+    salesMessageId_: string,
+    success: boolean
+  ] & { salesMessageId_: string; success: boolean };
 }
 
 export interface IBlockSalesInterface extends Interface {
@@ -49,7 +59,6 @@ export interface IBlockSalesInterface extends Interface {
     nameOrSignature:
       | "buyBatchBlock"
       | "buyBlock"
-      | "externalPurchase"
       | "withdrawBlock"
       | "withdrawFunds"
   ): FunctionFragment;
@@ -67,10 +76,6 @@ export interface IBlockSalesInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "externalPurchase",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "withdrawBlock",
     values: [AddressLike, BigNumberish]
   ): string;
@@ -84,10 +89,6 @@ export interface IBlockSalesInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "buyBlock", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "externalPurchase",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawBlock",
     data: BytesLike
@@ -128,7 +129,7 @@ export namespace MessageSentEvent {
     messageId: BytesLike,
     destinationChainSelector: BigNumberish,
     receiver: AddressLike,
-    payload: IBlockSales.SaleStruct,
+    payload: IBlockSales.SaleRecipeStruct,
     feeToken: AddressLike,
     fees: BigNumberish
   ];
@@ -136,7 +137,7 @@ export namespace MessageSentEvent {
     messageId: string,
     destinationChainSelector: bigint,
     receiver: string,
-    payload: IBlockSales.SaleStructOutput,
+    payload: IBlockSales.SaleRecipeStructOutput,
     feeToken: string,
     fees: bigint
   ];
@@ -144,7 +145,7 @@ export namespace MessageSentEvent {
     messageId: string;
     destinationChainSelector: bigint;
     receiver: string;
-    payload: IBlockSales.SaleStructOutput;
+    payload: IBlockSales.SaleRecipeStructOutput;
     feeToken: string;
     fees: bigint;
   }
@@ -223,8 +224,6 @@ export interface IBlockSales extends BaseContract {
 
   buyBlock: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
 
-  externalPurchase: TypedContractMethod<[], [void], "nonpayable">;
-
   withdrawBlock: TypedContractMethod<
     [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
     [void],
@@ -247,9 +246,6 @@ export interface IBlockSales extends BaseContract {
   getFunction(
     nameOrSignature: "buyBlock"
   ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "externalPurchase"
-  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawBlock"
   ): TypedContractMethod<

@@ -42,6 +42,16 @@ export declare namespace IBlockSales {
     buyer_: string;
     multiBuy_: boolean;
   };
+
+  export type SaleRecipeStruct = {
+    salesMessageId_: BytesLike;
+    success: boolean;
+  };
+
+  export type SaleRecipeStructOutput = [
+    salesMessageId_: string,
+    success: boolean
+  ] & { salesMessageId_: string; success: boolean };
 }
 
 export declare namespace Client {
@@ -83,13 +93,9 @@ export interface BlockSalesInterface extends Interface {
     nameOrSignature:
       | "NFT"
       | "PAYMENT_TOKEN"
-      | "addBlockStore"
-      | "allowlistedSenders"
-      | "allowlistedSourceChains"
       | "buyBatchBlock"
       | "buyBlock"
       | "ccipReceive"
-      | "externalPurchase"
       | "getBlockCost"
       | "getChainBlockStore"
       | "getRouter"
@@ -97,6 +103,8 @@ export interface BlockSalesInterface extends Interface {
       | "owner"
       | "renounceOwnership"
       | "setActiveState"
+      | "setBlockStore"
+      | "setBlockStoreActive"
       | "supportsInterface"
       | "transferOwnership"
       | "withdrawBlock"
@@ -118,18 +126,6 @@ export interface BlockSalesInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "addBlockStore",
-    values: [BigNumberish, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "allowlistedSenders",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "allowlistedSourceChains",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "buyBatchBlock",
     values: [BigNumberish[][]]
   ): string;
@@ -140,10 +136,6 @@ export interface BlockSalesInterface extends Interface {
   encodeFunctionData(
     functionFragment: "ccipReceive",
     values: [Client.Any2EVMMessageStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "externalPurchase",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getBlockCost",
@@ -168,6 +160,14 @@ export interface BlockSalesInterface extends Interface {
     values: [boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "setBlockStore",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBlockStoreActive",
+    values: [BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -190,28 +190,12 @@ export interface BlockSalesInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "addBlockStore",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "allowlistedSenders",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "allowlistedSourceChains",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "buyBatchBlock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "buyBlock", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "ccipReceive",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "externalPurchase",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -234,6 +218,14 @@ export interface BlockSalesInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setActiveState",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setBlockStore",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setBlockStoreActive",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -296,7 +288,7 @@ export namespace MessageSentEvent {
     messageId: BytesLike,
     destinationChainSelector: BigNumberish,
     receiver: AddressLike,
-    payload: IBlockSales.SaleStruct,
+    payload: IBlockSales.SaleRecipeStruct,
     feeToken: AddressLike,
     fees: BigNumberish
   ];
@@ -304,7 +296,7 @@ export namespace MessageSentEvent {
     messageId: string,
     destinationChainSelector: bigint,
     receiver: string,
-    payload: IBlockSales.SaleStructOutput,
+    payload: IBlockSales.SaleRecipeStructOutput,
     feeToken: string,
     fees: bigint
   ];
@@ -312,7 +304,7 @@ export namespace MessageSentEvent {
     messageId: string;
     destinationChainSelector: bigint;
     receiver: string;
-    payload: IBlockSales.SaleStructOutput;
+    payload: IBlockSales.SaleRecipeStructOutput;
     feeToken: string;
     fees: bigint;
   }
@@ -400,24 +392,6 @@ export interface BlockSales extends BaseContract {
 
   PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
 
-  addBlockStore: TypedContractMethod<
-    [chainId_: BigNumberish, contractAddress_: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  allowlistedSenders: TypedContractMethod<
-    [arg0: AddressLike],
-    [boolean],
-    "view"
-  >;
-
-  allowlistedSourceChains: TypedContractMethod<
-    [arg0: BigNumberish],
-    [boolean],
-    "view"
-  >;
-
   buyBatchBlock: TypedContractMethod<
     [tokenIds_: BigNumberish[][]],
     [void],
@@ -431,8 +405,6 @@ export interface BlockSales extends BaseContract {
     [void],
     "nonpayable"
   >;
-
-  externalPurchase: TypedContractMethod<[], [void], "nonpayable">;
 
   getBlockCost: TypedContractMethod<[], [bigint], "view">;
 
@@ -452,6 +424,18 @@ export interface BlockSales extends BaseContract {
 
   setActiveState: TypedContractMethod<
     [newState_: boolean],
+    [void],
+    "nonpayable"
+  >;
+
+  setBlockStore: TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  setBlockStoreActive: TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
     [void],
     "nonpayable"
   >;
@@ -491,19 +475,6 @@ export interface BlockSales extends BaseContract {
     nameOrSignature: "PAYMENT_TOKEN"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "addBlockStore"
-  ): TypedContractMethod<
-    [chainId_: BigNumberish, contractAddress_: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "allowlistedSenders"
-  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "allowlistedSourceChains"
-  ): TypedContractMethod<[arg0: BigNumberish], [boolean], "view">;
-  getFunction(
     nameOrSignature: "buyBatchBlock"
   ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
   getFunction(
@@ -516,9 +487,6 @@ export interface BlockSales extends BaseContract {
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "externalPurchase"
-  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "getBlockCost"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -540,6 +508,20 @@ export interface BlockSales extends BaseContract {
   getFunction(
     nameOrSignature: "setActiveState"
   ): TypedContractMethod<[newState_: boolean], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setBlockStore"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setBlockStoreActive"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;

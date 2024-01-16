@@ -24,7 +24,8 @@ dotenv.config();
 
 console.log("🟢 Hardhat : Mounted.");
 // Some quick checks to make sure our .env is working.
-const { rcpEndPoints, masterMnemonic, devRecovery } = checkPrivateKeys();
+const { rcpEndPoints, masterMnemonic, devRecovery, etherscanApis, chainIds } =
+  checkPrivateKeys();
 
 const gasPrice = 24059329590;
 console.log("❗️Gas Price Set: ", gasPrice / 10 ** 9, "gwei");
@@ -60,7 +61,7 @@ const config: HardhatUserConfig = {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY!,
+    apiKey: etherscanApis,
     customChains: [
       {
         network: "baseGoerli",
@@ -103,14 +104,7 @@ const config: HardhatUserConfig = {
           browserURL: "https://goerli.arbiscan.io",
         },
       },
-      {
-        network: "arbSepolia",
-        chainId: 421613,
-        urls: {
-          apiURL: "https://api-goerli.arbiscan.io/api",
-          browserURL: "https://goerli.arbiscan.io",
-        },
-      },
+
       {
         network: "eth",
         chainId: 1,
@@ -119,7 +113,6 @@ const config: HardhatUserConfig = {
           browserURL: "https://etherscan.io",
         },
       },
-
       {
         network: "ethSepolia",
         chainId: 11155111,
@@ -162,7 +155,7 @@ const config: HardhatUserConfig = {
         url: rcpEndPoints.eth!,
       },
       mining: {
-        auto: false,
+        auto: true,
         interval: 5000,
       },
     },

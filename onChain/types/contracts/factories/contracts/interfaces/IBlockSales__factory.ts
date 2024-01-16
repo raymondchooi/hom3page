@@ -144,28 +144,18 @@ const _abi = [
       {
         components: [
           {
-            internalType: "uint256[][]",
-            name: "tokens_",
-            type: "uint256[][]",
-          },
-          {
-            internalType: "uint256",
-            name: "totalItems_",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "buyer_",
-            type: "address",
+            internalType: "bytes32",
+            name: "salesMessageId_",
+            type: "bytes32",
           },
           {
             internalType: "bool",
-            name: "multiBuy_",
+            name: "success",
             type: "bool",
           },
         ],
         indexed: false,
-        internalType: "struct IBlockSales.Sale",
+        internalType: "struct IBlockSales.SaleRecipe",
         name: "payload",
         type: "tuple",
       },
@@ -232,13 +222,6 @@ const _abi = [
       },
     ],
     name: "buyBlock",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "externalPurchase",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

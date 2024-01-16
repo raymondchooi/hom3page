@@ -14,7 +14,7 @@ interface IBlockSales {
         bytes32 indexed messageId, // The unique ID of the CCIP message.
         uint64 indexed destinationChainSelector, // The chain selector of the destination chain.
         address receiver, // The address of the receiver on the destination chain.
-        Sale payload, // The text being sent.
+        SaleRecipe payload, // The text being sent.
         address feeToken, // the token address used to pay CCIP fees.
         uint256 fees // The fees paid for sending the CCIP message.
     );
@@ -30,6 +30,13 @@ interface IBlockSales {
     error OrderExceedsMaxAmount();
     error ToManyElementsInBuyArray();
     error OrderToLargeMax10();
+
+    enum AllowedChains {
+        ETH,
+        OP,
+        MATIC,
+        ARB
+    }
 
     event SaleMade(
         address indexed buyer_,
@@ -56,6 +63,4 @@ interface IBlockSales {
     function withdrawFunds(address withdrawAddress_) external;
 
     function withdrawBlock(address withdrawAddress_, uint256 tokenId_) external;
-
-    function externalPurchase() external;
 }

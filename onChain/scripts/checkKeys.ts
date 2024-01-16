@@ -9,6 +9,10 @@ export default function checkPrivateKeys() {
     console.log("🛑 Private key not found.");
     throw "No Private Keys";
   }
+  if (!process.env.ALCHEMY_KEY) {
+    console.log("🛑 Alchemy API not found.");
+    throw "No Alchemy API";
+  }
   console.log("🟢 Private key found.");
   const devRecovery = `${process.env.DEV_WALLETSET}`;
   const masterMnemonic = `0x${process.env.PRIVATE_DEV_KEY}`;
@@ -25,5 +29,28 @@ export default function checkPrivateKeys() {
     ethGoerli: `https:/eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
   };
 
-  return { masterMnemonic, rcpEndPoints, devRecovery };
+  const etherscanApis: { [chain in ChainName]?: string } = {
+    eth: process.env.ETHERSCAN_API_KEY_ETH!,
+    ethSepolia: process.env.ETHERSCAN_API_KEY_ETH!,
+    ethGoerli: process.env.ETHERSCAN_API_KEY_ETH!,
+    optimism: process.env.ETHERSCAN_API_KEY_OP!,
+    opGoerli: process.env.ETHERSCAN_API_KEY_OP!,
+    matic: process.env.ETHERSCAN_API_KEY_MATIC!,
+    maticMumbai: process.env.ETHERSCAN_API_KEY_MATIC!,
+  };
+
+  const chainIds: { [chain in ChainName]?: number } = {
+    eth: 1,
+    ethGoerli: 5,
+    ethSepolia: 11155111,
+    optimism: 10,
+    opGoerli: 420,
+    arbitrum: 42161,
+    arbGoerli: 421613,
+    baseGoerli: 84531,
+    matic: 137,
+    maticMumbai: 80001,
+  };
+
+  return { masterMnemonic, rcpEndPoints, devRecovery, etherscanApis, chainIds };
 }
