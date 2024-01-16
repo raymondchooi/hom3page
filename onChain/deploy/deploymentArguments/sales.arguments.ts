@@ -29,5 +29,6 @@ export const BlockStoreArguments = (
   const ghoTokenAddress_ = tokenAddress.gho[netName];
   const blockSalesContract_ = deployedContracts.opGoerli?.BlockSales;
 
+
   return [router_, ghoTokenAddress_, blockSalesContract_];
 };

@@ -5,7 +5,7 @@ import { ChainName } from "../bin/tokenAddress";
 dotenv.config();
 
 export default function checkPrivateKeys() {
-  if (!process.env.PRIVATE_DEV_KEY) {
+  if (!process.env.MASTER_DEPLOYER_KEY) {
     console.log("🛑 Private key not found.");
     throw "No Private Keys";
   }
@@ -14,14 +14,14 @@ export default function checkPrivateKeys() {
     throw "No Alchemy API";
   }
   console.log("🟢 Private key found.");
-  const devRecovery = `${process.env.DEV_WALLETSET}`;
+  const masterDeployer = `${process.env.MASTER_DEPLOYER_KEY}`;
   const masterMnemonic = `0x${process.env.PRIVATE_DEV_KEY}`;
   const rcpEndPoints: { [chain in ChainName]?: string } = {
     baseGoerli: `https://base-goerli.public.blastapi.io`,
     maticMumbai: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
     matic: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
     eth: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-    ethSepolia: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
+    ethSepolia: `https://rpc.sepolia.org`,
     optimism: `https://opt-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
     opGoerli: `https://opt-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
     arbGoerli: `https://arb-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
@@ -52,5 +52,24 @@ export default function checkPrivateKeys() {
     maticMumbai: 80001,
   };
 
-  return { masterMnemonic, rcpEndPoints, devRecovery, etherscanApis, chainIds };
+  const devAccounts = [
+    masterDeployer,
+    `${process.env.MASTER_DEPLOYER_KEY}`,
+    `${process.env.USER_ACCOUNT_1_KEY}`,
+    `${process.env.USER_ACCOUNT_2_KEY}`,
+    `${process.env.USER_ACCOUNT_3_KEY}`,
+  ];
+
+  return {
+    masterMnemonic,
+    rcpEndPoints,
+    masterDeployer,
+    etherscanApis,
+    chainIds,
+    devAccounts,
+  };
 }
+
+// Sepolia versions
+// free - https://sepolia.drpc.org
+// Alchemy - `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`

@@ -24,7 +24,7 @@ dotenv.config();
 
 console.log("🟢 Hardhat : Mounted.");
 // Some quick checks to make sure our .env is working.
-const { rcpEndPoints, masterMnemonic, devRecovery, etherscanApis, chainIds } =
+const { rcpEndPoints, masterDeployer, etherscanApis, devAccounts } =
   checkPrivateKeys();
 
 const gasPrice = 24059329590;
@@ -161,61 +161,61 @@ const config: HardhatUserConfig = {
     },
     baseGoerli: {
       url: rcpEndPoints.baseGoerli,
-      accounts: [masterMnemonic],
+      accounts: devAccounts,
       chainId: 84531,
       gasPrice: gasPrice,
     },
     optimism: {
       url: rcpEndPoints.optimism,
-      accounts: [masterMnemonic],
+      accounts: devAccounts,
       chainId: 10,
       gasPrice: gasPrice,
     },
     opGoerli: {
       url: rcpEndPoints.opGoerli,
-      accounts: [masterMnemonic],
+      accounts: devAccounts,
       chainId: 420,
       gasPrice: gasPrice,
     },
     arbGoerli: {
       url: rcpEndPoints.arbGoerli,
-      accounts: [masterMnemonic],
+      accounts: devAccounts,
       chainId: 421613,
       gasPrice: gasPrice,
     },
     arbitrum: {
       url: rcpEndPoints.arbitrum,
-      accounts: [masterMnemonic],
+      accounts: [masterDeployer],
       chainId: 42161,
       gasPrice: gasPrice,
     },
     matic: {
       url: rcpEndPoints.matic,
       chainId: 137,
-      accounts: [masterMnemonic],
+      accounts: devAccounts,
       gasPrice: gasPrice,
     },
     maticMumbai: {
       url: rcpEndPoints.maticMumbai,
       chainId: 80001,
-      accounts: [masterMnemonic],
+      accounts: devAccounts,
       gasPrice: gasPrice,
     },
     eth: {
       url: rcpEndPoints.eth,
       chainId: 1,
-      accounts: [masterMnemonic],
+      accounts: devAccounts,
       gasPrice: gasPrice,
     },
     ethGoerli: {
       url: rcpEndPoints.ethGoerli,
-      accounts: [masterMnemonic],
+      accounts: devAccounts,
       chainId: 5,
       gasPrice: gasPrice,
     },
     ethSepolia: {
       url: rcpEndPoints.ethSepolia,
-      accounts: [masterMnemonic],
+      accounts: devAccounts,
       chainId: 11155111,
       gasPrice: gasPrice,
     },

@@ -1,6 +1,6 @@
 /** @format */
 
-import { Addressable, Signer } from "ethers";
+import { Addressable, Contract, Signer } from "ethers";
 import delay from "../../scripts/helpers/delay";
 import verifyContractOnScan from "../../scripts/helpers/verifyOnScan";
 import { DeploymentProps } from "../../types/deploymentArguments";
@@ -17,7 +17,7 @@ export default async function deploy({
   prevDeployments,
 }: DeploymentProps): Promise<string | Addressable | false> {
   try {
-    const deployedContract = await hre.ethers.deployContract(
+    const deployedContract: Contract = await hre.ethers.deployContract(
       contractName,
       constructorArguments,
       deployer
@@ -27,7 +27,12 @@ export default async function deploy({
     );
 
     await deployedContract.waitForDeployment();
-    
+    console.log(
+      `🟠 Deployment Confirmed : ${contractName} to ${
+        deployedContract.deploymentTransaction()?.hash
+      }`
+    );
+
     if (hre.network.name !== "localhost" && hre.network.name !== "hardhat")
       await waitForConfirmations(
         hre,

@@ -13,8 +13,11 @@ export default async function masterDeployer(
   hre: HardhatRuntimeEnvironment,
   deployments: string[]
 ) {
-  const [deployer] = await hre.ethers.getSigners();
+  const [notDeployer, notAnotherDeployer, deployer] =
+    await hre.ethers.getSigners();
   const network = await hre.ethers.provider.getNetwork();
+
+  console.log("NONCE : ", await deployer!.getNonce());
 
   const delayTime = 20000;
 

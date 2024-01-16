@@ -2,7 +2,7 @@
 
 import { ContractNames } from "./deployedAddress";
 
-// BlockToken BlockSales
+// BlockToken BlockSales BlockStore
 
 export default function deploymentConfig() {
   const deployCue: ContractNames[] = ["BlockToken"];
