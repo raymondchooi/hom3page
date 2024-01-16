@@ -8,20 +8,21 @@ const deployedContracts: {
   hardhat: {
     BlockToken: "",
     BlockSales: "",
-    InnerBlockToken: "",
-    InnerBlockFactory: "",
+    BlockStore: "",
   },
   ethSepolia: {
-    BlockToken: "0x3365a2d81F272CFFd0D899E470781F609221EF4c",
-    BlockSales: "0x34f222790BEC2838c23CA24E332954A0dF375326",
-    InnerBlockToken: "",
-    InnerBlockFactory: "",
+    BlockToken: "",
+    BlockStore: "",
+  },
+  opGoerli: {
+    BlockToken: "0xD08487f956Ba89A3dd70ad37DeF5822f61B9d63a",
+    BlockSales: "0x50c89A3BA32E91d57B277296F486F4C270f585e2",
   },
 };
 
 export type ContractNames =
   | "BlockToken"
   | "BlockSales"
-  | "InnerBlockToken"
-  | "InnerBlockFactory";
+  | "BlockStore"
+  | "ProfileToken";
 export default deployedContracts;

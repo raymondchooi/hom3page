@@ -95,7 +95,7 @@ export const tokenAddress: TokenAddressList = {
     ethGoerli: "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
     ethSepolia: "",
     arbGoerli: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
-    opGoerli: "",
+    opGoerli: "0x69529987FA4A075D0C00B0128fa848dc9ebbE9CE",
     hardhat: productionChainAddresses[forkedNetwork].usdc,
   },
   usdt: {
@@ -163,7 +163,8 @@ export const tokenAddress: TokenAddressList = {
   ccipRouter: {
     opGoerli: "0xcc5a0B910D9E9504A7561934bed294c51285a78D",
     ethSepolia: "0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59",
-    
+    baseGoerli: "0x80AF2F44ed0469018922c9F483dc5A909862fdc2",
+    arbSepolia: "0x2a9C5afB0d0e4BAb2BCdaE109EC4b0c4Be15a165",
   },
 };
 
@@ -179,11 +180,13 @@ export type ChainName =
   | "eth"
   | "ethGoerli"
   | "ethSepolia"
+  | "arbitrum"
   | "arbGoerli"
-  | "opGoerli"
+  | "arbSepolia"
   | "optimism"
   | "opGoerli"
-  | "arbitrum"
+  | "matic"
+  | "maticMumbai"
   | "baseGoerli"
   | "hardhat"
   | "localhost";

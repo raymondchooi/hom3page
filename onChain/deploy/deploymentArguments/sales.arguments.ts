@@ -11,8 +11,11 @@ export const BlockSalesArguments = (
   let netName: ChainName =
     networkName === "localhost" ? "hardhat" : networkName;
 
-  const tokenContract = deployedContracts[netName]?.BlockToken;
-  return [tokenContract, tokenAddress.gho[netName]];
+  const NFTAddress_ = deployedContracts[netName]?.BlockToken;
+  const paymentToken_ = tokenAddress.usdc[netName];
+  const ccipRouter_ = tokenAddress.ccipRouter[netName];
+
+  return [NFTAddress_, paymentToken_, ccipRouter_];
 };
 
 export const BlockStoreArguments = (
@@ -24,7 +27,7 @@ export const BlockStoreArguments = (
 
   const router_ = tokenAddress.ccipRouter[netName];
   const ghoTokenAddress_ = tokenAddress.gho[netName];
-  const blockSalesContract_ = deployedContracts[netName]?.BlockToken;
+  const blockSalesContract_ = deployedContracts.opGoerli?.BlockSales;
 
   return [router_, ghoTokenAddress_, blockSalesContract_];
 };

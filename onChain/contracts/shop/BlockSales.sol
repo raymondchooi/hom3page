@@ -54,9 +54,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         PAYMENT_TOKEN = IERC20(paymentToken_);
     }
 
-    fallback() external payable {
-        revert("BlockSales : [fallback] - We don't want your ETH");
-    }
+    fallback() external payable {}
 
     receive() external payable {
         revert("BlockSales : [receive] - You can keep your tokens");

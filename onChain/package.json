@@ -8,6 +8,7 @@
     "testLocal": "hardhat test --network localhost",
     "dev": "npx hardhat deployContracts --network localhost",
     "deploy-sepolia": "npx hardhat deployContracts --network ethSepolia",
+    "deploy-opGoerli": "npx hardhat deployContracts --network opGoerli",
     "compile": "npx hardhat compile"
   },
   "keywords": [],
