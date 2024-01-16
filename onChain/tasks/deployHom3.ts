@@ -12,8 +12,6 @@ import { ContractNames } from "../bin/deployedAddress";
 const taskId = "deployHom3PageBlocks";
 const taskDescription = "Deploy the given contracts";
 
-
-
 task(taskId, taskDescription).setAction(async (_args, hre) => {
   console.log(`🟠 [TASK] ${taskId} : Mounted`);
 
@@ -32,7 +30,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
       `🟠 [TASK] ${taskId} : Connecting to network ${deploys[y].network}`
     );
 
-    hre.changeNetwork("opGoerli");
+    hre.changeNetwork(deploys[y].network);
     const [deployer] = await hre.ethers.getSigners();
     const network = await hre.ethers.provider.getNetwork();
 
