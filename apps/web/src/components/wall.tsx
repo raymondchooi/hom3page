@@ -260,7 +260,6 @@ export default function Wall() {
         <EditBlockDialog
           open={editBlockDialogOpen}
           setOpen={handleEditDialogOpen}
-          blockIds={selectedBlocks ? Array.from(selectedBlocks.keys()) : []}
         />
       )}
     </>

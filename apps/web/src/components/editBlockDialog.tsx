@@ -24,18 +24,23 @@ import { useAccount, useBalance, sepolia } from "wagmi";
 interface EditBlockDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  blockIds: string[];
 }
 
-function EditBlockDialog({ open, setOpen, blockIds }: EditBlockDialogProps) {
+function EditBlockDialog({ open, setOpen }: EditBlockDialogProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+
+  const editBlockParam = searchParams.get("editBlock");
 
   const { address } = useAccount();
   const balance = useBalance({ address, chainId: sepolia.id });
 
   const [bought, setBought] = useState(false);
+
+  const blockIds = useMemo(() => {
+    return editBlockParam ? editBlockParam.split(",") : [];
+  }, [editBlockParam]);
 
   const blockIdsText = `#${blockIds.join(", #")}`;
 
@@ -73,7 +78,7 @@ function EditBlockDialog({ open, setOpen, blockIds }: EditBlockDialogProps) {
     <Dialog open={open} onClose={setOpen}>
       <DialogTitle className="flex items-center justify-between">
         <div className="flex items-center justify-start">
-          <div className="mr-4 truncate text-xl font-semibold text-zinc-950">
+          <div className="mr-4 overflow-auto text-xl font-semibold text-zinc-950">
             {blockIdsText}
           </div>
           <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span>
@@ -108,9 +113,9 @@ function EditBlockDialog({ open, setOpen, blockIds }: EditBlockDialogProps) {
                   <div className="flex items-center">
                     <Button
                       onClick={handleBuyButtonClick}
-                    >{`Buy Block${blockIds?.length > 1 && "s"}`}</Button>
+                    >{`Buy Block${blockIds?.length > 1 ? "s" : ""}`}</Button>
                     <div className="ml-4 text-sm text-gray-500">
-                      {`${balance?.data?.value ?? "-"}`} ETH
+                      {`${parseFloat(balance?.data?.formatted ?? "0").toFixed(3)} ${balance?.data?.symbol}`}
                     </div>
                   </div>
 
