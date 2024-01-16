@@ -136,7 +136,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
     purchasableBlocks.size,
   ]);
 
-  const groupBlocksIntoRectangles = useMemo(() => {
+  function groupBlocksIntoRectangles(blockIds: string[]) {
     const groups = new Map();
     let groupCount = 0;
 
@@ -183,11 +183,8 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
         const width = maxCol - minCol + 1;
         const height = maxRow - minRow + 1;
 
-        // Get the ID of the first block in the group
-        const firstBlockId = blockIds[minRow * WALL_WIDTH + minCol];
-
         groups.set(groupCount.toString(), {
-          firstBlockId,
+          firstBlockId: blockId,
           width,
           height,
           blockIds: rectangles.map((r) => r.id),
@@ -198,18 +195,62 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
     }
 
     return groups;
+  }
+
+  const rectangleBlockGroups = useMemo(() => {
+    return groupBlocksIntoRectangles(blockIds);
   }, [blockIds]);
 
   function handleBlockSelect(blockId: string) {
+    const blockIdString = blockId.toString();
+
     if (!selectedBlocksForEditing) {
       setSelectedBlocksForEditing(new Map());
     }
 
-    if (selectedBlocksForEditing?.has(blockId.toString())) {
-      selectedBlocksForEditing?.delete(blockId.toString());
+    if (selectedBlocksForEditing?.has(blockIdString)) {
+      // might need .filter((id) => id !== blockIdString
+      const rectangleGroups = groupBlocksIntoRectangles(
+        Array.from(selectedBlocksForEditing.keys()),
+      );
+
+      selectedBlocksForEditing?.delete(blockId);
+
+      for (const [, value] of rectangleGroups.entries()) {
+        if (value.blockIds.includes(blockIdString)) {
+          for (const blockId of value.blockIds) {
+            if (blockIdString !== blockId)
+              selectedBlocksForEditing?.set(blockId, {
+                selected: false,
+                isFirstBlock: true,
+              });
+          }
+        }
+      }
     } else {
-      //TODO see if rectangle
-      selectedBlocksForEditing?.set(blockId.toString(), { selected: true });
+      const rectangleGroups = groupBlocksIntoRectangles(
+        selectedBlocksForEditing
+          ? [...Array.from(selectedBlocksForEditing.keys()), blockIdString]
+          : [],
+      );
+
+      for (const [, value] of rectangleGroups.entries()) {
+        console.log("value", value);
+        if (value?.blockIds?.includes(blockIdString)) {
+          selectedBlocksForEditing?.set(value.firstBlockId, {
+            isFirstBlock: true,
+            selected: true,
+            width: value.width,
+            height: value.height,
+          });
+
+          if (value.firstBlockId !== blockIdString)
+            selectedBlocksForEditing?.set(blockIdString, {
+              selected: true,
+              isFirstBlock: false,
+            });
+        }
+      }
     }
 
     setSelectedBlocksForEditing(new Map(selectedBlocksForEditing));
@@ -218,7 +259,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   const renderSelectBlocks = () => {
     return (
       <div className="mt-4 flex gap-x-6 overflow-x-auto">
-        {Array.from(groupBlocksIntoRectangles.values()).map((group, i) => {
+        {Array.from(rectangleBlockGroups.values()).map((group, i) => {
           return (
             <div
               key={i}
@@ -226,20 +267,56 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
               className="grid gap-0"
             >
               {group.blockIds.map((blockId: string) => {
+                const isBlockSelected = selectedBlocksForEditing?.has(
+                  blockId.toString(),
+                );
+                const isFirstBlockFromSelected = isBlockSelected
+                  ? (
+                      selectedBlocksForEditing?.get(blockId.toString()) as {
+                        isFirstBlock: boolean;
+                      }
+                    )?.isFirstBlock
+                  : false;
+
                 return (
-                  <div key={blockId} className="relative">
+                  <div key={blockId} className="group relative">
                     <div
                       style={{
                         width: BLOCK_WIDTH,
                         height: BLOCK_HEIGHT,
                       }}
                     ></div>
+                    <div
+                      className={cn(
+                        "absolute left-0 top-0 border-2 border-gray-500",
+                        isBlockSelected ? "border-red-600" : "",
+                        isFirstBlockFromSelected
+                          ? "z-10 overflow-visible"
+                          : "border-transparent",
+                      )}
+                      style={{
+                        width: isFirstBlockFromSelected
+                          ? BLOCK_WIDTH *
+                            (
+                              selectedBlocksForEditing?.get(
+                                blockId.toString(),
+                              ) as { width: number; height: number }
+                            )?.width
+                          : BLOCK_WIDTH,
+                        height: isFirstBlockFromSelected
+                          ? BLOCK_HEIGHT *
+                            (
+                              selectedBlocksForEditing?.get(
+                                blockId.toString(),
+                              ) as { width: number; height: number }
+                            )?.height
+                          : BLOCK_HEIGHT,
+                      }}
+                    ></div>
                     <button
                       className={cn(
-                        "absolute left-0 top-0 z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 hover:border-red-600",
-                        selectedBlocksForEditing?.has(blockId.toString())
-                          ? "border-red-600"
-                          : "border-gray-500",
+                        "absolute left-0 top-0 z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-red-600",
+
                         //TODO add check for rectangle form on new select
                         // group?.firstBlockId === blockId
                         //   ? "overflow-visible"
