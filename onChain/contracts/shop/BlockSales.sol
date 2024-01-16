@@ -37,7 +37,9 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     }
 
     //  Sales
-    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 6; // USDC
+    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 6; // USD
+    uint8 internal constant BUY_CAP = 10;
+
     uint256 internal _totalSold;
 
     constructor(
@@ -87,11 +89,11 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         if (numElements > 5) revert ToManyElementsInBuyArray();
 
         unchecked {
-            while (totalOrder < 10 && index < numElements) {
-                totalOrder = tokenIds_[index].length;
+            while (totalOrder < BUY_CAP && index < numElements) {
+                totalOrder += tokenIds_[index].length;
                 index++;
             }
-            if (totalOrder > 10) revert OrderToLargeMax10();
+            if (totalOrder > BUY_CAP) revert OrderToLargeMax10();
         }
 
         uint256 cost = COST_PER_BLOCK * (totalOrder);
