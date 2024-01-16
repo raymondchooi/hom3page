@@ -120,7 +120,8 @@ export default function Wall() {
                 selectedBlocks?.delete(blockId.toString());
               } else {
                 // TODO probably some more efficient way to do this
-                selectedBlocks?.set(blockId.toString(), { selected: true });
+                if (!blockData?.owner)
+                  selectedBlocks?.set(blockId.toString(), { selected: true });
               }
 
               setSelectedBlocks(new Map(selectedBlocks));
