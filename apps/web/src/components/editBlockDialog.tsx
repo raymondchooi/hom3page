@@ -20,13 +20,15 @@ import {
 } from "components/carousel";
 import { BAPPS_BASE_URL } from "constants/urls";
 import { useAccount, useBalance, sepolia } from "wagmi";
+import { type BlockData } from "models/BlockData";
 
 interface EditBlockDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  wallData: BlockData[];
 }
 
-function EditBlockDialog({ open, setOpen }: EditBlockDialogProps) {
+function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -44,6 +46,32 @@ function EditBlockDialog({ open, setOpen }: EditBlockDialogProps) {
 
   const blockIdsText = `#${blockIds.join(", #")}`;
 
+  // TODO optimise this late night code, this is to double check on frontend that blocks are editable
+  const ownedBlocks = useMemo(() => {
+    const ownedBlocks = new Map();
+
+    for (const block of wallData) {
+      if (block?.owner === address && blockIds.includes(block.id)) {
+        ownedBlocks.set(block.id, block);
+      }
+    }
+
+    return ownedBlocks;
+  }, [wallData, address, blockIds]);
+
+  const purchasableBlocks = useMemo(() => {
+    const purchasableBlocks = new Map();
+
+    for (const block of wallData) {
+      // TODO change to check if purchasable
+      if (!block?.owner && blockIds.includes(block.id)) {
+        purchasableBlocks.set(block.id, block);
+      }
+    }
+
+    return purchasableBlocks;
+  }, [blockIds, wallData]);
+
   const optimisedBlockIds = useMemo(() => {
     const result = [];
     for (let i = 0; i < blockIds.length; i++) {
@@ -57,7 +85,7 @@ function EditBlockDialog({ open, setOpen }: EditBlockDialogProps) {
     return result.map((item) => (item.length === 1 ? item[0] : item));
   }, [blockIds]);
 
-  function handleBuyMultipleClick() {
+  function handleSelectMultipleClick() {
     setOpen(false);
 
     const currentParams = new URLSearchParams(
@@ -65,14 +93,41 @@ function EditBlockDialog({ open, setOpen }: EditBlockDialogProps) {
     );
 
     currentParams.set("selectMultipleBlocks", "true");
+    currentParams.delete("editBlock");
 
     router.push(`${pathname}?${currentParams.toString()}`);
   }
 
-  function handleBuyButtonClick() {
-    setBought(true);
-    console.log("blocks", optimisedBlockIds);
-  }
+  const renderBuyButton = useMemo(() => {
+    function handleBuyButtonClick() {
+      setBought(true);
+      console.log("blocks", optimisedBlockIds);
+    }
+
+    //TODO remove bought placeholder
+    if (purchasableBlocks.size > 0 && !bought) {
+      return (
+        <div className="flex items-center">
+          <Button
+            onClick={handleBuyButtonClick}
+          >{`Buy ${purchasableBlocks.size} Block${purchasableBlocks.size > 1 ? "s" : ""}`}</Button>
+          <div className="ml-4 text-sm text-gray-500">
+            {`Balance: ${parseFloat(balance?.data?.formatted ?? "0").toFixed(3)} ${balance?.data?.symbol}`}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="text-base text-gray-500">All selected blocks owned.</div>
+    );
+  }, [
+    balance?.data?.formatted,
+    balance?.data?.symbol,
+    bought,
+    optimisedBlockIds,
+    purchasableBlocks.size,
+  ]);
 
   return (
     <Dialog open={open} onClose={setOpen}>
@@ -106,29 +161,18 @@ function EditBlockDialog({ open, setOpen }: EditBlockDialogProps) {
         <DialogDescription>
           <ol className="list-decimal space-y-6 pl-4 text-lg">
             <li className="pl-4">
-              {bought ? (
-                <div>Bought!</div>
-              ) : (
-                <div className="flex flex-col items-start">
-                  <div className="flex items-center">
-                    <Button
-                      onClick={handleBuyButtonClick}
-                    >{`Buy Block${blockIds?.length > 1 ? "s" : ""}`}</Button>
-                    <div className="ml-4 text-sm text-gray-500">
-                      {`${parseFloat(balance?.data?.formatted ?? "0").toFixed(3)} ${balance?.data?.symbol}`}
-                    </div>
-                  </div>
+              <div className="flex flex-col items-start">
+                {renderBuyButton}
 
-                  <button
-                    onClick={handleBuyMultipleClick}
-                    className="mt-2 cursor-pointer text-sm text-gray-500 underline"
-                  >
-                    Buy multiple blocks
-                  </button>
-                </div>
-              )}
+                <button
+                  onClick={handleSelectMultipleClick}
+                  className="mt-2 cursor-pointer text-sm text-gray-500 underline"
+                >
+                  Select more blocks
+                </button>
+              </div>
             </li>
-            <li className="pl-4">Add bApp</li>
+            <li className="pl-4">Edit bApps</li>
           </ol>
           <div className="mt-4 flex justify-end">
             <Link

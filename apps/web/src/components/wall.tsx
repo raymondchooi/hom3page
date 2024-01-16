@@ -9,6 +9,7 @@ import {
 } from "next/navigation";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { HomeIcon } from "@heroicons/react/24/outline";
+import { useAccount } from "wagmi";
 
 import { Block, Button, EditBlockDialog } from "components";
 import { WALL_TOTAL_BLOCKS } from "constants/wall";
@@ -21,6 +22,7 @@ export default function Wall() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const { address } = useAccount();
 
   const selectMultipleBlocksOn =
     searchParams.get("selectMultipleBlocks") === "true";
@@ -35,12 +37,12 @@ export default function Wall() {
     .toLowerCase();
 
   useEffect(() => {
-    if (editBlockParam) {
+    if (editBlockParam && !selectMultipleBlocksOn) {
       setEditBlockDialogOpen(true);
     } else {
       setEditBlockDialogOpen(false);
     }
-  }, [editBlockParam]);
+  }, [editBlockParam, selectMultipleBlocksOn]);
 
   const handleEditDialogOpen = useCallback(
     (setOpen: boolean) => {
@@ -54,15 +56,15 @@ export default function Wall() {
           selectedBlocks ? Array.from(selectedBlocks.keys()).join(",") : "",
         );
       } else {
-        currentParams.delete("editBlock");
+        if (selectMultipleBlocksOn) currentParams.delete("editBlock");
       }
 
       router.push(`${pathname}?${currentParams.toString()}`);
     },
-    [pathname, router, searchParams, selectedBlocks],
+    [pathname, router, searchParams, selectMultipleBlocksOn, selectedBlocks],
   );
 
-  //TODO change to real data
+  //TODO change to real data (maybe shouldn't be array?)
   const generateRandomWallData = useMemo(() => {
     const wallData = [];
     for (let i = 0; i < WALL_TOTAL_BLOCKS; i++) {
@@ -120,7 +122,7 @@ export default function Wall() {
                 selectedBlocks?.delete(blockId.toString());
               } else {
                 // TODO probably some more efficient way to do this
-                if (!blockData?.owner)
+                if (!blockData?.owner || blockData?.owner === address)
                   selectedBlocks?.set(blockId.toString(), { selected: true });
               }
 
@@ -190,7 +192,7 @@ export default function Wall() {
         })}
       </>
     );
-  }, [generateRandomWallData, selectMultipleBlocksOn, selectedBlocks]);
+  }, [address, generateRandomWallData, selectMultipleBlocksOn, selectedBlocks]);
 
   function handleConfirmSelection() {
     if (selectedBlocks) {
@@ -261,6 +263,7 @@ export default function Wall() {
         <EditBlockDialog
           open={editBlockDialogOpen}
           setOpen={handleEditDialogOpen}
+          wallData={generateRandomWallData}
         />
       )}
     </>
