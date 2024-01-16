@@ -52,9 +52,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
 
     fallback() external payable {}
 
-    receive() external payable {
-        revert("BlockSales : [receive] - You can keep your tokens");
-    }
+    receive() external payable {}
 
     /** @notice SALES MECHANICS */
     function buyBlock(
@@ -149,8 +147,6 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         );
         if (!happy) _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
         else if (!payload.multiBuy_) {
-            // If it is a single token
-            uint256 tokenId = payload.tokens_[0][0];
             //  Check it is the contracts
             NFT.transferFrom(
                 address(this),
@@ -241,21 +237,28 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     }
 
     /** @notice WITHDRAWING MECHANICS */
-    function withdrawFunds(address withdrawAddress_) external onlyOwner {
-        uint balance = PAYMENT_TOKEN.balanceOf(address(this));
-        PAYMENT_TOKEN.transfer(withdrawAddress_, balance);
+    function withdrawFunds(
+        address withdrawAddress_,
+        address tokenAddress_
+    ) external override onlyOwner {
+        IERC20 token = IERC20(tokenAddress_);
+        uint balance = token.balanceOf(address(this));
+        token.transfer(withdrawAddress_, balance);
     }
 
     function withdrawBlock(
         address withdrawAddress_,
         uint256 tokenId_
-    ) external override onlyOwner {}
+    ) external override onlyOwner {
+        require(NFT.ownerOf(tokenId_) == address(this), "Token not available");
+        NFT.transferFrom(address(this), withdrawAddress_, tokenId_);
+    }
 
     function _checkOwnershipOfBatch(
         uint256[][] memory tokenIds_,
         bool single_
-    ) internal returns (bool) {
-        (uint totalOrder, uint numElements) = (0, tokenIds_.length);
+    ) internal view returns (bool) {
+        uint numElements = (tokenIds_.length);
         unchecked {
             if (single_)
                 if (NFT.ownerOf(tokenIds_[0][0]) != address(this)) return false;

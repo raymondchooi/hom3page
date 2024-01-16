@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {OnlyActive, Ownable} from "../security/onlyActive.sol";
 import {IBlockStore} from "../interfaces/IBlockStore.sol";
-import {IGhoToken} from "../interfaces/IGhoToken.sol";
+import {IGhoToken, IERC20} from "../interfaces/IGhoToken.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
@@ -35,6 +35,10 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
             revert MessageNotFromSalesChain(chain_);
         _;
     }
+
+    fallback() external payable {}
+
+    receive() external payable {}
 
     constructor(
         address router_,
@@ -224,10 +228,12 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
     }
 
     function withdrawFunds(
-        address withdrawAddress_
+        address withdrawAddress_,
+        address tokenAddress_
     ) external override onlyOwner {
-        uint balance = GHO.balanceOf(address(this));
-        GHO.transfer(withdrawAddress_, balance);
+        IERC20 token = IERC20(tokenAddress_);
+        uint balance = token.balanceOf(address(this));
+        token.transfer(withdrawAddress_, balance);
     }
 
     function getSaleStatus(

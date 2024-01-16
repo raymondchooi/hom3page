@@ -16,27 +16,27 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   console.log(`🟠 [TASK] ${taskId} : Mounted`);
 
   const delayTime = 20000;
+  const network = await hre.ethers.provider.getNetwork();
+  const [deployer] = await hre.ethers.getSigners();
 
-  const deploymentAddresses: DeploymentStore[] = [];
   const opGoerli: ContractNames[] = ["BlockToken", "BlockSales"];
   const maticMumbai: ContractNames[] = ["BlockStore"];
-  const deploys: { network: ChainName; deploys: ContractNames[] }[] = [
-    { network: "opGoerli", deploys: opGoerli },
-  ];
+  const deploymentAddresses: DeploymentStore[] = [];
+  const deploys: { [chain in ChainName]?: ContractNames[] } = {
+    opGoerli: opGoerli,
+    maticMumbai: maticMumbai,
+  };
 
-  for (let y = 0; y < deploys.length; y++) {
-    console.log(
-      `🟠 [TASK] ${taskId} : Connecting to network ${deploys[y].network}`
-    );
-    const network = await hre.ethers.provider.getNetwork();
-    if (deploys[y].network != network.name) throw "Wrong Network";
-    const [deployer] = await hre.ethers.getSigners();
+  console.log(`🟠 [TASK] ${taskId} : Connecting to network ${network?.name}`);
 
-    for (let i = 0; i < opGoerli.length; i++) {
+  if (!deploys[network?.name as unknown as ChainName]) return;
+  else {
+    const thisRun: ContractNames[] = deploys[network!.name as ChainName] ?? [];
+    for (let i = 0; i < thisRun.length; i++) {
       console.log(
-        `🟠 [TASK] ${taskId} : Deploying contract ${i + 1}/${opGoerli.length}`
+        `🟠 [TASK] ${taskId} : Deploying contract ${i + 1}/${thisRun.length}`
       );
-      let deployment = opGoerli[i];
+      let deployment = thisRun[i];
       const tx = await deploy({
         hre,
         deployer,
@@ -55,8 +55,6 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
           deployment: tx,
         });
     }
-
-    
   }
 
   console.log(`🟢 [TASK] ${taskId} : Finished`);

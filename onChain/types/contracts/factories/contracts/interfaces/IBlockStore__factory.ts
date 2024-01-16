@@ -296,6 +296,11 @@ const _abi = [
         name: "withdrawAddress_",
         type: "address",
       },
+      {
+        internalType: "address",
+        name: "tokenAddress_",
+        type: "address",
+      },
     ],
     name: "withdrawFunds",
     outputs: [],
