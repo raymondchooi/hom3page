@@ -14,6 +14,46 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "CCIPReceiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.CCIPReceiver__factory>;
+    getContractFactory(
+      name: "IAny2EVMMessageReceiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAny2EVMMessageReceiver__factory>;
+    getContractFactory(
+      name: "IRouterClient",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IRouterClient__factory>;
+    getContractFactory(
+      name: "Client",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Client__factory>;
+    getContractFactory(
+      name: "ConfirmedOwner",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ConfirmedOwner__factory>;
+    getContractFactory(
+      name: "ConfirmedOwnerWithProposal",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ConfirmedOwnerWithProposal__factory>;
+    getContractFactory(
+      name: "OwnerIsCreator",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.OwnerIsCreator__factory>;
+    getContractFactory(
+      name: "IOwnable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IOwnable__factory>;
+    getContractFactory(
+      name: "IERC165",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC165__factory>;
+    getContractFactory(
+      name: "LinkTokenInterface",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.LinkTokenInterface__factory>;
+    getContractFactory(
       name: "IAccessControl",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IAccessControl__factory>;
@@ -110,17 +150,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Checkpoints__factory>;
     getContractFactory(
-      name: "BlockSales",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BlockSales__factory>;
-    getContractFactory(
       name: "WallGenerator",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.WallGenerator__factory>;
     getContractFactory(
-      name: "IBlockSale",
+      name: "IBlockSales",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IBlockSale__factory>;
+    ): Promise<Contracts.IBlockSales__factory>;
+    getContractFactory(
+      name: "IBlockStore",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IBlockStore__factory>;
     getContractFactory(
       name: "IBlockToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -141,6 +181,14 @@ declare module "hardhat/types/runtime" {
       name: "OnlyActive",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OnlyActive__factory>;
+    getContractFactory(
+      name: "BlockSales",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BlockSales__factory>;
+    getContractFactory(
+      name: "BlockStore",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BlockStore__factory>;
     getContractFactory(
       name: "BlockToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -171,6 +219,56 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.IERC721A__factory>;
 
     getContractAt(
+      name: "CCIPReceiver",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CCIPReceiver>;
+    getContractAt(
+      name: "IAny2EVMMessageReceiver",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAny2EVMMessageReceiver>;
+    getContractAt(
+      name: "IRouterClient",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IRouterClient>;
+    getContractAt(
+      name: "Client",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Client>;
+    getContractAt(
+      name: "ConfirmedOwner",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ConfirmedOwner>;
+    getContractAt(
+      name: "ConfirmedOwnerWithProposal",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ConfirmedOwnerWithProposal>;
+    getContractAt(
+      name: "OwnerIsCreator",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OwnerIsCreator>;
+    getContractAt(
+      name: "IOwnable",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IOwnable>;
+    getContractAt(
+      name: "IERC165",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165>;
+    getContractAt(
+      name: "LinkTokenInterface",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.LinkTokenInterface>;
+    getContractAt(
       name: "IAccessControl",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -291,20 +389,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Checkpoints>;
     getContractAt(
-      name: "BlockSales",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.BlockSales>;
-    getContractAt(
       name: "WallGenerator",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.WallGenerator>;
     getContractAt(
-      name: "IBlockSale",
+      name: "IBlockSales",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.IBlockSale>;
+    ): Promise<Contracts.IBlockSales>;
+    getContractAt(
+      name: "IBlockStore",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IBlockStore>;
     getContractAt(
       name: "IBlockToken",
       address: string | ethers.Addressable,
@@ -330,6 +428,16 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.OnlyActive>;
+    getContractAt(
+      name: "BlockSales",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BlockSales>;
+    getContractAt(
+      name: "BlockStore",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BlockStore>;
     getContractAt(
       name: "BlockToken",
       address: string | ethers.Addressable,
@@ -367,6 +475,46 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.IERC721A>;
 
     deployContract(
+      name: "CCIPReceiver",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.CCIPReceiver>;
+    deployContract(
+      name: "IAny2EVMMessageReceiver",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IAny2EVMMessageReceiver>;
+    deployContract(
+      name: "IRouterClient",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IRouterClient>;
+    deployContract(
+      name: "Client",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Client>;
+    deployContract(
+      name: "ConfirmedOwner",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ConfirmedOwner>;
+    deployContract(
+      name: "ConfirmedOwnerWithProposal",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ConfirmedOwnerWithProposal>;
+    deployContract(
+      name: "OwnerIsCreator",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.OwnerIsCreator>;
+    deployContract(
+      name: "IOwnable",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IOwnable>;
+    deployContract(
+      name: "IERC165",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC165>;
+    deployContract(
+      name: "LinkTokenInterface",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.LinkTokenInterface>;
+    deployContract(
       name: "IAccessControl",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IAccessControl>;
@@ -463,17 +611,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Checkpoints>;
     deployContract(
-      name: "BlockSales",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.BlockSales>;
-    deployContract(
       name: "WallGenerator",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.WallGenerator>;
     deployContract(
-      name: "IBlockSale",
+      name: "IBlockSales",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.IBlockSale>;
+    ): Promise<Contracts.IBlockSales>;
+    deployContract(
+      name: "IBlockStore",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IBlockStore>;
     deployContract(
       name: "IBlockToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -494,6 +642,14 @@ declare module "hardhat/types/runtime" {
       name: "OnlyActive",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.OnlyActive>;
+    deployContract(
+      name: "BlockSales",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BlockSales>;
+    deployContract(
+      name: "BlockStore",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BlockStore>;
     deployContract(
       name: "BlockToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -524,6 +680,56 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.IERC721A>;
 
     deployContract(
+      name: "CCIPReceiver",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.CCIPReceiver>;
+    deployContract(
+      name: "IAny2EVMMessageReceiver",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IAny2EVMMessageReceiver>;
+    deployContract(
+      name: "IRouterClient",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IRouterClient>;
+    deployContract(
+      name: "Client",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Client>;
+    deployContract(
+      name: "ConfirmedOwner",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ConfirmedOwner>;
+    deployContract(
+      name: "ConfirmedOwnerWithProposal",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ConfirmedOwnerWithProposal>;
+    deployContract(
+      name: "OwnerIsCreator",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.OwnerIsCreator>;
+    deployContract(
+      name: "IOwnable",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IOwnable>;
+    deployContract(
+      name: "IERC165",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC165>;
+    deployContract(
+      name: "LinkTokenInterface",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.LinkTokenInterface>;
+    deployContract(
       name: "IAccessControl",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -644,20 +850,20 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Checkpoints>;
     deployContract(
-      name: "BlockSales",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.BlockSales>;
-    deployContract(
       name: "WallGenerator",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.WallGenerator>;
     deployContract(
-      name: "IBlockSale",
+      name: "IBlockSales",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.IBlockSale>;
+    ): Promise<Contracts.IBlockSales>;
+    deployContract(
+      name: "IBlockStore",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IBlockStore>;
     deployContract(
       name: "IBlockToken",
       args: any[],
@@ -683,6 +889,16 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.OnlyActive>;
+    deployContract(
+      name: "BlockSales",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BlockSales>;
+    deployContract(
+      name: "BlockStore",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BlockStore>;
     deployContract(
       name: "BlockToken",
       args: any[],

@@ -24,7 +24,8 @@ dotenv.config();
 
 console.log("🟢 Hardhat : Mounted.");
 // Some quick checks to make sure our .env is working.
-const { rcpEndPoints, masterMnemonic, devRecovery } = checkPrivateKeys();
+const { rcpEndPoints, masterMnemonic, devRecovery, etherscanApis, chainIds } =
+  checkPrivateKeys();
 
 const gasPrice = 24059329590;
 console.log("❗️Gas Price Set: ", gasPrice / 10 ** 9, "gwei");
@@ -60,7 +61,7 @@ const config: HardhatUserConfig = {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY!,
+    apiKey: etherscanApis,
     customChains: [
       {
         network: "baseGoerli",
@@ -68,6 +69,15 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://api-goerli.basescan.org/api",
           browserURL: "https://goerli.basescan.org",
+        },
+      },
+
+      {
+        network: "optimism",
+        chainId: 10,
+        urls: {
+          apiURL: "https://api-optimistic.etherscan.io/api",
+          browserURL: "https://optimistic.etherscan.io",
         },
       },
       {
@@ -79,11 +89,11 @@ const config: HardhatUserConfig = {
         },
       },
       {
-        network: "optimism",
-        chainId: 10,
+        network: "arbitrum",
+        chainId: 42161,
         urls: {
-          apiURL: "https://api-optimistic.etherscan.io/api",
-          browserURL: "https://optimistic.etherscan.io",
+          apiURL: "https://api.arbiscan.io/api",
+          browserURL: "https://arbiscan.io",
         },
       },
       {
@@ -94,12 +104,13 @@ const config: HardhatUserConfig = {
           browserURL: "https://goerli.arbiscan.io",
         },
       },
+
       {
-        network: "arbitrum",
-        chainId: 42161,
+        network: "eth",
+        chainId: 1,
         urls: {
-          apiURL: "https://api.arbiscan.io/api",
-          browserURL: "https://arbiscan.io",
+          apiURL: "https://api.etherscan.io/api",
+          browserURL: "https://etherscan.io",
         },
       },
       {
@@ -118,6 +129,22 @@ const config: HardhatUserConfig = {
           browserURL: "https://goerli.etherscan.io",
         },
       },
+      {
+        network: "matic",
+        chainId: 137,
+        urls: {
+          apiURL: "https://api.polygonscan.com/api",
+          browserURL: "https://polygonscan.com/",
+        },
+      },
+      {
+        network: "maticMumbai",
+        chainId: 80001,
+        urls: {
+          apiURL: "https://api-testnet.polygonscan.com/api",
+          browserURL: "https://mumbai.polygonscan.com/",
+        },
+      },
     ],
   },
   networks: {
@@ -125,10 +152,10 @@ const config: HardhatUserConfig = {
       gas: "auto",
       chainId: 1,
       forking: {
-        url: rcpEndPoints.eth,
+        url: rcpEndPoints.eth!,
       },
       mining: {
-        auto: false,
+        auto: true,
         interval: 5000,
       },
     },
@@ -138,16 +165,16 @@ const config: HardhatUserConfig = {
       chainId: 84531,
       gasPrice: gasPrice,
     },
-    opGoerli: {
-      url: rcpEndPoints.opGoerli,
-      accounts: [masterMnemonic],
-      chainId: 420,
-      gasPrice: gasPrice,
-    },
     optimism: {
       url: rcpEndPoints.optimism,
       accounts: [masterMnemonic],
       chainId: 10,
+      gasPrice: gasPrice,
+    },
+    opGoerli: {
+      url: rcpEndPoints.opGoerli,
+      accounts: [masterMnemonic],
+      chainId: 420,
       gasPrice: gasPrice,
     },
     arbGoerli: {
@@ -157,19 +184,19 @@ const config: HardhatUserConfig = {
       gasPrice: gasPrice,
     },
     arbitrum: {
-      url: rcpEndPoints.arbitrim,
+      url: rcpEndPoints.arbitrum,
       accounts: [masterMnemonic],
       chainId: 42161,
       gasPrice: gasPrice,
     },
-    ethSepolia: {
-      url: rcpEndPoints.ethSepolia,
+    matic: {
+      url: rcpEndPoints.matic,
+      chainId: 137,
       accounts: [masterMnemonic],
-      chainId: 11155111,
       gasPrice: gasPrice,
     },
-    mumbai: {
-      url: rcpEndPoints.mumbai,
+    maticMumbai: {
+      url: rcpEndPoints.maticMumbai,
       chainId: 80001,
       accounts: [masterMnemonic],
       gasPrice: gasPrice,
@@ -184,6 +211,12 @@ const config: HardhatUserConfig = {
       url: rcpEndPoints.ethGoerli,
       accounts: [masterMnemonic],
       chainId: 5,
+      gasPrice: gasPrice,
+    },
+    ethSepolia: {
+      url: rcpEndPoints.ethSepolia,
+      accounts: [masterMnemonic],
+      chainId: 11155111,
       gasPrice: gasPrice,
     },
     localhost: {

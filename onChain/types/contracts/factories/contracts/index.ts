@@ -4,6 +4,6 @@
 export * as factory from "./factory";
 export * as interfaces from "./interfaces";
 export * as security from "./security";
+export * as shop from "./shop";
 export * as tokens from "./tokens";
 export * as utils from "./utils";
-export { BlockSales__factory } from "./BlockSales__factory";
