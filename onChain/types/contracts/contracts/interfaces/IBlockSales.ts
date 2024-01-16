@@ -81,7 +81,7 @@ export interface IBlockSalesInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawFunds",
-    values: [AddressLike]
+    values: [AddressLike, AddressLike]
   ): string;
 
   decodeFunctionResult(
@@ -231,7 +231,7 @@ export interface IBlockSales extends BaseContract {
   >;
 
   withdrawFunds: TypedContractMethod<
-    [withdrawAddress_: AddressLike],
+    [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -255,7 +255,11 @@ export interface IBlockSales extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "withdrawFunds"
-  ): TypedContractMethod<[withdrawAddress_: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   getEvent(
     key: "MessageReceived"

@@ -68,11 +68,61 @@ export default async function deploy({
         .attach(prevDeployments[0].deployment!)
         .connect(deployer);
 
-      const tx = await tokenContract.mintAllBlocks(deployedContract.targets);
+      const tx = await tokenContract.mintAllBlocks(deployedContract.target);
       await tx.wait();
       console.log(
-        `🟢 Minted to Sales : ${deployedContract.targets} to ${tx.hash}`
+        `🟢 Minted to Sales : ${deployedContract.target} to ${tx.hash}`
       );
+
+      const paymentToken = await hre.ethers.getContractAt(
+        "ERC20",
+        constructorArguments[1],
+        deployer
+      );
+
+      const approvalTx = await paymentToken.approve(
+        deployedContract.target,
+        5000 * 10 ** 6
+      );
+
+      await approvalTx.wait();
+      console.log(`🟢 Approved USDC Spend : ${approvalTx.hash}`);
+
+      const buySingleTx = await deployedContract.buyBlock(1);
+      await buySingleTx.wait();
+      console.log(`🟢 Bought Block No.1 : ${buySingleTx.hash}`);
+
+      const maticTx = await deployer.sendTransaction({
+        to: deployedContract.target,
+        value: hre.ethers.parseUnits("0.5", "ether"),
+      });
+
+      await maticTx.wait();
+      console.log(`🟢 Supplied with ETH : ${maticTx.hash}`);
+    }
+
+    if (contractName === "BlockStore") {
+      const paymentToken = await hre.ethers.getContractAt(
+        "ERC20",
+        constructorArguments[1],
+        deployer
+      );
+
+      const approvalTx = await paymentToken.approve(
+        deployedContract.target,
+        5000 * 10 ** 6
+      );
+
+      await approvalTx.wait();
+      console.log(`🟢 Approved USDC Spend : ${approvalTx.hash}`);
+
+      const maticTx = await deployer.sendTransaction({
+        to: deployedContract.target,
+        value: hre.ethers.parseUnits("0.5", "ether"),
+      });
+
+      await maticTx.wait();
+      console.log(`🟢 Supplied with Matic : ${maticTx.hash}`);
     }
 
     return deployedContract.target;
