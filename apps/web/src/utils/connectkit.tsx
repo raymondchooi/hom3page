@@ -1,10 +1,10 @@
 "use client";
 
 import { WagmiConfig, createConfig } from "wagmi";
-import { sepolia, mainnet, optimism, arbitrum } from "wagmi/chains";
+import { sepolia, optimismGoerli, polygonMumbai } from "wagmi/chains";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 
-const chains = [sepolia, mainnet, optimism, arbitrum];
+const chains = [sepolia, optimismGoerli, polygonMumbai];
 
 const config = createConfig(
   getDefaultConfig({
