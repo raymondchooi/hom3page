@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useAccount, useBalance, sepolia } from "wagmi";
 
 import { Button, BappSummary } from "components";
 import {
@@ -19,7 +20,7 @@ import {
   CarouselPrevious,
 } from "components/carousel";
 import { BAPPS_BASE_URL } from "constants/urls";
-import { useAccount, useBalance, sepolia } from "wagmi";
+import { WALL_TOTAL_BLOCKS, WALL_WIDTH } from "constants/wall";
 import { type BlockData } from "models/BlockData";
 
 interface EditBlockDialogProps {
@@ -136,8 +137,6 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
           <div className="mr-4 overflow-auto text-xl font-semibold text-zinc-950">
             {blockIdsText}
           </div>
-          <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span>
-          <div className="text-base font-semibold text-zinc-500">Available</div>
         </div>
         <Button plain onClick={() => setOpen(false)}>
           <svg
