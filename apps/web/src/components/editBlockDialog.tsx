@@ -235,7 +235,6 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
       );
 
       for (const [, value] of rectangleGroups.entries()) {
-        console.log("value", value);
         if (value?.blockIds?.includes(blockIdString)) {
           selectedBlocksForEditing?.set(value.firstBlockId, {
             isFirstBlock: true,
@@ -263,7 +262,9 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
           return (
             <div
               key={i}
-              style={{ gridTemplateColumns: `repeat(${group.width}, 1fr)` }}
+              style={{
+                gridTemplateColumns: `repeat(${group.width}, minmax(0, 1fr))`,
+              }}
               className="grid gap-0"
             >
               {group.blockIds.map((blockId: string) => {
@@ -289,10 +290,13 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                     <div
                       className={cn(
                         "absolute left-0 top-0 border-2 border-gray-500",
-                        isBlockSelected ? "border-red-600" : "",
+                        isBlockSelected ? "border-red-600" : "border-gray-400",
                         isFirstBlockFromSelected
                           ? "z-10 overflow-visible"
                           : "border-transparent",
+                        !isBlockSelected &&
+                          !isFirstBlockFromSelected &&
+                          "border-gray-400",
                       )}
                       style={{
                         width: isFirstBlockFromSelected
@@ -316,18 +320,16 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                     <button
                       className={cn(
                         "absolute left-0 top-0 z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-red-600",
-
-                        //TODO add check for rectangle form on new select
-                        // group?.firstBlockId === blockId
-                        //   ? "overflow-visible"
-                        //   : "z-20",
+                        purchasableBlocks.get(blockId) && !bought
+                          ? "cursor-not-allowed border-dashed border-gray-200 bg-gray-200 hover:border-gray-400"
+                          : "border-transparent ",
                       )}
                       onClick={() => handleBlockSelect(blockId)}
                       style={{
                         width: BLOCK_WIDTH,
                         height: BLOCK_HEIGHT,
                       }}
-                      title={blockId.toString()}
+                      title={`${purchasableBlocks.get(blockId) && !bought ? "Not owned: " : ""}${blockId.toString()}`}
                     >
                       {blockId}
                     </button>
@@ -385,7 +387,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
             <li className="pl-4">
               Edit bApps
               {/** TODO change bought to ownedBlocks.size */}
-              <span className="ml-2 text-xs">{`${bought ? `(${selectedBlocksForEditing?.size ?? 0} selected)` : ""}`}</span>
+              <span className="ml-2 text-xs">{`(${selectedBlocksForEditing?.size ?? 0} selected)`}</span>
             </li>
           </ol>
 
