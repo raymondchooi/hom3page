@@ -96,6 +96,7 @@ export const tokenAddress: TokenAddressList = {
     ethSepolia: "",
     arbGoerli: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
     opGoerli: "0x69529987FA4A075D0C00B0128fa848dc9ebbE9CE",
+    maticMumbai: "0x52D800ca262522580CeBAD275395ca6e7598C014",
     hardhat: productionChainAddresses[forkedNetwork].usdc,
   },
   usdt: {
@@ -114,6 +115,7 @@ export const tokenAddress: TokenAddressList = {
     ethSepolia: "",
     arbGoerli: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     opGoerli: "",
+    maticMumbai: "0xc199807AF4fEDB02EE567Ed0FeB814A077de4802",
     hardhat: productionChainAddresses[forkedNetwork].weth,
   },
   wbtc: {
@@ -123,6 +125,7 @@ export const tokenAddress: TokenAddressList = {
     arbGoerli: "0x22d5e2dE578677791f6c90e0110Ec629be9d5Fb5",
     arbitrum: productionChainAddresses.arbitrum.wbtc,
     opGoerli: "",
+    maticMumbai: "0x2Fa2e7a6dEB7bb51B625336DBe1dA23511914a8A",
     hardhat: productionChainAddresses[forkedNetwork].wbtc,
   },
   link: {
@@ -165,6 +168,7 @@ export const tokenAddress: TokenAddressList = {
     ethSepolia: "0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59",
     baseGoerli: "0x80AF2F44ed0469018922c9F483dc5A909862fdc2",
     arbSepolia: "0x2a9C5afB0d0e4BAb2BCdaE109EC4b0c4Be15a165",
+    maticMumbai: "0x1035CabC275068e0F4b745A29CEDf38E13aF41b1",
   },
 };
 

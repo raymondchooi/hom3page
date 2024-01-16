@@ -23,6 +23,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     //  Cross Chain endpoints
     uint64 constant OP_CHAIN_SELECTOR = 2664363617261496610;
     uint64 constant ETH_CHAIN_SELECTOR = 16015286601757825753;
+    uint64 constant MATIC_CHAIN_SELECTOR = 12532609583862916517;
 
     mapping(uint64 => address) private _saleStores;
     mapping(uint64 => bool) private _chainAllowed;
@@ -142,47 +143,37 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
             payload
         );
 
-        if (!payload.multiBuy_) {
+        bool happy = _checkOwnershipOfBatch(
+            payload.tokens_,
+            !payload.multiBuy_
+        );
+        if (!happy) _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
+        else if (!payload.multiBuy_) {
             // If it is a single token
             uint256 tokenId = payload.tokens_[0][0];
             //  Check it is the contracts
-            if (NFT.ownerOf(tokenId) != address(this))
-                _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
-            else {
-                NFT.transferFrom(
-                    address(this),
-                    _msgSender(),
-                    payload.tokens_[0][0]
-                );
-                _totalSold++;
-                _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
-                emit SaleMade(_msgSender(), 1, chainId);
-            }
+            NFT.transferFrom(
+                address(this),
+                _msgSender(),
+                payload.tokens_[0][0]
+            );
+            _totalSold++;
+            _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
+            emit SaleMade(_msgSender(), 1, chainId);
         } else {
             (uint totalOrder, uint numElements) = (0, payload.tokens_.length);
             unchecked {
-                for (uint i = 0; i < numElements; i++) {
-                    for (uint x = 0; x < payload.tokens_[i].length; x++) {
-                        if (
-                            NFT.ownerOf(payload.tokens_[i][x]) != address(this)
-                        ) {
-                            _returnSalesRecipe(
-                                SaleRecipe(messageId, false),
-                                chainId
-                            );
-                            break;
-                        } else
-                            NFT.transferFrom(
-                                address(this),
-                                msg.sender,
-                                payload.tokens_[i][x]
-                            );
-                    }
-                }
+                for (uint i = 0; i < numElements; i++)
+                    for (uint x = 0; x < payload.tokens_[i].length; x++)
+                        NFT.transferFrom(
+                            address(this),
+                            msg.sender,
+                            payload.tokens_[i][x]
+                        );
             }
             _totalSold += totalOrder;
             _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
-            emit SaleMade(_msgSender(), totalOrder, OP_CHAIN_SELECTOR);
+            emit SaleMade(_msgSender(), totalOrder, chainId);
         }
     }
 
@@ -259,6 +250,23 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         address withdrawAddress_,
         uint256 tokenId_
     ) external override onlyOwner {}
+
+    function _checkOwnershipOfBatch(
+        uint256[][] memory tokenIds_,
+        bool single_
+    ) internal returns (bool) {
+        (uint totalOrder, uint numElements) = (0, tokenIds_.length);
+        unchecked {
+            if (single_)
+                if (NFT.ownerOf(tokenIds_[0][0]) != address(this)) return false;
+                else
+                    for (uint i = 0; i < numElements; i++)
+                        for (uint x = 0; x < tokenIds_[i].length; x++)
+                            if (NFT.ownerOf(tokenIds_[i][x]) != address(this))
+                                return false;
+        }
+        return true;
+    }
 
     /** @notice GETTERS */
 

@@ -26,9 +26,8 @@ export const BlockStoreArguments = (
     networkName === "localhost" ? "hardhat" : networkName;
 
   const router_ = tokenAddress.ccipRouter[netName];
-  const ghoTokenAddress_ = tokenAddress.gho[netName];
+  const ghoTokenAddress_ = tokenAddress.usdc[netName];
   const blockSalesContract_ = deployedContracts.opGoerli?.BlockSales;
-
 
   return [router_, ghoTokenAddress_, blockSalesContract_];
 };

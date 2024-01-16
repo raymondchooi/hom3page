@@ -17,10 +17,11 @@ export default async function deploy({
   prevDeployments,
 }: DeploymentProps): Promise<string | Addressable | false> {
   try {
+    const nonce = await deployer!.getNonce();
     const deployedContract: Contract = await hre.ethers.deployContract(
       contractName,
       constructorArguments,
-      deployer
+      { nonce, signer: deployer }
     );
     console.log(
       `🟠 Deployment confirming : ${contractName} to ${deployedContract.target}`

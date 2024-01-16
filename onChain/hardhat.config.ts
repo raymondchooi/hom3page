@@ -27,7 +27,7 @@ console.log("🟢 Hardhat : Mounted.");
 const { rcpEndPoints, masterDeployer, etherscanApis, devAccounts } =
   checkPrivateKeys();
 
-const gasPrice = 24059329590;
+const gasPrice = 25000000000;
 console.log("❗️Gas Price Set: ", gasPrice / 10 ** 9, "gwei");
 
 const config: HardhatUserConfig = {
@@ -104,6 +104,14 @@ const config: HardhatUserConfig = {
           browserURL: "https://goerli.arbiscan.io",
         },
       },
+      {
+        network: "arbSepolia",
+        chainId: 421614,
+        urls: {
+          apiURL: "https://api-sepolia.arbiscan.io/api",
+          browserURL: "https://sepolia.arbiscan.io/",
+        },
+      },
 
       {
         network: "eth",
@@ -152,7 +160,7 @@ const config: HardhatUserConfig = {
       gas: "auto",
       chainId: 1,
       forking: {
-        url: rcpEndPoints.eth!,
+        url: rcpEndPoints("eth")!,
       },
       mining: {
         auto: true,
@@ -160,61 +168,67 @@ const config: HardhatUserConfig = {
       },
     },
     baseGoerli: {
-      url: rcpEndPoints.baseGoerli,
+      url: rcpEndPoints("baseGoerli"),
       accounts: devAccounts,
       chainId: 84531,
       gasPrice: gasPrice,
     },
     optimism: {
-      url: rcpEndPoints.optimism,
+      url: rcpEndPoints("optimism"),
       accounts: devAccounts,
       chainId: 10,
       gasPrice: gasPrice,
     },
     opGoerli: {
-      url: rcpEndPoints.opGoerli,
+      url: rcpEndPoints("opGoerli"),
       accounts: devAccounts,
       chainId: 420,
       gasPrice: gasPrice,
     },
     arbGoerli: {
-      url: rcpEndPoints.arbGoerli,
+      url: rcpEndPoints("arbGoerli"),
       accounts: devAccounts,
       chainId: 421613,
       gasPrice: gasPrice,
     },
+    arbSepolia: {
+      url: rcpEndPoints("arbSepolia"),
+      accounts: devAccounts,
+      chainId: 421614,
+      gasPrice: gasPrice,
+    },
     arbitrum: {
-      url: rcpEndPoints.arbitrum,
+      url: rcpEndPoints("arbitrum"),
       accounts: [masterDeployer],
       chainId: 42161,
       gasPrice: gasPrice,
     },
     matic: {
-      url: rcpEndPoints.matic,
+      url: rcpEndPoints("matic"),
       chainId: 137,
       accounts: devAccounts,
       gasPrice: gasPrice,
     },
     maticMumbai: {
-      url: rcpEndPoints.maticMumbai,
+      url: rcpEndPoints("maticMumbai"),
       chainId: 80001,
       accounts: devAccounts,
       gasPrice: gasPrice,
     },
     eth: {
-      url: rcpEndPoints.eth,
+      url: rcpEndPoints("eth"),
       chainId: 1,
       accounts: devAccounts,
       gasPrice: gasPrice,
     },
     ethGoerli: {
-      url: rcpEndPoints.ethGoerli,
+      url: rcpEndPoints("ethGoerli"),
       accounts: devAccounts,
       chainId: 5,
       gasPrice: gasPrice,
     },
     ethSepolia: {
-      url: rcpEndPoints.ethSepolia,
+      url: rcpEndPoints("ethSepolia"),
       accounts: devAccounts,
       chainId: 11155111,
       gasPrice: gasPrice,
