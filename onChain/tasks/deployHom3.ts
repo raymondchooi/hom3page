@@ -20,11 +20,13 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   const [deployer] = await hre.ethers.getSigners();
 
   const opGoerli: ContractNames[] = ["BlockToken", "BlockSales"];
+  const ethSepolia: ContractNames[] = ["BlockStore"];
   const maticMumbai: ContractNames[] = ["BlockStore"];
   const deploymentAddresses: DeploymentStore[] = [];
   const deploys: { [chain in ChainName]?: ContractNames[] } = {
     opGoerli: opGoerli,
     maticMumbai: maticMumbai,
+    ethSepolia: ethSepolia,
   };
 
   console.log(`🟠 [TASK] ${taskId} : Connecting to network ${network?.name}`);

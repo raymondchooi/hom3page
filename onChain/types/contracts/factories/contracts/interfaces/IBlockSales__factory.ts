@@ -247,6 +247,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address payable",
+        name: "withdrawAddress_",
+        type: "address",
+      },
+    ],
+    name: "withdrawFunds",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "withdrawAddress_",
         type: "address",
@@ -257,7 +270,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "withdrawFunds",
+    name: "withdrawTokens",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

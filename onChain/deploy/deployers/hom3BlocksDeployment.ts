@@ -110,7 +110,7 @@ export default async function deploy({
 
       const approvalTx = await paymentToken.approve(
         deployedContract.target,
-        5000 * 10 ** 6
+        200 * 10 ** 18
       );
 
       await approvalTx.wait();

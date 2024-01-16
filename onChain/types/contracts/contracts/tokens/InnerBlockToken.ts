@@ -31,6 +31,7 @@ export interface InnerBlockTokenInterface extends Interface {
       | "approve"
       | "balanceOf"
       | "getApproved"
+      | "isActive"
       | "isApprovedForAll"
       | "mintInnerWall"
       | "mintNBlock"
@@ -80,6 +81,7 @@ export interface InnerBlockTokenInterface extends Interface {
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "isActive", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [AddressLike, AddressLike]
@@ -151,6 +153,7 @@ export interface InnerBlockTokenInterface extends Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isActive", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -368,6 +371,8 @@ export interface InnerBlockToken extends BaseContract {
 
   getApproved: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
 
+  isActive: TypedContractMethod<[], [boolean], "view">;
+
   isApprovedForAll: TypedContractMethod<
     [owner: AddressLike, operator: AddressLike],
     [boolean],
@@ -470,6 +475,9 @@ export interface InnerBlockToken extends BaseContract {
   getFunction(
     nameOrSignature: "getApproved"
   ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "isActive"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "isApprovedForAll"
   ): TypedContractMethod<

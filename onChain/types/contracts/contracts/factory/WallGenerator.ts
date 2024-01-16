@@ -46,6 +46,7 @@ export interface WallGeneratorInterface extends Interface {
       | "delegateBlockVote"
       | "destroyInnerWall"
       | "getApproved"
+      | "isActive"
       | "isApprovedForAll"
       | "name"
       | "owner"
@@ -108,6 +109,7 @@ export interface WallGeneratorInterface extends Interface {
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "isActive", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [AddressLike, AddressLike]
@@ -191,6 +193,7 @@ export interface WallGeneratorInterface extends Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isActive", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -454,6 +457,8 @@ export interface WallGenerator extends BaseContract {
 
   getApproved: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
 
+  isActive: TypedContractMethod<[], [boolean], "view">;
+
   isApprovedForAll: TypedContractMethod<
     [owner: AddressLike, operator: AddressLike],
     [boolean],
@@ -572,6 +577,9 @@ export interface WallGenerator extends BaseContract {
   getFunction(
     nameOrSignature: "getApproved"
   ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "isActive"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "isApprovedForAll"
   ): TypedContractMethod<

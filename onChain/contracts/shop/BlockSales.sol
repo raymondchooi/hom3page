@@ -31,7 +31,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     modifier onlyAllowlisted(uint64 _sourceChainSelector, address _sender) {
         if (!_chainAllowed[_sourceChainSelector])
             revert MessageNotFromSalesChain(_sourceChainSelector);
-        if (_saleStores[_sourceChainSelector] != _msgSender())
+        if (_saleStores[_sourceChainSelector] != _sender)
             revert MessageNotFromBlockSales(_sender);
         _;
     }
@@ -141,6 +141,9 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
             payload
         );
 
+        _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
+        /* 
+                    CONNECTED OUT FOR TESTING
         bool happy = _checkOwnershipOfBatch(
             payload.tokens_,
             !payload.multiBuy_
@@ -170,7 +173,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
             _totalSold += totalOrder;
             _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
             emit SaleMade(_msgSender(), totalOrder, chainId);
-        }
+        } */
     }
 
     function _returnSalesRecipe(
@@ -237,13 +240,23 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     }
 
     /** @notice WITHDRAWING MECHANICS */
-    function withdrawFunds(
+    function withdrawTokens(
         address withdrawAddress_,
         address tokenAddress_
     ) external override onlyOwner {
         IERC20 token = IERC20(tokenAddress_);
         uint balance = token.balanceOf(address(this));
         token.transfer(withdrawAddress_, balance);
+    }
+
+    function withdrawFunds(
+        address payable withdrawAddress_
+    ) external payable override onlyOwner {
+        uint256 balance = address(this).balance;
+        (bool sent, bytes memory data) = withdrawAddress_.call{value: balance}(
+            ""
+        );
+        require(sent, "Failed to send Ether");
     }
 
     function withdrawBlock(

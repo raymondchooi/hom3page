@@ -100,6 +100,7 @@ export interface BlockSalesInterface extends Interface {
       | "getChainBlockStore"
       | "getRouter"
       | "getTotalSold"
+      | "isActive"
       | "owner"
       | "renounceOwnership"
       | "setActiveState"
@@ -109,6 +110,7 @@ export interface BlockSalesInterface extends Interface {
       | "transferOwnership"
       | "withdrawBlock"
       | "withdrawFunds"
+      | "withdrawTokens"
   ): FunctionFragment;
 
   getEvent(
@@ -150,6 +152,7 @@ export interface BlockSalesInterface extends Interface {
     functionFragment: "getTotalSold",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "isActive", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -181,6 +184,10 @@ export interface BlockSalesInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawFunds",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawTokens",
     values: [AddressLike, AddressLike]
   ): string;
 
@@ -211,6 +218,7 @@ export interface BlockSalesInterface extends Interface {
     functionFragment: "getTotalSold",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isActive", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -242,6 +250,10 @@ export interface BlockSalesInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawFunds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawTokens",
     data: BytesLike
   ): Result;
 }
@@ -418,6 +430,8 @@ export interface BlockSales extends BaseContract {
 
   getTotalSold: TypedContractMethod<[], [bigint], "view">;
 
+  isActive: TypedContractMethod<[], [boolean], "view">;
+
   owner: TypedContractMethod<[], [string], "view">;
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
@@ -459,6 +473,12 @@ export interface BlockSales extends BaseContract {
   >;
 
   withdrawFunds: TypedContractMethod<
+    [withdrawAddress_: AddressLike],
+    [void],
+    "payable"
+  >;
+
+  withdrawTokens: TypedContractMethod<
     [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
     [void],
     "nonpayable"
@@ -500,6 +520,9 @@ export interface BlockSales extends BaseContract {
     nameOrSignature: "getTotalSold"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "isActive"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
@@ -537,6 +560,9 @@ export interface BlockSales extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "withdrawFunds"
+  ): TypedContractMethod<[withdrawAddress_: AddressLike], [void], "payable">;
+  getFunction(
+    nameOrSignature: "withdrawTokens"
   ): TypedContractMethod<
     [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
     [void],

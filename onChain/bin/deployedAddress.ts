@@ -15,12 +15,12 @@ const deployedContracts: {
     BlockStore: "",
   },
   opGoerli: {
-    BlockToken: "0x53DcCd9886eCeEDDEA1373B1A579BEE93bbf9DF3",
-    BlockSales: "0xb1F04B3631073dffE5CDFfF5D26fc913b5e9B252",
+    BlockToken: "0xc416Ec65c420996c7B6081138AaCC241C8150f3d",
+    BlockSales: "0xa6eF7147009E8F3E0613A6fEb231f94EE797379c",
   },
   maticMumbai: {
     BlockToken: "",
-    BlockStore: "0x5C2DF78bDEE5f7682Af16C226b0A0A9f9832580D",
+    BlockStore: "0x7a51d1a947CCbEae3457667c7D746038F6271f39",
   },
 };
 

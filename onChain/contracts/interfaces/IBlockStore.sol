@@ -62,7 +62,9 @@ interface IBlockStore {
 
     function buyBatchBlock(uint256[][] calldata tokenIds_) external;
 
-    function withdrawFunds(
+    function withdrawFunds(address payable withdrawAddress_) external payable;
+
+    function withdrawTokens(
         address withdrawAddress_,
         address tokenAddress_
     ) external;

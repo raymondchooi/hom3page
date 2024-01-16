@@ -131,9 +131,10 @@ export const tokenAddress: TokenAddressList = {
   link: {
     eth: "",
     ethGoerli: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
-    ethSepolia: "",
+    ethSepolia: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
     arbGoerli: "",
-    opGoerli: "",
+    opGoerli: "0xdc2CC710e42857672E7907CF474a69B63B93089f",
+    maticMumbai: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
     hardhat: "",
   },
   compoundV3USDC: {

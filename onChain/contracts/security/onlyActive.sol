@@ -25,4 +25,8 @@ abstract contract OnlyActive is Ownable {
     function _getActiveState() internal view returns (bool) {
         return _active;
     }
+
+    function isActive() external view returns (bool) {
+        return _active;
+    }
 }

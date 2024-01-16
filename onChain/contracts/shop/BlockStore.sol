@@ -14,7 +14,7 @@ import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications
 contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
     //  Set token cost to 100 $GHO
     //  Var to track contract sales
-    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 6; // USDC
+    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18; // USDC
     uint256 internal _totalSold;
     //  Contracts
     IRouterClient private s_router;
@@ -176,7 +176,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
                 tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
                 extraArgs: Client._argsToBytes(
                     // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: 200_000})
+                    Client.EVMExtraArgsV1({gasLimit: 2_000_000})
                 ),
                 // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
                 feeToken: feeTokenAddress_
@@ -227,13 +227,23 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         return _totalSold;
     }
 
-    function withdrawFunds(
+    function withdrawTokens(
         address withdrawAddress_,
         address tokenAddress_
     ) external override onlyOwner {
         IERC20 token = IERC20(tokenAddress_);
         uint balance = token.balanceOf(address(this));
         token.transfer(withdrawAddress_, balance);
+    }
+
+    function withdrawFunds(
+        address payable withdrawAddress_
+    ) external payable override onlyOwner {
+        uint256 balance = address(this).balance;
+        (bool sent, bytes memory data) = withdrawAddress_.call{value: balance}(
+            ""
+        );
+        require(sent, "Failed to send Ether");
     }
 
     function getSaleStatus(

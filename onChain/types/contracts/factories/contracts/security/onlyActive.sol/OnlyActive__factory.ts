@@ -65,6 +65,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "isActive",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "owner",
     outputs: [
       {

@@ -38,6 +38,7 @@ export interface BlockTokenInterface extends Interface {
       | "getPastTotalSupply"
       | "getPastVotes"
       | "getVotes"
+      | "isActive"
       | "isApprovedForAll"
       | "mintAllBlocks"
       | "name"
@@ -122,6 +123,7 @@ export interface BlockTokenInterface extends Interface {
     functionFragment: "getVotes",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(functionFragment: "isActive", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [AddressLike, AddressLike]
@@ -206,6 +208,7 @@ export interface BlockTokenInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getVotes", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isActive", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -524,6 +527,8 @@ export interface BlockToken extends BaseContract {
 
   getVotes: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
+  isActive: TypedContractMethod<[], [boolean], "view">;
+
   isApprovedForAll: TypedContractMethod<
     [owner: AddressLike, operator: AddressLike],
     [boolean],
@@ -672,6 +677,9 @@ export interface BlockToken extends BaseContract {
   getFunction(
     nameOrSignature: "getVotes"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "isActive"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "isApprovedForAll"
   ): TypedContractMethod<

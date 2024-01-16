@@ -25,6 +25,7 @@ import type {
 export interface OnlyActiveInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "isActive"
       | "owner"
       | "renounceOwnership"
       | "setActiveState"
@@ -35,6 +36,7 @@ export interface OnlyActiveInterface extends Interface {
     nameOrSignatureOrTopic: "ContractActiveStateChange" | "OwnershipTransferred"
   ): EventFragment;
 
+  encodeFunctionData(functionFragment: "isActive", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -49,6 +51,7 @@ export interface OnlyActiveInterface extends Interface {
     values: [AddressLike]
   ): string;
 
+  decodeFunctionResult(functionFragment: "isActive", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -132,6 +135,8 @@ export interface OnlyActive extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  isActive: TypedContractMethod<[], [boolean], "view">;
+
   owner: TypedContractMethod<[], [string], "view">;
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
@@ -152,6 +157,9 @@ export interface OnlyActive extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "isActive"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
