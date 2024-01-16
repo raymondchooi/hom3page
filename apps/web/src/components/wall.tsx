@@ -56,6 +56,22 @@ export default function Wall() {
           selectedBlocks ? Array.from(selectedBlocks.keys()).join(",") : "",
         );
       } else {
+        // Add single selected block to selected
+        if (currentParams.get("editBlock")?.split(",").length === 1) {
+          const newSelectedBlocks = selectedBlocks
+            ? new Map(selectedBlocks)
+            : new Map();
+
+          newSelectedBlocks.set(
+            currentParams.get("editBlock")?.toString() ?? "",
+            {
+              selected: true,
+            },
+          );
+
+          setSelectedBlocks(newSelectedBlocks);
+        }
+
         currentParams.delete("editBlock");
       }
 
