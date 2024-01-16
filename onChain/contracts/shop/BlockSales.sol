@@ -37,7 +37,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     }
 
     //  Sales
-    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18;
+    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 6; // USDC
     uint256 internal _totalSold;
 
     constructor(

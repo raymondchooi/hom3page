@@ -11,6 +11,8 @@ import "tsconfig-paths/register";
 import "hardhat-ethernal";
 import "@openzeppelin/hardhat-upgrades";
 import "@nomicfoundation/hardhat-chai-matchers";
+import "hardhat-change-network";
+
 import ethers from "ethers";
 
 import "./tasks";

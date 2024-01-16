@@ -14,7 +14,7 @@ import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications
 contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
     //  Set token cost to 100 $GHO
     //  Var to track contract sales
-    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18;
+    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 6; // USDC
     uint256 internal _totalSold;
     //  Contracts
     IRouterClient private s_router;

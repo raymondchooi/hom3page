@@ -20,7 +20,7 @@ const deployedContracts: {
   },
   maticMumbai: {
     BlockToken: "",
-    BlockSales: "",
+    BlockSales: "0x93aC0dbcAb484c6B692cfE944866D5494062723C",
   },
 };
 
