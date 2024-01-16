@@ -20,8 +20,10 @@ import {
   CarouselPrevious,
 } from "components/carousel";
 import { BAPPS_BASE_URL } from "constants/urls";
-import { WALL_TOTAL_BLOCKS, WALL_WIDTH } from "constants/wall";
+import { WALL_WIDTH } from "constants/wall";
 import { type BlockData } from "models/BlockData";
+import { BLOCK_WIDTH, BLOCK_HEIGHT } from "constants/block";
+import { cn } from "utils/tailwind";
 
 interface EditBlockDialogProps {
   open: boolean;
@@ -40,9 +42,13 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   const balance = useBalance({ address, chainId: sepolia.id });
 
   const [bought, setBought] = useState(false);
+  const [selectedBlocksForEditing, setSelectedBlocksForEditing] =
+    useState<Map<string, object>>();
 
   const blockIds = useMemo(() => {
-    return editBlockParam ? editBlockParam.split(",") : [];
+    return editBlockParam
+      ? editBlockParam.split(",").sort((a, b) => parseInt(a) - parseInt(b))
+      : [];
   }, [editBlockParam]);
 
   const blockIdsText = `#${blockIds.join(", #")}`;
@@ -130,6 +136,134 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
     purchasableBlocks.size,
   ]);
 
+  const groupBlocksIntoRectangles = useMemo(() => {
+    const groups = new Map();
+    let groupCount = 0;
+
+    for (let i = 0; i < blockIds.length; i++) {
+      // Skip if block already in rectangle
+      if (
+        Array.from(groups.values()).some((group) =>
+          group?.blockIds.includes(blockIds[i]),
+        )
+      )
+        continue;
+
+      const blockId = blockIds[i];
+      const row = Math.floor(parseInt(blockId ?? "1") / WALL_WIDTH);
+      const col = parseInt(blockId ?? "1") % WALL_WIDTH;
+
+      // Initialize the rectangle with the current block
+      const rectangles = [{ id: blockId, row: row, col: col }];
+
+      // Iterate over the rest of the blocks
+      for (let j = 0; j < blockIds.length; j++) {
+        // Skip the current block
+        if (j === i) continue;
+
+        // TODO add block start index
+        const otherRow = Math.floor(parseInt(blockIds[j] ?? "1") / WALL_WIDTH);
+        const otherCol = parseInt(blockIds[j] ?? "1") % WALL_WIDTH;
+
+        // Check if this block can form a rectangle with the current block
+        if (
+          (Math.abs(row - otherRow) <= 1 && col === otherCol) ||
+          (row === otherRow && Math.abs(col - otherCol) <= 1)
+        ) {
+          rectangles.push({ id: blockIds[j], row: otherRow, col: otherCol });
+        }
+      }
+
+      if (rectangles.length > 0) {
+        const minRow = Math.min(...rectangles.map((r) => r.row));
+        const minCol = Math.min(...rectangles.map((r) => r.col));
+        const maxRow = Math.max(...rectangles.map((r) => r.row));
+        const maxCol = Math.max(...rectangles.map((r) => r.col));
+
+        const width = maxCol - minCol + 1;
+        const height = maxRow - minRow + 1;
+
+        // Get the ID of the first block in the group
+        const firstBlockId = blockIds[minRow * WALL_WIDTH + minCol];
+
+        groups.set(groupCount.toString(), {
+          firstBlockId,
+          width,
+          height,
+          blockIds: rectangles.map((r) => r.id),
+        });
+
+        groupCount++;
+      }
+    }
+
+    return groups;
+  }, [blockIds]);
+
+  function handleBlockSelect(blockId: string) {
+    if (!selectedBlocksForEditing) {
+      setSelectedBlocksForEditing(new Map());
+    }
+
+    if (selectedBlocksForEditing?.has(blockId.toString())) {
+      selectedBlocksForEditing?.delete(blockId.toString());
+    } else {
+      //TODO see if rectangle
+      selectedBlocksForEditing?.set(blockId.toString(), { selected: true });
+    }
+
+    setSelectedBlocksForEditing(new Map(selectedBlocksForEditing));
+  }
+
+  const renderSelectBlocks = () => {
+    return (
+      <div className="mt-4 flex gap-x-6 overflow-x-auto">
+        {Array.from(groupBlocksIntoRectangles.values()).map((group, i) => {
+          return (
+            <div
+              key={i}
+              style={{ gridTemplateColumns: `repeat(${group.width}, 1fr)` }}
+              className="grid gap-0"
+            >
+              {group.blockIds.map((blockId: string) => {
+                return (
+                  <div key={blockId} className="relative">
+                    <div
+                      style={{
+                        width: BLOCK_WIDTH,
+                        height: BLOCK_HEIGHT,
+                      }}
+                    ></div>
+                    <button
+                      className={cn(
+                        "absolute left-0 top-0 z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 hover:border-red-600",
+                        selectedBlocksForEditing?.has(blockId.toString())
+                          ? "border-red-600"
+                          : "border-gray-500",
+                        //TODO add check for rectangle form on new select
+                        // group?.firstBlockId === blockId
+                        //   ? "overflow-visible"
+                        //   : "z-20",
+                      )}
+                      onClick={() => handleBlockSelect(blockId)}
+                      style={{
+                        width: BLOCK_WIDTH,
+                        height: BLOCK_HEIGHT,
+                      }}
+                      title={blockId.toString()}
+                    >
+                      {blockId}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <Dialog open={open} onClose={setOpen}>
       <DialogTitle className="flex items-center justify-between">
@@ -171,8 +305,15 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                 </button>
               </div>
             </li>
-            <li className="pl-4">Edit bApps</li>
+            <li className="pl-4">
+              Edit bApps
+              {/** TODO change bought to ownedBlocks.size */}
+              <span className="ml-2 text-xs">{`${bought ? `(${selectedBlocksForEditing?.size ?? 0} selected)` : ""}`}</span>
+            </li>
           </ol>
+
+          {renderSelectBlocks()}
+
           <div className="mt-4 flex justify-end">
             <Link
               className="cursor-pointer text-right underline"
