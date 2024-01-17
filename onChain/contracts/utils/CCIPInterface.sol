@@ -25,7 +25,7 @@ abstract contract CCIPInterface is CCIPReceiver {
     uint64 public constant ETH_CHAIN_SELECTOR = 16015286601757825753;
     uint64 public constant MATIC_CHAIN_SELECTOR = 12532609583862916517;
 
-    uint64 public constant SALES_CONTRACT_CHAIN = OP_CHAIN_SELECTOR;
+    uint64 public constant SALES_CONTRACT_CHAIN = MATIC_CHAIN_SELECTOR;
 
     uint constant SALES_RECIPE_GAS = 300_000;
     uint constant SALES_ORDER_GAS = 2_000_000;

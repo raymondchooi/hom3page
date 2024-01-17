@@ -101,11 +101,11 @@ export interface IBlockStoreInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawFunds",
-    values: [AddressLike]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawTokens",
-    values: [AddressLike, AddressLike]
+    values: [AddressLike]
   ): string;
 
   decodeFunctionResult(
@@ -258,14 +258,10 @@ export interface IBlockStore extends BaseContract {
     "nonpayable"
   >;
 
-  withdrawFunds: TypedContractMethod<
-    [withdrawAddress_: AddressLike],
-    [void],
-    "payable"
-  >;
+  withdrawFunds: TypedContractMethod<[], [void], "payable">;
 
   withdrawTokens: TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
+    [tokenAddress_: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -289,14 +285,10 @@ export interface IBlockStore extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "withdrawFunds"
-  ): TypedContractMethod<[withdrawAddress_: AddressLike], [void], "payable">;
+  ): TypedContractMethod<[], [void], "payable">;
   getFunction(
     nameOrSignature: "withdrawTokens"
-  ): TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[tokenAddress_: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "MessageReceived"

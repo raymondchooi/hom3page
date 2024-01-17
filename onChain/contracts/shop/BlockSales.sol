@@ -52,7 +52,8 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     constructor(
         address NFTAddress_,
         address paymentToken_,
-        address ccipRouter_
+        address ccipRouter_,
+        address linkToken_
     ) CCIPReceiver(ccipRouter_) Ownable(msg.sender) {
         s_router = IRouterClient(ccipRouter_);
         NFT = IERC721(NFTAddress_);
@@ -149,23 +150,13 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
             abi.decode(any2EvmMessage.sender, (address)), // abi-decoding of the sender address,
             payload
         );
+
         bool happy = _checkOwnershipOfBatch(
             payload.tokens_,
             !payload.multiBuy_
         );
-
-        (uint totalOrder, uint numElements) = (0, payload.tokens_.length);
-
-        emit SaleMade(_msgSender(), totalOrder, chainId);
-
-        //_returnSalesRecipe(SaleRecipe(messageId, false), chainId);
-        /* 
-                    CONNECTED OUT FOR TESTING
-        bool happy = _checkOwnershipOfBatch(
-            payload.tokens_,
-            !payload.multiBuy_
-        );
-        if (!happy) _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
+        if (!happy) {}
+        // _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
         else if (!payload.multiBuy_) {
             //  Check it is the contracts
             NFT.transferFrom(
@@ -174,7 +165,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
                 payload.tokens_[0][0]
             );
             _totalSold++;
-            _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
+            //_returnSalesRecipe(SaleRecipe(messageId, true), chainId);
             emit SaleMade(_msgSender(), 1, chainId);
         } else {
             (uint totalOrder, uint numElements) = (0, payload.tokens_.length);
@@ -188,9 +179,9 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
                         );
             }
             _totalSold += totalOrder;
-            _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
+            //_returnSalesRecipe(SaleRecipe(messageId, true), chainId);
             emit SaleMade(_msgSender(), totalOrder, chainId);
-        } */
+        }
     }
 
     function _returnSalesRecipe(

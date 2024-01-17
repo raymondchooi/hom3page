@@ -19,8 +19,19 @@ export default async function deploy({
   prevDeployments,
 }: DeploymentProps): Promise<string | Addressable | false> {
   try {
-    if (contractName === "BlockSales")
+    if (contractName === "BlockSales") {
       constructorArguments[0] = prevDeployments[0].deployment;
+      console.log("Check BLockSales args", constructorArguments);
+    }
+
+    console.log(
+      "DEPLOYING: ",
+      contractName,
+      " Arguments : ",
+      constructorArguments,
+      " SIGNER: ",
+      deployer
+    );
 
     const deployedContract: Contract = await hre.ethers.deployContract(
       contractName,
