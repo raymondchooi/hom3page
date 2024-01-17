@@ -155,7 +155,7 @@ export default function Wall() {
                 ></div>
                 <div
                   className={cn(
-                    "absolute left-0 top-0 z-10 box-border flex cursor-pointer border border-black hover:border-red-600",
+                    "absolute left-0 top-0 z-10 box-border flex cursor-pointer border border-purple-950 bg-indigo-950 hover:border-red-600",
                     blockData?.isFirstBlock ? "overflow-visible" : "z-0",
                   )}
                   style={{
@@ -193,7 +193,7 @@ export default function Wall() {
               ></div>
               <div
                 className={cn(
-                  "absolute left-0 top-0 z-10 box-border flex cursor-pointer border border-black hover:border-red-600",
+                  "absolute left-0 top-0 z-10 box-border flex cursor-pointer border border-purple-950 bg-indigo-950 hover:border-red-600",
                   blockData?.isFirstBlock ? "overflow-visible" : "z-0",
                 )}
                 style={{
