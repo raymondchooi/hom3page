@@ -118,14 +118,13 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
             payload
         );
 
-        //_returnSalesRecipe(SaleRecipe(messageId, false), chainId);
-        /* 
         //CONNECTED OUT FOR TESTING
         bool happy = _checkOwnershipOfBatch(
             payload.tokens_,
             !payload.multiBuy_
         );
-        if (!happy) _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
+        if (!happy) revert DEVELOPMENT_ERROR("Not owners");
+        //_returnSalesRecipe(SaleRecipe(messageId, false), chainId);
         else if (!payload.multiBuy_) {
             //  Check it is the contracts
             NFT.transferFrom(
@@ -134,7 +133,7 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
                 payload.tokens_[0][0]
             );
             _totalSold++;
-            _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
+            //_returnSalesRecipe(SaleRecipe(messageId, true), chainId);
             emit SaleMade(_msgSender(), 1, chainId);
         } else {
             (uint totalOrder, uint numElements) = (0, payload.tokens_.length);
@@ -148,9 +147,9 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
                         );
             }
             _totalSold += totalOrder;
-            _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
+            //_returnSalesRecipe(SaleRecipe(messageId, true), chainId);
             emit SaleMade(_msgSender(), totalOrder, chainId);
-        } */
+        }
     }
 
     function _returnSalesRecipe(

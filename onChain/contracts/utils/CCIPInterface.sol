@@ -13,6 +13,7 @@ import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interface
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
 abstract contract CCIPInterface is CCIPReceiver {
+    error DEVELOPMENT_ERROR(string note_);
     //  Errors
     error MessageNotFromBlockSales(address contractTringToMessage_);
     error MessageNotFromSalesChain(uint64 chainMessageOriginated);
@@ -20,14 +21,14 @@ abstract contract CCIPInterface is CCIPReceiver {
     error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
 
     //  Cross Chain endpoints
-    uint64 constant OP_CHAIN_SELECTOR = 2664363617261496610;
-    uint64 constant ETH_CHAIN_SELECTOR = 16015286601757825753;
-    uint64 constant MATIC_CHAIN_SELECTOR = 12532609583862916517;
+    uint64 public constant OP_CHAIN_SELECTOR = 2664363617261496610;
+    uint64 public constant ETH_CHAIN_SELECTOR = 16015286601757825753;
+    uint64 public constant MATIC_CHAIN_SELECTOR = 12532609583862916517;
 
-    uint64 constant SALES_CONTRACT_CHAIN = OP_CHAIN_SELECTOR;
+    uint64 public constant SALES_CONTRACT_CHAIN = OP_CHAIN_SELECTOR;
 
-    uint constant SALES_RECIPE_GAS = 500000;
-    uint constant SALES_ORDER_GAS = 2000000;
+    uint constant SALES_RECIPE_GAS = 300_000;
+    uint constant SALES_ORDER_GAS = 4_000_000;
 
     IRouterClient private _router;
     IERC20 private _linkToken;

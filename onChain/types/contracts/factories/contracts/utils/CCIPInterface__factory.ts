@@ -12,6 +12,17 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "note_",
+        type: "string",
+      },
+    ],
+    name: "DEVELOPMENT_ERROR",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "router",
         type: "address",

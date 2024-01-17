@@ -33,6 +33,8 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
     ) CCIPInterface(router_, linkToken_) Ownable(msg.sender) {
         GHO = IERC20(ghoTokenAddress_);
         _salesContractAddress = blockSalesContract_;
+        _setChainsActivity(SALES_CONTRACT_CHAIN, true);
+        _setAllowedAddress(SALES_CONTRACT_CHAIN, blockSalesContract_);
     }
 
     function buyBlock(
