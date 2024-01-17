@@ -268,13 +268,13 @@ export default function Wall() {
                 )}
 
                 <div className="mt-4 flex items-center justify-center gap-x-3">
-                  <Button onClick={() => zoomIn()} fancy>
+                  <Button onClick={() => zoomIn()} fancy="less">
                     +
                   </Button>
-                  <Button onClick={() => centerView()} fancy>
-                    <HomeIcon className="h-5 w-5 text-white" />
+                  <Button onClick={() => centerView()} fancy="less">
+                    <HomeIcon className="h-5 w-5 " />
                   </Button>
-                  <Button onClick={() => zoomOut()} fancy>
+                  <Button onClick={() => zoomOut()} fancy="less">
                     -
                   </Button>
                 </div>

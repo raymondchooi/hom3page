@@ -73,9 +73,14 @@ export const styles = {
     // Icon
     "[--btn-icon:theme(colors.zinc.500)] data-[active]:[--btn-icon:theme(colors.zinc.700)] data-[hover]:[--btn-icon:theme(colors.zinc.700)] dark:[--btn-icon:theme(colors.zinc.500)] dark:data-[active]:[--btn-icon:theme(colors.zinc.400)] dark:data-[hover]:[--btn-icon:theme(colors.zinc.400)]",
   ],
-  fancy: [
-    "relative before:z-[-1] isolation-auto bg-zinc-900 border-0 text-zinc-100 transition-colors before:rounded-[calc(theme(borderRadius.lg)+1px)] duration-200  ease-in-out justify-center text-center cursor-pointer hover:bg-zinc-950 before:content-[''] before:absolute before:bg-gradient-to-r before:from-green-500 before:via-cyan-500 before:to-teal-500 before:inset-[-2px] before:transition-all before:duration-200 before:ease-0 before:bg-gradient-to-r before:from-green-500 before:via-cyan-500 before:to-teal-500 hover:before:shadow-lg hover:before:shadow-[rgba(0,220,130,0.5)],hover:before:shadow-2xl hover:before:shadow-[rgba(54,228,218,0.5)]",
-  ],
+  fancy: {
+    less: [
+      "text-gray-200 relative before:z-[-1] isolation-auto bg-zinc-900 border-0 text-zinc-100 transition-colors before:rounded-[calc(theme(borderRadius.lg)+1px)] duration-200  ease-in-out justify-center text-center cursor-pointer hover:bg-zinc-950 before:content-[''] before:absolute before:bg-gradient-to-r before:from-green-800 before:via-cyan-800 before:to-teal-800 before:inset-[-2px] before:transition-all before:duration-200 before:ease-0 hover:before:shadow-lg hover:before:shadow-[rgba(0,220,130,0.5)],hover:before:shadow-2xl hover:before:shadow-[rgba(54,228,218,0.5)]",
+    ],
+    more: [
+      "relative before:z-[-1] isolation-auto bg-zinc-900 border-0 text-zinc-100 transition-colors before:rounded-[calc(theme(borderRadius.lg)+1px)] duration-200  ease-in-out justify-center text-center cursor-pointer hover:bg-zinc-950 before:content-[''] before:absolute before:bg-gradient-to-r before:from-green-500 before:via-cyan-500 before:to-teal-500 before:inset-[-2px] before:transition-all before:duration-200 before:ease-0 hover:before:shadow-lg hover:before:shadow-[rgba(0,220,130,0.5)],hover:before:shadow-2xl hover:before:shadow-[rgba(54,228,218,0.5)]",
+    ],
+  },
   colors: {
     "dark/zinc": [
       "text-white [--btn-bg:theme(colors.zinc.900)] [--btn-border:theme(colors.zinc.950/90%)] [--btn-hover-overlay:theme(colors.white/10%)]",
@@ -187,7 +192,12 @@ type ButtonProps = (
     }
   | { color?: never; fancy?: never; outline: true; plain?: never }
   | { color?: never; fancy?: never; outline?: never; plain: true }
-  | { color?: never; fancy: true; outline?: never; plain?: never }
+  | {
+      color?: never;
+      fancy: keyof typeof styles.fancy | true;
+      outline?: never;
+      plain?: never;
+    }
 ) & { children: React.ReactNode; buttonType?: "button" | "submit" } & (
     | React.InputHTMLAttributes<HTMLButtonElement>
     | React.ComponentPropsWithoutRef<typeof Link>
@@ -210,7 +220,7 @@ const Button = React.forwardRef(function Button(
     className,
     styles.base,
     fancy
-      ? styles.fancy
+      ? styles.fancy[fancy === true ? "more" : fancy]
       : outline
         ? styles.outline
         : plain

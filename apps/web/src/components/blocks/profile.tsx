@@ -27,7 +27,7 @@ function Profile({}: ProfileProps) {
           </div>
         </div>
       ) : (
-        <div className={cn(ButtonStyles.base, ButtonStyles.fancy)}>
+        <div className={cn(ButtonStyles.base, ButtonStyles.fancy.more)}>
           Connect Wallet
         </div>
       )}
