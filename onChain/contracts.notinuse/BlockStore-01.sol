@@ -2,47 +2,24 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "../utils/CCIPInterface.sol";
 import {OnlyActive, Ownable} from "../security/onlyActive.sol";
-import {IBlockStore} from "../interfaces/IBlockStore.sol";
-import {IGhoToken, IERC20} from "../interfaces/IGhoToken.sol";
-import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
-import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
-contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
-    //  Set token cost to 100 $GHO
+contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
+    //  Set token cost to 100 PAYMENT_TOKEN
     //  Var to track contract sales
-    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18; // GHO
+    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18; // PAYMENT_TOKEN
     uint8 internal constant BUY_CAP = 10;
     uint256 internal _totalSold;
     //  Contracts
-    IRouterClient private s_router;
-    LinkTokenInterface private s_linkToken;
-    IGhoToken public immutable GHO;
+    IERC20 public immutable PAYMENT_TOKEN;
 
     //  BlockSales Contract
     //  Optimism Goerli
-    uint64 constant SALES_CONTRACT_CHAIN = 2664363617261496610;
+
     address private _salesContractAddress;
 
     mapping(bytes32 => SaleStore) _saleRecipes;
-
-    modifier onlySalesContract(address sender_, uint64 chain_) {
-        if (sender_ != _salesContractAddress)
-            revert MessageNotFromBlockSales(sender_);
-        if (chain_ != SALES_CONTRACT_CHAIN)
-            revert MessageNotFromSalesChain(chain_);
-        _;
-    }
-
-    error DEVELOPMENT_ERROR(string note_);
-    //  Errors
-    error MessageNotFromBlockSales(address contractTringToMessage_);
-    error MessageNotFromSalesChain(uint64 chainMessageOriginated);
-    error NotBlockSalesContract();
-    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to m
 
     fallback() external payable {}
 
@@ -50,25 +27,25 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
 
     constructor(
         address router_,
-        address ghoTokenAddress_,
+        address PAYMENT_TOKENTokenAddress_,
         address blockSalesContract_,
         address linkToken_
-    ) CCIPReceiver(router_) Ownable(msg.sender) {
-        s_router = IRouterClient(router_);
-        GHO = IGhoToken(ghoTokenAddress_);
+    ) CCIPInterface(router_, linkToken_) Ownable(msg.sender) {
+        PAYMENT_TOKEN = IERC20(PAYMENT_TOKENTokenAddress_);
         _salesContractAddress = blockSalesContract_;
-        s_linkToken = LinkTokenInterface(linkToken_);
+        _setChainsActivity(SALES_CONTRACT_CHAIN, true);
+        _setAllowedAddress(SALES_CONTRACT_CHAIN, blockSalesContract_);
     }
 
     function buyBlock(
         uint256 tokenId_
     ) external override nonReentrant is_active {
         require(
-            GHO.balanceOf(_msgSender()) > COST_PER_BLOCK,
-            "Incorrect payment"
+            PAYMENT_TOKEN.balanceOf(_msgSender()) > COST_PER_BLOCK,
+            "Balance to low"
         );
 
-        bool succsess = GHO.transferFrom(
+        bool succsess = PAYMENT_TOKEN.transferFrom(
             _msgSender(),
             address(this),
             COST_PER_BLOCK
@@ -106,8 +83,15 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         }
 
         uint256 cost = COST_PER_BLOCK * (totalOrder);
-        require(GHO.balanceOf(_msgSender()) >= cost, "Insufficient Funds");
-        bool succsess = GHO.transferFrom(_msgSender(), address(this), cost);
+        require(
+            PAYMENT_TOKEN.balanceOf(_msgSender()) >= cost,
+            "Insufficient Funds"
+        );
+        bool succsess = PAYMENT_TOKEN.transferFrom(
+            _msgSender(),
+            address(this),
+            cost
+        );
         if (succsess) {}
     }
 
@@ -122,41 +106,30 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
 
     /// @notice Sends data to receiver on the destination chain.
     /// @dev Assumes your contract has sufficient Native Token.
-    /// @param destinationChainSelector_ The identifier (aka selector) for the destination blockchain.
+    /// @param chainId_ The identifier (aka selector) for the destination blockchain.
     /// @param receiver_ The address of the recipient on the destination blockchain.
     /// @param payload_ The string text to be sent.
     /// @return messageId The ID of the message that was sent.
     function _sendMessage(
-        uint64 destinationChainSelector_,
+        uint64 chainId_,
         address receiver_,
         Sale memory payload_
-    ) internal onlyOwner returns (bytes32 messageId) {
+    ) internal onlyOwner returns (bytes32) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(
+        Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
             receiver_,
-            payload_,
-            address(0)
+            abi.encode(payload_),
+            _getPaymentAddress(),
+            SALES_ORDER_GAS
         );
-
-        // Initialize a router client instance to interact with cross-chain router
-        IRouterClient router = IRouterClient(this.getRouter());
-
-        // Get the fee required to send the CCIP message
-        uint256 fees = router.getFee(destinationChainSelector_, evm2AnyMessage);
-
-        if (fees > address(this).balance)
-            revert NotEnoughBalance(address(this).balance, fees);
 
         // Send the CCIP message through the router and store the returned CCIP message ID
-        messageId = router.ccipSend{value: fees}(
-            destinationChainSelector_,
-            evm2AnyMessage
-        );
+        (bytes32 messageId, uint256 fees) = _sendTX(chainId_, evm2AnyMessage);
 
         // Emit an event with message details
         emit MessageSent(
             messageId,
-            destinationChainSelector_,
+            chainId_,
             receiver_,
             payload_,
             address(0),
@@ -167,41 +140,15 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         return messageId;
     }
 
-    /// @notice Construct a CCIP message.
-    /// @dev This function will create an EVM2AnyMessage struct with all the necessary information for sending a text.
-    /// @param receiver_ The address of the receiver.
-    /// @param payload_ The string data to be sent.
-    /// @param feeTokenAddress_ The address of the token used for fees. Set address(0) for native gas.
-    /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
-    function _buildCCIPMessage(
-        address receiver_,
-        Sale memory payload_,
-        address feeTokenAddress_
-    ) internal pure returns (Client.EVM2AnyMessage memory) {
-        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        return
-            Client.EVM2AnyMessage({
-                receiver: abi.encode(receiver_), // ABI-encoded receiver address
-                data: abi.encode(payload_),
-                tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
-                extraArgs: Client._argsToBytes(
-                    // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: 1_000_000})
-                ),
-                // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
-                feeToken: feeTokenAddress_
-            });
-    }
-
     /// handle a received message
     function _ccipReceive(
         Client.Any2EVMMessage memory any2EvmMessage
     )
         internal
         override
-        onlySalesContract(
-            abi.decode(any2EvmMessage.sender, (address)),
-            any2EvmMessage.sourceChainSelector
+        onlyAllowlisted(
+            any2EvmMessage.sourceChainSelector,
+            abi.decode(any2EvmMessage.sender, (address))
         )
     {
         bytes32 messageId = any2EvmMessage.messageId; // fetch the messageId
@@ -222,7 +169,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         if (payload.success) {
             _saleRecipes[messageId].saleFailed_ = false;
         } else {
-            GHO.transfer(
+            PAYMENT_TOKEN.transfer(
                 _saleRecipes[messageId].saleData_.buyer_,
                 COST_PER_BLOCK * _saleRecipes[messageId].saleData_.totalItems_
             );
@@ -239,6 +186,32 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
 
     function getSalesContractAddress() external view returns (address) {
         return _salesContractAddress;
+    }
+
+    function getSaleStatus(
+        bytes32 saleId_
+    ) external view override returns (SaleStore memory) {
+        return _saleRecipes[saleId_];
+    }
+
+    function setSalesContractAddress(address newAddress_) external onlyOwner {
+        _salesContractAddress = newAddress_;
+        _setAllowedAddress(SALES_CONTRACT_CHAIN, newAddress_);
+    }
+
+    function setUseLinkForPaymentFlay(bool newSetting_) external onlyOwner {
+        _setUseLinkForPaymentFlay(newSetting_);
+    }
+
+    function setAddressAsAllowed(
+        uint64 chainId_,
+        address contractAddress_
+    ) public onlyOwner {
+        _setAllowedAddress(chainId_, contractAddress_);
+    }
+
+    function setChainAllowed(uint64 chainId_, bool flag_) external onlyOwner {
+        _setChainsActivity(chainId_, flag_);
     }
 
     function withdrawTokens(
@@ -258,11 +231,5 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
             ""
         );
         require(sent, "Failed to send Ether");
-    }
-
-    function getSaleStatus(
-        bytes32 saleId_
-    ) external view override returns (SaleStore memory) {
-        return _saleRecipes[saleId_];
     }
 }

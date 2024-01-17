@@ -91,25 +91,21 @@ export declare namespace Client {
 export interface BlockSalesInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "ETH_CHAIN_SELECTOR"
-      | "MATIC_CHAIN_SELECTOR"
       | "NFT"
-      | "OP_CHAIN_SELECTOR"
       | "PAYMENT_TOKEN"
-      | "SALES_CONTRACT_CHAIN"
       | "buyBatchBlock"
       | "buyBlock"
       | "ccipReceive"
       | "getBlockCost"
+      | "getChainBlockStore"
       | "getRouter"
       | "getTotalSold"
       | "isActive"
       | "owner"
       | "renounceOwnership"
       | "setActiveState"
-      | "setAddressAsAllowed"
-      | "setChainAllowed"
-      | "setUseLinkForPaymentFlay"
+      | "setBlockStore"
+      | "setBlockStoreActive"
       | "supportsInterface"
       | "transferOwnership"
       | "withdrawBlock"
@@ -126,25 +122,9 @@ export interface BlockSalesInterface extends Interface {
       | "SaleMade"
   ): EventFragment;
 
-  encodeFunctionData(
-    functionFragment: "ETH_CHAIN_SELECTOR",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "MATIC_CHAIN_SELECTOR",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "NFT", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "OP_CHAIN_SELECTOR",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "PAYMENT_TOKEN",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SALES_CONTRACT_CHAIN",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -163,6 +143,10 @@ export interface BlockSalesInterface extends Interface {
     functionFragment: "getBlockCost",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "getChainBlockStore",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "getRouter", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getTotalSold",
@@ -179,16 +163,12 @@ export interface BlockSalesInterface extends Interface {
     values: [boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: "setAddressAsAllowed",
+    functionFragment: "setBlockStore",
     values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "setChainAllowed",
+    functionFragment: "setBlockStoreActive",
     values: [BigNumberish, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setUseLinkForPaymentFlay",
-    values: [boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -211,25 +191,9 @@ export interface BlockSalesInterface extends Interface {
     values: [AddressLike, AddressLike]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "ETH_CHAIN_SELECTOR",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "MATIC_CHAIN_SELECTOR",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "NFT", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "OP_CHAIN_SELECTOR",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "PAYMENT_TOKEN",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "SALES_CONTRACT_CHAIN",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -243,6 +207,10 @@ export interface BlockSalesInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getBlockCost",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getChainBlockStore",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getRouter", data: BytesLike): Result;
@@ -261,15 +229,11 @@ export interface BlockSalesInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setAddressAsAllowed",
+    functionFragment: "setBlockStore",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setChainAllowed",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setUseLinkForPaymentFlay",
+    functionFragment: "setBlockStoreActive",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -436,17 +400,9 @@ export interface BlockSales extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  ETH_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
-
-  MATIC_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
-
   NFT: TypedContractMethod<[], [string], "view">;
 
-  OP_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
-
   PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
-
-  SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
 
   buyBatchBlock: TypedContractMethod<
     [tokenIds_: BigNumberish[][]],
@@ -464,6 +420,12 @@ export interface BlockSales extends BaseContract {
 
   getBlockCost: TypedContractMethod<[], [bigint], "view">;
 
+  getChainBlockStore: TypedContractMethod<
+    [chainId_: BigNumberish],
+    [string],
+    "view"
+  >;
+
   getRouter: TypedContractMethod<[], [string], "view">;
 
   getTotalSold: TypedContractMethod<[], [bigint], "view">;
@@ -480,20 +442,14 @@ export interface BlockSales extends BaseContract {
     "nonpayable"
   >;
 
-  setAddressAsAllowed: TypedContractMethod<
+  setBlockStore: TypedContractMethod<
     [chainId_: BigNumberish, contractAddress_: AddressLike],
     [void],
     "nonpayable"
   >;
 
-  setChainAllowed: TypedContractMethod<
+  setBlockStoreActive: TypedContractMethod<
     [chainId_: BigNumberish, flag_: boolean],
-    [void],
-    "nonpayable"
-  >;
-
-  setUseLinkForPaymentFlay: TypedContractMethod<
-    [newSetting_: boolean],
     [void],
     "nonpayable"
   >;
@@ -533,23 +489,11 @@ export interface BlockSales extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "ETH_CHAIN_SELECTOR"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "MATIC_CHAIN_SELECTOR"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "NFT"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "OP_CHAIN_SELECTOR"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "PAYMENT_TOKEN"
   ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "SALES_CONTRACT_CHAIN"
-  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "buyBatchBlock"
   ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
@@ -566,6 +510,9 @@ export interface BlockSales extends BaseContract {
   getFunction(
     nameOrSignature: "getBlockCost"
   ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getChainBlockStore"
+  ): TypedContractMethod<[chainId_: BigNumberish], [string], "view">;
   getFunction(
     nameOrSignature: "getRouter"
   ): TypedContractMethod<[], [string], "view">;
@@ -585,22 +532,19 @@ export interface BlockSales extends BaseContract {
     nameOrSignature: "setActiveState"
   ): TypedContractMethod<[newState_: boolean], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "setAddressAsAllowed"
+    nameOrSignature: "setBlockStore"
   ): TypedContractMethod<
     [chainId_: BigNumberish, contractAddress_: AddressLike],
     [void],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "setChainAllowed"
+    nameOrSignature: "setBlockStoreActive"
   ): TypedContractMethod<
     [chainId_: BigNumberish, flag_: boolean],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "setUseLinkForPaymentFlay"
-  ): TypedContractMethod<[newSetting_: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;

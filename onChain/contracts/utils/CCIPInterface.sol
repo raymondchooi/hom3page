@@ -31,7 +31,7 @@ abstract contract CCIPInterface is CCIPReceiver {
     uint constant SALES_ORDER_GAS = 2_000_000;
 
     IRouterClient private _router;
-    IERC20 private _linkToken;
+    LinkTokenInterface private _linkToken;
 
     bool private _useLinkAsPayment = true;
 
@@ -51,7 +51,7 @@ abstract contract CCIPInterface is CCIPReceiver {
         address ccipRouter_
     ) CCIPReceiver(ccipRouter_) {
         _router = IRouterClient(ccipRouter_);
-        _linkToken = IERC20(linkToken_);
+        _linkToken = LinkTokenInterface(linkToken_);
     }
 
     /// @notice Construct a CCIP message.

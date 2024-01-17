@@ -50,12 +50,18 @@ export default async function deploy({
     );
 
     if (network.name !== "hardhat" && network.name !== "localhost") {
-      await delay(delayTime);
-      await verifyContractOnScan(
-        hre.run,
-        deployedContract.target,
-        constructorArguments
-      );
+      try {
+        await delay(delayTime);
+        await verifyContractOnScan(
+          hre.run,
+          deployedContract.target,
+          constructorArguments
+        );
+      } catch (error) {
+        console.log(
+          `🔴 Failed to verify contract : ${contractName} to ${deployedContract.target}`
+        );
+      }
     } else {
       await hre.ethernal.push({
         name: contractName,
@@ -116,7 +122,6 @@ export default async function deploy({
       console.log(`🟢 Sent link to contract : ${linkTX.hash}`);
     }
     // @dev spesific logic for BLockStore contract
-
     if (contractName === "BlockStore") {
       const paymentToken = await hre.ethers.getContractAt(
         "ERC20",
