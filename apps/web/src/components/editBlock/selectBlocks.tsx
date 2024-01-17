@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 
 import { Block } from "components";
 import { WALL_WIDTH } from "constants/wall";
@@ -19,6 +19,13 @@ interface SelectBlocksProps {
   ) => void;
 }
 
+interface BlockRow {
+  firstBlockId: string;
+  width: number;
+  height: number;
+  blockIds: string[];
+}
+
 function SelectBlocks({
   purchasableBlocks,
   bought,
@@ -28,7 +35,11 @@ function SelectBlocks({
   selectedBlocksForEditing,
   setSelectedBlocksForEditing,
 }: SelectBlocksProps) {
-  function groupBlocksIntoRectangles(blockIds: string[]) {
+  // TODO make this more efficient
+  function groupBlocksIntoRectangles(
+    blockIds: string[],
+    preSelectedBlocks?: Map<string, object>,
+  ) {
     const groups = new Map();
     let groupCount = 0;
 
@@ -84,11 +95,73 @@ function SelectBlocks({
         const width = maxCol - minCol + 1;
         const height = maxRow - minRow + 1;
 
+        // Create a new map for each row
+        const blockRows = new Map();
+        for (let r = minRow; r <= maxRow; r++) {
+          // Get all blocks in the same row
+          const blocksInRow = rectangles.filter((block) => block.row === r);
+
+          // Sort blocks by column
+          blocksInRow.sort((a, b) => a.col - b.col);
+
+          if (blocksInRow.length > 0) {
+            let startCol = blocksInRow[0]?.col;
+            let blockGroup = blocksInRow[0] ? [blocksInRow[0].id] : [];
+            let gaps = 0;
+
+            // Iterate over blocks in row
+            for (let i = 1; i < blocksInRow.length; i++) {
+              // If there is a gap, add the current group to the map and start a new one
+              if (
+                blocksInRow?.[i]?.col &&
+                blocksInRow?.[i - 1]?.col &&
+                (blocksInRow[i]?.col ?? 0) - (blocksInRow[i - 1]?.col ?? 0) > 1
+              ) {
+                if (blockGroup.length > 0) {
+                  blockRows.set(`${r}-${startCol}`, {
+                    firstBlockId: blockGroup[0],
+                    startCol,
+                    width: blockGroup.length,
+                    height: 1,
+                    blockIds: blockGroup,
+                    gaps,
+                  });
+                }
+                startCol = blocksInRow[i]?.col;
+                blockGroup = [];
+                gaps = 0;
+              } else if (
+                blocksInRow?.[i]?.col &&
+                blocksInRow?.[i - 1]?.col &&
+                (blocksInRow[i]?.col ?? 0) - (blocksInRow[i - 1]?.col ?? 0) ===
+                  1
+              ) {
+                gaps++;
+              }
+              if (blocksInRow[i]?.id) {
+                blockGroup.push(blocksInRow[i]?.id ?? "");
+              }
+            }
+
+            // Add the last group to the map
+            if (blockGroup.length > 0) {
+              blockRows.set(`${r}-${startCol}`, {
+                firstBlockId: blockGroup[0],
+                startCol,
+                width: blockGroup.length,
+                height: 1,
+                blockIds: blockGroup,
+              });
+            }
+          }
+        }
+
         groups.set(groupCount.toString(), {
           firstBlockId: blockId,
           width,
           height,
           blockIds: rectangles.map((r) => r.id),
+          blockRows,
         });
 
         groupCount++;
@@ -99,7 +172,10 @@ function SelectBlocks({
   }
 
   const rectangleBlockGroups = useMemo(() => {
-    return groupBlocksIntoRectangles(blockIds);
+    const blocksre = groupBlocksIntoRectangles(blockIds);
+
+    console.log("blocksre", blocksre);
+    return blocksre;
   }, [blockIds]);
 
   function handleBlockSelect(blockId: string, selectable: boolean) {
@@ -116,6 +192,8 @@ function SelectBlocks({
       const rectangleGroups = groupBlocksIntoRectangles(
         Array.from(selectedBlocksForEditing.keys()),
       );
+
+      console.log("rectangleGroupsDELETE", rectangleGroups);
 
       selectedBlocksForEditing?.delete(blockId);
 
@@ -136,6 +214,8 @@ function SelectBlocks({
           ? [...Array.from(selectedBlocksForEditing.keys()), blockIdString]
           : [],
       );
+
+      console.log("rectangleGroupsADD", rectangleGroups);
 
       for (const [, value] of rectangleGroups.entries()) {
         if (value?.blockIds?.includes(blockIdString)) {
@@ -178,80 +258,91 @@ function SelectBlocks({
     <div className="mt-4 flex gap-x-6 overflow-x-auto">
       {Array.from(rectangleBlockGroups.values()).map((group, i) => {
         return (
-          <div
-            key={i}
-            style={{
-              gridTemplateColumns: `repeat(${group.width}, minmax(0, 1fr))`,
-            }}
-            className="grid gap-0"
-          >
-            {group.blockIds.map((blockId: string) => {
-              const isBlockSelected = !!selectedBlocksForEditing?.has(
-                blockId.toString(),
-              );
-              const isFirstBlockFromSelected = isBlockSelected
-                ? (
-                    selectedBlocksForEditing?.get(blockId.toString()) as {
-                      isFirstBlock: boolean;
-                    }
-                  )?.isFirstBlock
-                : false;
-
+          <div key={i}>
+            {Array.from(group.blockRows.values()).map((row: any, j) => {
               return (
-                <div key={blockId} className="group relative">
-                  <div
-                    className={cn(
-                      "absolute left-0 top-0 border-2 border-gray-800 bg-gray-900",
-                      isBlockSelected
-                        ? "border-emerald-400"
-                        : "border-gray-800",
-                      isFirstBlockFromSelected
-                        ? "z-10 overflow-visible"
-                        : "border-transparent",
-                      !isBlockSelected &&
-                        !isFirstBlockFromSelected &&
-                        "border-gray-800",
-                    )}
-                    style={{
-                      width: isFirstBlockFromSelected
-                        ? BLOCK_WIDTH *
-                          (
-                            selectedBlocksForEditing?.get(
-                              blockId.toString(),
-                            ) as { width: number; height: number }
-                          )?.width
-                        : BLOCK_WIDTH,
-                      height: isFirstBlockFromSelected
-                        ? BLOCK_HEIGHT *
-                          (
-                            selectedBlocksForEditing?.get(
-                              blockId.toString(),
-                            ) as { width: number; height: number }
-                          )?.height
-                        : BLOCK_HEIGHT,
-                    }}
-                  ></div>
-                  <button
-                    className={cn(
-                      "relative z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-emerald-400",
-                      purchasableBlocks.get(blockId) && !bought
-                        ? "cursor-not-allowed border-dashed border-gray-600 hover:border-gray-800"
-                        : "border-transparent ",
-                    )}
-                    onClick={() =>
-                      handleBlockSelect(
-                        blockId,
-                        !(purchasableBlocks.get(blockId) && !bought),
-                      )
-                    }
-                    style={{
-                      width: BLOCK_WIDTH,
-                      height: BLOCK_HEIGHT,
-                    }}
-                    title={`${purchasableBlocks.get(blockId) && !bought ? "Not owned: #" : "#"}${blockId.toString()}`}
-                  >
-                    {renderBlockContent(blockId, isBlockSelected)}
-                  </button>
+                <div key={j} className="flex flex-nowrap">
+                  {row.blockIds.map((blockId: string, k: any) => {
+                    const isBlockSelected = !!selectedBlocksForEditing?.has(
+                      blockId.toString(),
+                    );
+                    const isFirstBlockFromSelected = isBlockSelected
+                      ? (
+                          selectedBlocksForEditing?.get(blockId.toString()) as {
+                            isFirstBlock: boolean;
+                          }
+                        )?.isFirstBlock
+                      : false;
+
+                    return (
+                      <Fragment key={blockId}>
+                        {Array.from({ length: row.gap }).map((_, gapIndex) => (
+                          <div
+                            key={`gap-${k}-${gapIndex}`}
+                            style={{
+                              width: BLOCK_WIDTH,
+                              height: BLOCK_HEIGHT,
+                            }}
+                          ></div>
+                        ))}
+                        <div className="group relative">
+                          <div
+                            className={cn(
+                              "absolute left-0 top-0 border-2 border-gray-800 bg-gray-900",
+                              isBlockSelected
+                                ? "border-emerald-400"
+                                : "border-gray-800",
+                              isFirstBlockFromSelected
+                                ? "z-10 overflow-visible"
+                                : "border-transparent",
+                              !isBlockSelected &&
+                                !isFirstBlockFromSelected &&
+                                "border-gray-800",
+                            )}
+                            style={{
+                              width: isFirstBlockFromSelected
+                                ? BLOCK_WIDTH *
+                                  (
+                                    selectedBlocksForEditing?.get(
+                                      blockId.toString(),
+                                    ) as { width: number; height: number }
+                                  )?.width
+                                : BLOCK_WIDTH,
+                              height: isFirstBlockFromSelected
+                                ? BLOCK_HEIGHT *
+                                  (
+                                    selectedBlocksForEditing?.get(
+                                      blockId.toString(),
+                                    ) as { width: number; height: number }
+                                  )?.height
+                                : BLOCK_HEIGHT,
+                            }}
+                          ></div>
+                          <button
+                            className={cn(
+                              "relative z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-emerald-400",
+                              purchasableBlocks.get(blockId) && !bought
+                                ? "cursor-not-allowed border-dashed border-gray-600 hover:border-gray-800"
+                                : "border-transparent ",
+                            )}
+                            onClick={() =>
+                              handleBlockSelect(
+                                blockId,
+                                !(purchasableBlocks.get(blockId) && !bought),
+                              )
+                            }
+                            style={{
+                              width: BLOCK_WIDTH,
+                              height: BLOCK_HEIGHT,
+                            }}
+                            title={`${purchasableBlocks.get(blockId) && !bought ? "Not owned: #" : "#"}${blockId.toString()}`}
+                          >
+                            {renderBlockContent(blockId, isBlockSelected)}
+                          </button>
+                        </div>
+                      </Fragment>
+                    );
+                  })}
                 </div>
               );
             })}
