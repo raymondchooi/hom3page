@@ -14,8 +14,9 @@ export const BlockSalesArguments = (
   const NFTAddress_ = deployedContracts[netName]?.BlockToken;
   const paymentToken_ = tokenAddress.usdc[netName];
   const ccipRouter_ = tokenAddress.ccipRouter[netName];
+  const linkToken_ = tokenAddress.link[netName];
 
-  return [NFTAddress_, paymentToken_, ccipRouter_];
+  return [NFTAddress_, paymentToken_, ccipRouter_, linkToken_];
 };
 
 export const BlockStoreArguments = (
@@ -28,6 +29,7 @@ export const BlockStoreArguments = (
   const router_ = tokenAddress.ccipRouter[netName];
   const ghoTokenAddress_ = tokenAddress.gho[netName];
   const blockSalesContract_ = deployedContracts.opGoerli?.BlockSales;
+  const linkToken_ = tokenAddress.link[netName];
 
-  return [router_, ghoTokenAddress_, blockSalesContract_];
+  return [router_, ghoTokenAddress_, blockSalesContract_, linkToken_];
 };

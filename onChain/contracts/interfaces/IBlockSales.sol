@@ -4,10 +4,10 @@ pragma solidity ^0.8.20;
 interface IBlockSales {
     //          CCIP Errors
     // Custom errors to provide more descriptive revert messages.
-    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
-    error NotBlockSalesContract();
-    error MessageNotFromBlockSales(address contractTringToMessage_);
-    error MessageNotFromSalesChain(uint64 chainMessageOriginated);
+    error OrderExceedsMaxAmount();
+    error ToManyElementsInBuyArray();
+    error OrderToLargeMax10();
+
     //          CCIP Events
     // Event emitted when a message is sent to another chain.
     event MessageSent(
@@ -27,15 +27,11 @@ interface IBlockSales {
         Sale payload // The text that was received.
     );
 
-    error OrderExceedsMaxAmount();
-    error ToManyElementsInBuyArray();
-    error OrderToLargeMax10();
-
-    enum AllowedChains {
-        ETH,
-        OP,
-        MATIC,
-        ARB
+    struct SaleStore {
+        Sale saleData_;
+        bytes32 messageId_;
+        bool saleComplete_;
+        bool saleFailed_;
     }
 
     event SaleMade(

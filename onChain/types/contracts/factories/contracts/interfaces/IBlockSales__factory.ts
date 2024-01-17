@@ -10,49 +10,6 @@ import type {
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "contractTringToMessage_",
-        type: "address",
-      },
-    ],
-    name: "MessageNotFromBlockSales",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint64",
-        name: "chainMessageOriginated",
-        type: "uint64",
-      },
-    ],
-    name: "MessageNotFromSalesChain",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "NotBlockSalesContract",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "currentBalance",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "calculatedFees",
-        type: "uint256",
-      },
-    ],
-    name: "NotEnoughBalance",
-    type: "error",
-  },
-  {
     inputs: [],
     name: "OrderExceedsMaxAmount",
     type: "error",

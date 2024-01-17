@@ -2,12 +2,6 @@
 pragma solidity ^0.8.20;
 
 interface IBlockStore {
-    //          CCIP Errors
-    // Custom errors to provide more descriptive revert messages.
-    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
-    error NotBlockSalesContract();
-    error MessageNotFromBLockSales(address contractTringToMessage_);
-    error MessageNotFromSalesChain(uint64 chainMessageOriginated);
     //          CCIP Events
     // Event emitted when a message is sent to another chain.
     event MessageSent(

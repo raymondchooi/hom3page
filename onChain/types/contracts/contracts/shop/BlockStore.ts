@@ -117,11 +117,16 @@ export interface BlockStoreInterface extends Interface {
       | "getBlockCost"
       | "getRouter"
       | "getSaleStatus"
+      | "getSalesContractAddress"
       | "getTotalSold"
       | "isActive"
       | "owner"
       | "renounceOwnership"
       | "setActiveState"
+      | "setAddressAsAllowed"
+      | "setChainAllowed"
+      | "setSalesContractAddress"
+      | "setUseLinkForPaymentFlay"
       | "supportsInterface"
       | "transferOwnership"
       | "withdrawFunds"
@@ -160,6 +165,10 @@ export interface BlockStoreInterface extends Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "getSalesContractAddress",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getTotalSold",
     values?: undefined
   ): string;
@@ -171,6 +180,22 @@ export interface BlockStoreInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setActiveState",
+    values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAddressAsAllowed",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setChainAllowed",
+    values: [BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSalesContractAddress",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setUseLinkForPaymentFlay",
     values: [boolean]
   ): string;
   encodeFunctionData(
@@ -210,6 +235,10 @@ export interface BlockStoreInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getSalesContractAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getTotalSold",
     data: BytesLike
   ): Result;
@@ -221,6 +250,22 @@ export interface BlockStoreInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setActiveState",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setAddressAsAllowed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setChainAllowed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setSalesContractAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setUseLinkForPaymentFlay",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -409,6 +454,8 @@ export interface BlockStore extends BaseContract {
     "view"
   >;
 
+  getSalesContractAddress: TypedContractMethod<[], [string], "view">;
+
   getTotalSold: TypedContractMethod<[], [bigint], "view">;
 
   isActive: TypedContractMethod<[], [boolean], "view">;
@@ -419,6 +466,30 @@ export interface BlockStore extends BaseContract {
 
   setActiveState: TypedContractMethod<
     [newState_: boolean],
+    [void],
+    "nonpayable"
+  >;
+
+  setAddressAsAllowed: TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  setChainAllowed: TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
+    [void],
+    "nonpayable"
+  >;
+
+  setSalesContractAddress: TypedContractMethod<
+    [newAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  setUseLinkForPaymentFlay: TypedContractMethod<
+    [newSetting_: boolean],
     [void],
     "nonpayable"
   >;
@@ -481,6 +552,9 @@ export interface BlockStore extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "getSalesContractAddress"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "getTotalSold"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -495,6 +569,26 @@ export interface BlockStore extends BaseContract {
   getFunction(
     nameOrSignature: "setActiveState"
   ): TypedContractMethod<[newState_: boolean], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setAddressAsAllowed"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setChainAllowed"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setSalesContractAddress"
+  ): TypedContractMethod<[newAddress_: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setUseLinkForPaymentFlay"
+  ): TypedContractMethod<[newSetting_: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;

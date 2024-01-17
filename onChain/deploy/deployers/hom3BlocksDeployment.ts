@@ -7,6 +7,7 @@ import { DeploymentProps } from "../../types/deploymentArguments";
 import waitForConfirmations from "../../scripts/helpers/waitForConformations";
 import ethernal from "hardhat-ethernal";
 import { BlockToken } from "../../types/contracts";
+import { ChainName, tokenAddress } from "../../bin/tokenAddress";
 
 export default async function deploy({
   hre,
@@ -99,6 +100,28 @@ export default async function deploy({
 
       await maticTx.wait();
       console.log(`🟢 Supplied with ETH : ${maticTx.hash}`);
+
+      const linkToken = await hre.ethers.getContractAt(
+        "ERC20",
+        tokenAddress?.link[hre.network.name as ChainName]!,
+        deployer
+      );
+
+      const approvalLinkTx = await linkToken.approve(
+        deployedContract.target,
+        200 * 10 ** 18
+      );
+
+      await approvalLinkTx.wait();
+      console.log(`🟢 Approved Link Token Spend : ${approvalLinkTx.hash}`);
+
+      const linkTX = await linkToken.transfer(
+        deployedContract.target,
+        hre.ethers.parseUnits("1", "ether")
+      );
+
+      await linkTX.wait();
+      console.log(`🟢 Sent link to contract : ${approvalLinkTx.hash}`);
     }
 
     if (contractName === "BlockStore") {
@@ -114,7 +137,29 @@ export default async function deploy({
       );
 
       await approvalTx.wait();
-      console.log(`🟢 Approved USDC Spend : ${approvalTx.hash}`);
+      console.log(`🟢 Approved Token Spend : ${approvalTx.hash}`);
+
+      const linkToken = await hre.ethers.getContractAt(
+        "ERC20",
+        tokenAddress?.link[hre.network.name as ChainName]!,
+        deployer
+      );
+
+      const approvalLinkTx = await linkToken.approve(
+        deployedContract.target,
+        200 * 10 ** 18
+      );
+
+      await approvalLinkTx.wait();
+      console.log(`🟢 Approved Link Token Spend : ${approvalLinkTx.hash}`);
+
+      const linkTX = await linkToken.transfer(
+        deployedContract.target,
+        hre.ethers.parseUnits("1", "ether")
+      );
+
+      await linkTX.wait();
+      console.log(`🟢 Sent link to contract : ${approvalLinkTx.hash}`);
 
       const maticTx = await deployer.sendTransaction({
         to: deployedContract.target,

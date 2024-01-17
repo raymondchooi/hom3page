@@ -15,8 +15,8 @@ const deployedContracts: {
     BlockStore: "0x62000fDCb622922D81EC22Ebe661936e1E045BEa",
   },
   opGoerli: {
-    BlockToken: "0xc416Ec65c420996c7B6081138AaCC241C8150f3d",
-    BlockSales: "0xa6eF7147009E8F3E0613A6fEb231f94EE797379c",
+    BlockToken: "0x7dD5125bDbE07DaA9CEAF95F2A1C8F3F4cCbd6ed",
+    BlockSales: "0x1C78c73D0feA80e8Dab372688f1f98D7F1f464C9",
   },
   maticMumbai: {
     BlockToken: "",
