@@ -13,6 +13,7 @@ import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interface
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
 abstract contract CCIPInterface is CCIPReceiver {
+    error DEVELOPMENT_ERROR(string note_);
     //  Errors
     error MessageNotFromBlockSales(address contractTringToMessage_);
     error MessageNotFromSalesChain(uint64 chainMessageOriginated);
@@ -20,14 +21,14 @@ abstract contract CCIPInterface is CCIPReceiver {
     error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
 
     //  Cross Chain endpoints
-    uint64 constant OP_CHAIN_SELECTOR = 2664363617261496610;
-    uint64 constant ETH_CHAIN_SELECTOR = 16015286601757825753;
-    uint64 constant MATIC_CHAIN_SELECTOR = 12532609583862916517;
+    uint64 public constant OP_CHAIN_SELECTOR = 2664363617261496610;
+    uint64 public constant ETH_CHAIN_SELECTOR = 16015286601757825753;
+    uint64 public constant MATIC_CHAIN_SELECTOR = 12532609583862916517;
 
-    uint64 constant SALES_CONTRACT_CHAIN = OP_CHAIN_SELECTOR;
+    uint64 public constant SALES_CONTRACT_CHAIN = OP_CHAIN_SELECTOR;
 
-    uint constant SALES_RECIPE_GAS = 500000;
-    uint constant SALES_ORDER_GAS = 2000000;
+    uint constant SALES_RECIPE_GAS = 300_000;
+    uint constant SALES_ORDER_GAS = 2_000_000;
 
     IRouterClient private _router;
     IERC20 private _linkToken;
@@ -59,46 +60,21 @@ abstract contract CCIPInterface is CCIPReceiver {
     /// @param payload_ The string data to be sent.
     /// @param feeTokenAddress_ The address of the token used for fees. Set address(0) for native gas.
     /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
-    function _buildSalesRecipe(
+    function _buildMessage(
         address receiver_,
-        IBlockSales.SaleRecipe memory payload_,
-        address feeTokenAddress_
+        bytes memory payload_,
+        address feeTokenAddress_,
+        uint256 gasFee_
     ) internal pure returns (Client.EVM2AnyMessage memory) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         return
             Client.EVM2AnyMessage({
                 receiver: abi.encode(receiver_), // ABI-encoded receiver address
-                data: abi.encode(payload_),
+                data: payload_,
                 tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
                 extraArgs: Client._argsToBytes(
                     // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: SALES_RECIPE_GAS})
-                ),
-                // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
-                feeToken: feeTokenAddress_
-            });
-    }
-
-    /// @notice Construct a CCIP message.
-    /// @dev This function will create an EVM2AnyMessage struct with all the necessary information for sending a text.
-    /// @param receiver_ The address of the receiver.
-    /// @param payload_ The string data to be sent.
-    /// @param feeTokenAddress_ The address of the token used for fees. Set address(0) for native gas.
-    /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
-    function _buildSalesOrder(
-        address receiver_,
-        IBlockStore.Sale memory payload_,
-        address feeTokenAddress_
-    ) internal pure returns (Client.EVM2AnyMessage memory) {
-        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        return
-            Client.EVM2AnyMessage({
-                receiver: abi.encode(receiver_), // ABI-encoded receiver address
-                data: abi.encode(payload_),
-                tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
-                extraArgs: Client._argsToBytes(
-                    // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: SALES_ORDER_GAS})
+                    Client.EVMExtraArgsV1({gasLimit: gasFee_})
                 ),
                 // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
                 feeToken: feeTokenAddress_
@@ -161,5 +137,14 @@ abstract contract CCIPInterface is CCIPReceiver {
         uint64 chainId_
     ) internal view returns (address) {
         return _saleStores[chainId_];
+    }
+
+    function _getPaymentAddress()
+        internal
+        view
+        returns (address paymentAddress)
+    {
+        if (_useLinkAsPayment) return address(_linkToken);
+        else return address(0);
     }
 }

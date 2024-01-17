@@ -24,15 +24,11 @@ export default async function deploy({
       { nonce, signer: deployer }
     );
     console.log(
-      `🟠 Deployment confirming : ${contractName} to ${deployedContract.target}`
+      `🟠 Deployment confirming : ${contractName}`
     );
 
     await deployedContract.waitForDeployment();
-    console.log(
-      `🟠 Deployment Confirmed : ${contractName} to ${
-        deployedContract.deploymentTransaction()?.hash
-      }`
-    );
+    console.log(`🟠 Deployment Confirmed : ${contractName}`);
 
     if (hre.network.name !== "localhost" && hre.network.name !== "hardhat")
       await waitForConfirmations(

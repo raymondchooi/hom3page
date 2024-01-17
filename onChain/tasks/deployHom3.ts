@@ -15,7 +15,7 @@ const taskDescription = "Deploy the given contracts";
 task(taskId, taskDescription).setAction(async (_args, hre) => {
   console.log(`🟠 [TASK] ${taskId} : Mounted`);
 
-  const delayTime = 20000;
+  const delayTime = 30000;
   const network = await hre.ethers.provider.getNetwork();
   const [deployer] = await hre.ethers.getSigners();
 

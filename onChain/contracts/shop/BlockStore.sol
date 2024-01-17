@@ -6,13 +6,13 @@ import "../utils/CCIPInterface.sol";
 import {OnlyActive, Ownable} from "../security/onlyActive.sol";
 
 contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
-    //  Set token cost to 100 $GHO
+    //  Set token cost to 100 PAYMENT_TOKEN
     //  Var to track contract sales
-    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18; // GHO
+    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18; // PAYMENT_TOKEN
     uint8 internal constant BUY_CAP = 10;
     uint256 internal _totalSold;
     //  Contracts
-    IERC20 public immutable GHO;
+    IERC20 public immutable PAYMENT_TOKEN;
 
     //  BlockSales Contract
     //  Optimism Goerli
@@ -27,23 +27,25 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
 
     constructor(
         address router_,
-        address ghoTokenAddress_,
+        address PAYMENT_TOKENTokenAddress_,
         address blockSalesContract_,
         address linkToken_
     ) CCIPInterface(router_, linkToken_) Ownable(msg.sender) {
-        GHO = IERC20(ghoTokenAddress_);
+        PAYMENT_TOKEN = IERC20(PAYMENT_TOKENTokenAddress_);
         _salesContractAddress = blockSalesContract_;
+        _setChainsActivity(SALES_CONTRACT_CHAIN, true);
+        _setAllowedAddress(SALES_CONTRACT_CHAIN, blockSalesContract_);
     }
 
     function buyBlock(
         uint256 tokenId_
     ) external override nonReentrant is_active {
         require(
-            GHO.balanceOf(_msgSender()) > COST_PER_BLOCK,
-            "Incorrect payment"
+            PAYMENT_TOKEN.balanceOf(_msgSender()) > COST_PER_BLOCK,
+            "Balance to low"
         );
 
-        bool succsess = GHO.transferFrom(
+        bool succsess = PAYMENT_TOKEN.transferFrom(
             _msgSender(),
             address(this),
             COST_PER_BLOCK
@@ -81,8 +83,15 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         }
 
         uint256 cost = COST_PER_BLOCK * (totalOrder);
-        require(GHO.balanceOf(_msgSender()) >= cost, "Insufficient Funds");
-        bool succsess = GHO.transferFrom(_msgSender(), address(this), cost);
+        require(
+            PAYMENT_TOKEN.balanceOf(_msgSender()) >= cost,
+            "Insufficient Funds"
+        );
+        bool succsess = PAYMENT_TOKEN.transferFrom(
+            _msgSender(),
+            address(this),
+            cost
+        );
         if (succsess) {}
     }
 
@@ -97,29 +106,30 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
 
     /// @notice Sends data to receiver on the destination chain.
     /// @dev Assumes your contract has sufficient Native Token.
-    /// @param destinationChainSelector_ The identifier (aka selector) for the destination blockchain.
+    /// @param chainId_ The identifier (aka selector) for the destination blockchain.
     /// @param receiver_ The address of the recipient on the destination blockchain.
     /// @param payload_ The string text to be sent.
     /// @return messageId The ID of the message that was sent.
     function _sendMessage(
-        uint64 destinationChainSelector_,
+        uint64 chainId_,
         address receiver_,
         Sale memory payload_
-    ) internal onlyOwner returns (bytes32 messageId) {
+    ) internal onlyOwner returns (bytes32) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        Client.EVM2AnyMessage memory evm2AnyMessage = _buildSalesOrder(
+        Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
             receiver_,
-            payload_,
-            address(0)
+            abi.encode(payload_),
+            _getPaymentAddress(),
+            SALES_ORDER_GAS
         );
-        uint256 fees;
+
         // Send the CCIP message through the router and store the returned CCIP message ID
-        (messageId, fees) = _sendTX(destinationChainSelector_, evm2AnyMessage);
+        (bytes32 messageId, uint256 fees) = _sendTX(chainId_, evm2AnyMessage);
 
         // Emit an event with message details
         emit MessageSent(
             messageId,
-            destinationChainSelector_,
+            chainId_,
             receiver_,
             payload_,
             address(0),
@@ -159,7 +169,7 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         if (payload.success) {
             _saleRecipes[messageId].saleFailed_ = false;
         } else {
-            GHO.transfer(
+            PAYMENT_TOKEN.transfer(
                 _saleRecipes[messageId].saleData_.buyer_,
                 COST_PER_BLOCK * _saleRecipes[messageId].saleData_.totalItems_
             );

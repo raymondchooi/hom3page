@@ -110,7 +110,11 @@ export declare namespace Client {
 export interface BlockStoreInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "ETH_CHAIN_SELECTOR"
       | "GHO"
+      | "MATIC_CHAIN_SELECTOR"
+      | "OP_CHAIN_SELECTOR"
+      | "SALES_CONTRACT_CHAIN"
       | "buyBatchBlock"
       | "buyBlock"
       | "ccipReceive"
@@ -142,7 +146,23 @@ export interface BlockStoreInterface extends Interface {
       | "SaleMade"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "GHO", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "OP_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SALES_CONTRACT_CHAIN",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "buyBatchBlock",
     values: [BigNumberish[][]]
@@ -215,7 +235,23 @@ export interface BlockStoreInterface extends Interface {
     values: [AddressLike, AddressLike]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "GHO", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "OP_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SALES_CONTRACT_CHAIN",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "buyBatchBlock",
     data: BytesLike
@@ -428,7 +464,15 @@ export interface BlockStore extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  ETH_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
   GHO: TypedContractMethod<[], [string], "view">;
+
+  MATIC_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  OP_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
 
   buyBatchBlock: TypedContractMethod<
     [tokenIds_: BigNumberish[][]],
@@ -523,8 +567,20 @@ export interface BlockStore extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "ETH_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "GHO"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "MATIC_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "OP_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "SALES_CONTRACT_CHAIN"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "buyBatchBlock"
   ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;

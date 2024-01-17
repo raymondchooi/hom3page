@@ -57,9 +57,32 @@ export declare namespace Client {
 
 export interface CCIPInterfaceInterface extends Interface {
   getFunction(
-    nameOrSignature: "ccipReceive" | "getRouter" | "supportsInterface"
+    nameOrSignature:
+      | "ETH_CHAIN_SELECTOR"
+      | "MATIC_CHAIN_SELECTOR"
+      | "OP_CHAIN_SELECTOR"
+      | "SALES_CONTRACT_CHAIN"
+      | "ccipReceive"
+      | "getRouter"
+      | "supportsInterface"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "OP_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SALES_CONTRACT_CHAIN",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "ccipReceive",
     values: [Client.Any2EVMMessageStruct]
@@ -70,6 +93,22 @@ export interface CCIPInterfaceInterface extends Interface {
     values: [BytesLike]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "OP_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SALES_CONTRACT_CHAIN",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "ccipReceive",
     data: BytesLike
@@ -124,6 +163,14 @@ export interface CCIPInterface extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  ETH_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  MATIC_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  OP_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
+
   ccipReceive: TypedContractMethod<
     [message: Client.Any2EVMMessageStruct],
     [void],
@@ -142,6 +189,18 @@ export interface CCIPInterface extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "ETH_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MATIC_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "OP_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "SALES_CONTRACT_CHAIN"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "ccipReceive"
   ): TypedContractMethod<

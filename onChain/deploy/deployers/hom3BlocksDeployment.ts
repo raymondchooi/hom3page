@@ -63,7 +63,7 @@ export default async function deploy({
         workspace: "hardhat",
       });
     }
-
+    // @dev spesific logic for BLockSales contract
     if (contractName === "BlockSales") {
       const tokenContract = (await hre.ethers.getContractFactory("BlockToken"))
         .attach(prevDeployments[0].deployment!)
@@ -107,22 +107,15 @@ export default async function deploy({
         deployer
       );
 
-      const approvalLinkTx = await linkToken.approve(
-        deployedContract.target,
-        200 * 10 ** 18
-      );
-
-      await approvalLinkTx.wait();
-      console.log(`🟢 Approved Link Token Spend : ${approvalLinkTx.hash}`);
-
       const linkTX = await linkToken.transfer(
         deployedContract.target,
-        hre.ethers.parseUnits("1", "ether")
+        hre.ethers.parseUnits("5", "ether")
       );
 
       await linkTX.wait();
-      console.log(`🟢 Sent link to contract : ${approvalLinkTx.hash}`);
+      console.log(`🟢 Sent link to contract : ${linkTX.hash}`);
     }
+    // @dev spesific logic for BLockStore contract
 
     if (contractName === "BlockStore") {
       const paymentToken = await hre.ethers.getContractAt(
@@ -133,7 +126,7 @@ export default async function deploy({
 
       const approvalTx = await paymentToken.approve(
         deployedContract.target,
-        200 * 10 ** 18
+        hre.ethers.parseUnits("200", "ether")
       );
 
       await approvalTx.wait();
@@ -145,29 +138,21 @@ export default async function deploy({
         deployer
       );
 
-      const approvalLinkTx = await linkToken.approve(
-        deployedContract.target,
-        200 * 10 ** 18
-      );
-
-      await approvalLinkTx.wait();
-      console.log(`🟢 Approved Link Token Spend : ${approvalLinkTx.hash}`);
-
       const linkTX = await linkToken.transfer(
         deployedContract.target,
-        hre.ethers.parseUnits("1", "ether")
+        hre.ethers.parseUnits("5", "ether")
       );
 
       await linkTX.wait();
-      console.log(`🟢 Sent link to contract : ${approvalLinkTx.hash}`);
+      console.log(`🟢 Sent link to contract : ${linkTX.hash}`);
 
-      const maticTx = await deployer.sendTransaction({
+      const nativeTx = await deployer.sendTransaction({
         to: deployedContract.target,
         value: hre.ethers.parseUnits("0.5", "ether"),
       });
 
-      await maticTx.wait();
-      console.log(`🟢 Supplied with Matic : ${maticTx.hash}`);
+      await nativeTx.wait();
+      console.log(`🟢 Supplied with Matic : ${nativeTx.hash}`);
     }
 
     return deployedContract.target;

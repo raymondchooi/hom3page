@@ -12,6 +12,17 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "note_",
+        type: "string",
+      },
+    ],
+    name: "DEVELOPMENT_ERROR",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "router",
         type: "address",
@@ -62,6 +73,58 @@ const _abi = [
     ],
     name: "NotEnoughBalance",
     type: "error",
+  },
+  {
+    inputs: [],
+    name: "ETH_CHAIN_SELECTOR",
+    outputs: [
+      {
+        internalType: "uint64",
+        name: "",
+        type: "uint64",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "MATIC_CHAIN_SELECTOR",
+    outputs: [
+      {
+        internalType: "uint64",
+        name: "",
+        type: "uint64",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "OP_CHAIN_SELECTOR",
+    outputs: [
+      {
+        internalType: "uint64",
+        name: "",
+        type: "uint64",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "SALES_CONTRACT_CHAIN",
+    outputs: [
+      {
+        internalType: "uint64",
+        name: "",
+        type: "uint64",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
