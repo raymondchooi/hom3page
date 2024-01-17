@@ -107,21 +107,13 @@ export default async function deploy({
         deployer
       );
 
-      const approvalLinkTx = await linkToken.approve(
-        deployedContract.target,
-        hre.ethers.parseUnits("1", "ether")
-      );
-
-      await approvalLinkTx.wait();
-      console.log(`🟢 Approved Link Token Spend : ${approvalLinkTx.hash}`);
-
       const linkTX = await linkToken.transfer(
         deployedContract.target,
-        hre.ethers.parseUnits("1", "ether")
+        hre.ethers.parseUnits("5", "ether")
       );
 
       await linkTX.wait();
-      console.log(`🟢 Sent link to contract : ${approvalLinkTx.hash}`);
+      console.log(`🟢 Sent link to contract : ${linkTX.hash}`);
     }
     // @dev spesific logic for BLockStore contract
 
@@ -146,21 +138,13 @@ export default async function deploy({
         deployer
       );
 
-      const approvalLinkTx = await linkToken.approve(
-        deployedContract.target,
-        hre.ethers.parseUnits("1", "ether")
-      );
-
-      await approvalLinkTx.wait();
-      console.log(`🟢 Approved Link Token Spend : ${approvalLinkTx.hash}`);
-
       const linkTX = await linkToken.transfer(
         deployedContract.target,
-        hre.ethers.parseUnits("1", "ether")
+        hre.ethers.parseUnits("5", "ether")
       );
 
       await linkTX.wait();
-      console.log(`🟢 Sent link to contract : ${approvalLinkTx.hash}`);
+      console.log(`🟢 Sent link to contract : ${linkTX.hash}`);
 
       const nativeTx = await deployer.sendTransaction({
         to: deployedContract.target,

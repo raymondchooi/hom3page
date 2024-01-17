@@ -163,4 +163,13 @@ abstract contract CCIPInterface is CCIPReceiver {
     ) internal view returns (address) {
         return _saleStores[chainId_];
     }
+
+    function _getPaymentAddress()
+        internal
+        view
+        returns (address paymentAddress)
+    {
+        if (_useLinkAsPayment) return address(_linkToken);
+        else return address(0);
+    }
 }

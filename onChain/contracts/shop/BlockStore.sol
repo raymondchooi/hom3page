@@ -112,7 +112,7 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         Client.EVM2AnyMessage memory evm2AnyMessage = _buildSalesOrder(
             receiver_,
             payload_,
-            address(0)
+            _getPaymentAddress()
         );
         uint256 fees;
         // Send the CCIP message through the router and store the returned CCIP message ID

@@ -160,7 +160,7 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         Client.EVM2AnyMessage memory evm2AnyMessage = _buildSalesRecipe(
             _getChainsAllowAddress(chainId_),
             recipe_,
-            address(0)
+            _getPaymentAddress()
         );
 
         uint256 fees;
