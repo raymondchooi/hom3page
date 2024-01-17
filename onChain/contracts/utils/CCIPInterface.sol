@@ -58,14 +58,12 @@ abstract contract CCIPInterface is CCIPReceiver {
     /// @dev This function will create an EVM2AnyMessage struct with all the necessary information for sending a text.
     /// @param receiver_ The address of the receiver.
     /// @param payload_ The string data to be sent.
-    /// @param feeTokenAddress_ The address of the token used for fees. Set address(0) for native gas.
     /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
     function _buildMessage(
         address receiver_,
         bytes memory payload_,
-        address feeTokenAddress_,
         uint256 gasFee_
-    ) internal pure returns (Client.EVM2AnyMessage memory) {
+    ) internal view returns (Client.EVM2AnyMessage memory) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         return
             Client.EVM2AnyMessage({
@@ -77,7 +75,7 @@ abstract contract CCIPInterface is CCIPReceiver {
                     Client.EVMExtraArgsV1({gasLimit: gasFee_})
                 ),
                 // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
-                feeToken: feeTokenAddress_
+                feeToken: _getPaymentAddress()
             });
     }
 
@@ -88,19 +86,16 @@ abstract contract CCIPInterface is CCIPReceiver {
         // Initialize a router client instance to interact with cross-chain router
         IRouterClient router = IRouterClient(this.getRouter());
         fees = router.getFee(chainId_, evm2AnyMessage_);
-
+        uint256 balance;
         //  Handle paying with Link
         if (_useLinkAsPayment) {
-            if (fees > _linkToken.balanceOf(address(this)))
-                revert NotEnoughBalance(
-                    _linkToken.balanceOf(address(this)),
-                    fees
-                );
+            balance = _linkToken.balanceOf(address(this));
+            if (fees > balance) revert NotEnoughBalance(balance, fees);
             _linkToken.approve(address(router), fees);
             messageId = router.ccipSend(chainId_, evm2AnyMessage_);
         } else {
-            if (fees > address(this).balance)
-                revert NotEnoughBalance(address(this).balance, fees);
+            balance = address(this).balance;
+            if (fees > balance) revert NotEnoughBalance(balance, fees);
             messageId = router.ccipSend{value: fees}(chainId_, evm2AnyMessage_);
         }
 
@@ -141,11 +136,7 @@ abstract contract CCIPInterface is CCIPReceiver {
         return _saleStores[chainId_];
     }
 
-    function _getPaymentAddress()
-        internal
-        view
-        returns (address paymentAddress)
-    {
+    function _getPaymentAddress() internal view returns (address) {
         if (_useLinkAsPayment) return address(_linkToken);
         else return address(0);
     }

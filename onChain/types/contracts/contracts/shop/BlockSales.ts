@@ -110,6 +110,7 @@ export interface BlockSalesInterface extends Interface {
       | "transferOwnership"
       | "withdrawBlock"
       | "withdrawFunds"
+      | "withdrawLink"
       | "withdrawTokens"
   ): FunctionFragment;
 
@@ -180,15 +181,19 @@ export interface BlockSalesInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawBlock",
-    values: [AddressLike, BigNumberish]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawFunds",
-    values: [AddressLike]
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawLink",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawTokens",
-    values: [AddressLike, AddressLike]
+    values: [AddressLike]
   ): string;
 
   decodeFunctionResult(functionFragment: "NFT", data: BytesLike): Result;
@@ -250,6 +255,10 @@ export interface BlockSalesInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawFunds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawLink",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -467,19 +476,17 @@ export interface BlockSales extends BaseContract {
   >;
 
   withdrawBlock: TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
+    [tokenId_: BigNumberish],
     [void],
     "nonpayable"
   >;
 
-  withdrawFunds: TypedContractMethod<
-    [withdrawAddress_: AddressLike],
-    [void],
-    "payable"
-  >;
+  withdrawFunds: TypedContractMethod<[], [void], "payable">;
+
+  withdrawLink: TypedContractMethod<[], [void], "nonpayable">;
 
   withdrawTokens: TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
+    [tokenAddress_: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -553,21 +560,16 @@ export interface BlockSales extends BaseContract {
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawBlock"
-  ): TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawFunds"
-  ): TypedContractMethod<[withdrawAddress_: AddressLike], [void], "payable">;
+  ): TypedContractMethod<[], [void], "payable">;
+  getFunction(
+    nameOrSignature: "withdrawLink"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawTokens"
-  ): TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[tokenAddress_: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "ContractActiveStateChange"

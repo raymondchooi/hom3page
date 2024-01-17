@@ -19,19 +19,8 @@ export default async function deploy({
   prevDeployments,
 }: DeploymentProps): Promise<string | Addressable | false> {
   try {
-    if (contractName === "BlockSales") {
+    if (contractName === "BlockSales")
       constructorArguments[0] = prevDeployments[0].deployment;
-      console.log("Check BLockSales args", constructorArguments);
-    }
-
-    console.log(
-      "DEPLOYING: ",
-      contractName,
-      " Arguments : ",
-      constructorArguments,
-      " SIGNER: ",
-      deployer
-    );
 
     const deployedContract: Contract = await hre.ethers.deployContract(
       contractName,
@@ -43,11 +32,7 @@ export default async function deploy({
     );
 
     await deployedContract.waitForDeployment();
-    console.log(
-      `🟠 Deployment Confirmed : ${contractName} to ${
-        deployedContract.deploymentTransaction()?.hash
-      }`
-    );
+    console.log(`🟠 Deployment Confirmed : ${contractName}`);
 
     if (hre.network.name !== "localhost" && hre.network.name !== "hardhat")
       await waitForConfirmations(
@@ -56,9 +41,7 @@ export default async function deploy({
         2
       );
 
-    console.log(
-      `🟢 Contract Deployed : ${contractName} to ${deployedContract.target}`
-    );
+    console.log(`🟢 Contract Deployed : ${contractName}`);
 
     if (network.name !== "hardhat" && network.name !== "localhost") {
       try {
