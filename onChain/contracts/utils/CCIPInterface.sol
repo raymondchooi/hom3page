@@ -28,7 +28,7 @@ abstract contract CCIPInterface is CCIPReceiver {
     uint64 public constant SALES_CONTRACT_CHAIN = OP_CHAIN_SELECTOR;
 
     uint constant SALES_RECIPE_GAS = 300_000;
-    uint constant SALES_ORDER_GAS = 4_000_000;
+    uint constant SALES_ORDER_GAS = 2_000_000;
 
     IRouterClient private _router;
     IERC20 private _linkToken;
