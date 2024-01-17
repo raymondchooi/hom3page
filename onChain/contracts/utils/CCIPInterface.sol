@@ -103,6 +103,8 @@ abstract contract CCIPInterface is CCIPReceiver {
                 revert NotEnoughBalance(address(this).balance, fees);
             messageId = router.ccipSend{value: fees}(chainId_, evm2AnyMessage_);
         }
+
+        return (messageId, fees);
     }
 
     /** @notice Adds a BlockStore contract to the allow message
