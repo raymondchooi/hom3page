@@ -14,7 +14,7 @@ function EditText({ onValueChange }: EditTextProps) {
   return (
     <div className="my-4 flex w-full flex-col justify-center">
       <Field>
-        <Label>Text</Label>
+        <Label className="text-gray-400">Text</Label>
         <Input onChange={handleInputChange} name="Text" aria-label="Text" />
       </Field>
     </div>

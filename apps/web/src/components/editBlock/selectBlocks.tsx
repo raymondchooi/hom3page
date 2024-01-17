@@ -201,14 +201,16 @@ function SelectBlocks({
                 <div key={blockId} className="group relative">
                   <div
                     className={cn(
-                      "absolute left-0 top-0 border-2 border-gray-500",
-                      isBlockSelected ? "border-red-600" : "border-gray-400",
+                      "absolute left-0 top-0 border-2 border-gray-800 bg-gray-900",
+                      isBlockSelected
+                        ? "border-emerald-400"
+                        : "border-gray-800",
                       isFirstBlockFromSelected
                         ? "z-10 overflow-visible"
                         : "border-transparent",
                       !isBlockSelected &&
                         !isFirstBlockFromSelected &&
-                        "border-gray-400",
+                        "border-gray-800",
                     )}
                     style={{
                       width: isFirstBlockFromSelected
@@ -231,9 +233,9 @@ function SelectBlocks({
                   ></div>
                   <button
                     className={cn(
-                      "relative z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-red-600",
+                      "relative z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-emerald-400",
                       purchasableBlocks.get(blockId) && !bought
-                        ? "cursor-not-allowed border-dashed border-gray-200 bg-gray-200 hover:border-gray-400"
+                        ? "cursor-not-allowed border-dashed border-gray-600 hover:border-gray-800"
                         : "border-transparent ",
                     )}
                     onClick={() =>

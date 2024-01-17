@@ -26,7 +26,11 @@ function BappEdit({ onSave, bAppId, onChange }: BappEdit) {
   return (
     <div className="flex w-full flex-col justify-center">
       {renderBappEdit()}
-      <Button onClick={handleSave}>Save</Button>
+      <div className="z-[10] flex w-full">
+        <Button onClick={handleSave} fancy="less" className="w-full">
+          Save
+        </Button>
+      </div>
     </div>
   );
 }

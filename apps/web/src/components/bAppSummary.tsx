@@ -21,7 +21,7 @@ function BAppSummary({
 
   return (
     <button
-      className="group flex cursor-pointer flex-col"
+      className="group flex cursor-pointer flex-col text-gray-300"
       onClick={handleClick}
     >
       <div className="flex items-center">
@@ -35,12 +35,12 @@ function BAppSummary({
           />
         </div>
 
-        <h4 className="text-base font-bold group-hover:text-purple-800 group-hover:underline">
+        <h4 className="text-base font-bold group-hover:text-gray-400 group-hover:underline">
           {title}
         </h4>
       </div>
 
-      <p className="mt-1 w-full text-sm text-gray-600">{description}</p>
+      <p className="mt-1 w-full text-sm ">{description}</p>
     </button>
   );
 }

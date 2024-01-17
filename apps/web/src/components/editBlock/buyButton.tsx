@@ -25,19 +25,22 @@ function BuyButton({
   //TODO remove bought placeholder
   if (purchasableBlocks.size > 0 && !bought) {
     return (
-      <div className="flex items-center">
+      <div className="z-[10] flex items-center">
         <Button
+          fancy
           onClick={handleBuyButtonClick}
         >{`Buy ${purchasableBlocks.size} Block${purchasableBlocks.size > 1 ? "s" : ""}`}</Button>
-        <div className="ml-4 text-sm text-gray-500">
-          {`Balance: ${parseFloat(balance?.data?.formatted ?? "0").toFixed(3)} ${balance?.data?.symbol}`}
-        </div>
+        {!!balance?.data?.symbol && !!balance?.data?.formatted && (
+          <div className="ml-4 text-sm text-gray-400">
+            {`Balance: ${parseFloat(balance?.data?.formatted ?? "0").toFixed(3)} ${balance?.data?.symbol}`}
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="text-base text-gray-500">All selected blocks owned.</div>
+    <div className="text-base text-gray-400">All selected blocks owned.</div>
   );
 }
 

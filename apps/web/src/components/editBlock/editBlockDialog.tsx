@@ -128,16 +128,16 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   }
 
   return (
-    <Dialog open={open} onClose={setOpen}>
+    <Dialog open={open} onClose={setOpen} className="bg-zinc-900">
       <DialogTitle className="flex items-center justify-between">
         <div className="flex items-center justify-start">
-          <div className="mr-4 overflow-auto text-xl font-semibold text-zinc-950">
+          <div className="mr-4 overflow-auto text-xl font-semibold text-gray-200">
             {blockIdsText}
           </div>
         </div>
         <Button plain onClick={() => setOpen(false)}>
           <svg
-            className="h-6 w-6 text-zinc-950 dark:text-white"
+            className="h-6 w-6 text-gray-200"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -155,7 +155,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
       </DialogTitle>
       <DialogBody>
         <DialogDescription>
-          <ol className="list-decimal space-y-6 pl-4 text-lg">
+          <ol className="list-decimal space-y-6 pl-4 text-lg text-gray-200">
             <li className="pl-4">
               <div className="flex flex-col items-start">
                 <BuyButton
@@ -168,7 +168,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
 
                 <button
                   onClick={handleSelectMultipleClick}
-                  className="mt-2 cursor-pointer text-sm text-gray-500 underline"
+                  className="mt-2 cursor-pointer text-sm text-gray-400 underline"
                 >
                   Select more blocks
                 </button>
@@ -191,7 +191,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
             setSelectedBlocksForEditing={setSelectedBlocksForEditing}
           />
 
-          <div className="mt-4 flex justify-between">
+          <div className="mt-6 flex justify-between border-t border-gray-600 pt-4 text-gray-400">
             {!!editBappId ? (
               <button
                 className="flex cursor-pointer items-center text-left hover:scale-105"

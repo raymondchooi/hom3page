@@ -31,7 +31,7 @@ function Text({ blockData }: TextProps) {
   return (
     <div
       ref={containerRef}
-      className="flex h-full w-full items-center justify-center p-1"
+      className="flex h-full w-full items-center justify-center p-1 text-gray-200"
     >
       {blockData?.content ?? ""}
     </div>

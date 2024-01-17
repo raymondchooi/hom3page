@@ -171,9 +171,9 @@ export default function Wall() {
                 </div>
                 <button
                   className={cn(
-                    "absolute left-0 top-0 z-20 box-border flex cursor-pointer border-2 hover:border-red-600",
+                    "absolute left-0 top-0 z-20 box-border flex cursor-pointer border-2 hover:border-emerald-400",
                     selectedBlocks?.has(blockId.toString())
-                      ? "border-red-600"
+                      ? "border-emerald-400"
                       : "border-transparent",
                     blockData?.isFirstBlock ? "overflow-visible" : "z-20",
                   )}
