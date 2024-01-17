@@ -11,17 +11,17 @@ function WallLink({ blockData }: WallLinkProps) {
     <Link
       href={blockData?.wallLink ?? "/"}
       aria-label={`Go to wall ${blockData?.wallLink ?? "home"}`}
-      className="grid h-full w-full grid-cols-3 grid-rows-3 border border-gray-300"
+      className="grid h-full w-full grid-cols-3 grid-rows-3 border border-gray-700"
     >
-      <div className="border border-gray-300"></div>
-      <div className="border border-gray-300"></div>
-      <div className="border border-gray-300"></div>
-      <div className="border border-gray-300"></div>
-      <div className="border border-gray-300"></div>
-      <div className="border border-gray-300"></div>
-      <div className="border border-gray-300"></div>
-      <div className="border border-gray-300"></div>
-      <div className="border border-gray-300"></div>
+      <div className="border border-gray-700"></div>
+      <div className="border border-gray-700"></div>
+      <div className="border border-gray-700"></div>
+      <div className="border border-gray-700"></div>
+      <div className="border border-gray-700"></div>
+      <div className="border border-gray-700"></div>
+      <div className="border border-gray-700"></div>
+      <div className="border border-gray-700"></div>
+      <div className="border border-gray-700"></div>
     </Link>
   );
 }

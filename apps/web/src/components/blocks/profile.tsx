@@ -15,12 +15,12 @@ function Profile({}: ProfileProps) {
   return (
     <button
       onClick={() => setOpen(true)}
-      className="flex h-full w-full cursor-pointer items-center justify-center bg-gray-200 p-1"
+      className="flex h-full w-full cursor-pointer items-center justify-center bg-gray-700 p-1"
     >
       {isConnected ? (
         <div className="flex flex-col items-center justify-center ">
           <Avatar address={address} size={32} radius={16} />
-          <div className="mt-2 truncate text-xs font-bold text-gray-500">
+          <div className="mt-2 truncate text-xs font-bold text-gray-400">
             {shortenWalletAddress(address)}
           </div>
         </div>
