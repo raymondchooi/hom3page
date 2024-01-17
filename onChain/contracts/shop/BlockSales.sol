@@ -157,10 +157,11 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         uint64 chainId_
     ) internal onlyOwner returns (bytes32 messageId) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        Client.EVM2AnyMessage memory evm2AnyMessage = _buildSalesRecipe(
+        Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
             _getChainsAllowAddress(chainId_),
-            recipe_,
-            _getPaymentAddress()
+            abi.encode(recipe_),
+            _getPaymentAddress(),
+            SALES_RECIPE_GAS
         );
 
         uint256 fees;

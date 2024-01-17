@@ -60,46 +60,21 @@ abstract contract CCIPInterface is CCIPReceiver {
     /// @param payload_ The string data to be sent.
     /// @param feeTokenAddress_ The address of the token used for fees. Set address(0) for native gas.
     /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
-    function _buildSalesRecipe(
+    function _buildMessage(
         address receiver_,
-        IBlockSales.SaleRecipe memory payload_,
-        address feeTokenAddress_
+        bytes memory payload_,
+        address feeTokenAddress_,
+        uint256 gasFee_
     ) internal pure returns (Client.EVM2AnyMessage memory) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         return
             Client.EVM2AnyMessage({
                 receiver: abi.encode(receiver_), // ABI-encoded receiver address
-                data: abi.encode(payload_),
+                data: payload_,
                 tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
                 extraArgs: Client._argsToBytes(
                     // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: SALES_RECIPE_GAS})
-                ),
-                // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
-                feeToken: feeTokenAddress_
-            });
-    }
-
-    /// @notice Construct a CCIP message.
-    /// @dev This function will create an EVM2AnyMessage struct with all the necessary information for sending a text.
-    /// @param receiver_ The address of the receiver.
-    /// @param payload_ The string data to be sent.
-    /// @param feeTokenAddress_ The address of the token used for fees. Set address(0) for native gas.
-    /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
-    function _buildSalesOrder(
-        address receiver_,
-        IBlockStore.Sale memory payload_,
-        address feeTokenAddress_
-    ) internal pure returns (Client.EVM2AnyMessage memory) {
-        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        return
-            Client.EVM2AnyMessage({
-                receiver: abi.encode(receiver_), // ABI-encoded receiver address
-                data: abi.encode(payload_),
-                tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
-                extraArgs: Client._argsToBytes(
-                    // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: SALES_ORDER_GAS})
+                    Client.EVMExtraArgsV1({gasLimit: gasFee_})
                 ),
                 // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
                 feeToken: feeTokenAddress_

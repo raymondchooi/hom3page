@@ -91,8 +91,12 @@ export declare namespace Client {
 export interface BlockSalesInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "ETH_CHAIN_SELECTOR"
+      | "MATIC_CHAIN_SELECTOR"
       | "NFT"
+      | "OP_CHAIN_SELECTOR"
       | "PAYMENT_TOKEN"
+      | "SALES_CONTRACT_CHAIN"
       | "buyBatchBlock"
       | "buyBlock"
       | "ccipReceive"
@@ -122,9 +126,25 @@ export interface BlockSalesInterface extends Interface {
       | "SaleMade"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "NFT", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "OP_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "PAYMENT_TOKEN",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SALES_CONTRACT_CHAIN",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -191,9 +211,25 @@ export interface BlockSalesInterface extends Interface {
     values: [AddressLike, AddressLike]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "NFT", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "OP_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "PAYMENT_TOKEN",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SALES_CONTRACT_CHAIN",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -400,9 +436,17 @@ export interface BlockSales extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  ETH_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  MATIC_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
   NFT: TypedContractMethod<[], [string], "view">;
 
+  OP_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
   PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
+
+  SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
 
   buyBatchBlock: TypedContractMethod<
     [tokenIds_: BigNumberish[][]],
@@ -489,11 +533,23 @@ export interface BlockSales extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "ETH_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MATIC_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "NFT"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "OP_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "PAYMENT_TOKEN"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "SALES_CONTRACT_CHAIN"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "buyBatchBlock"
   ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
