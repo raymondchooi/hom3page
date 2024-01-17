@@ -13,7 +13,7 @@ interface SelectBlocksProps {
   blockIds: string[];
   editBappValue?: string;
   bAppStoredValues?: Record<string, string>;
-  selectedBlocksForEditing: Map<string, object> | undefined;
+  selectedBlocksForEditing: Map<string, object>;
   setSelectedBlocksForEditing: (
     selectedBlocksForEditing: Map<string, object>,
   ) => void;

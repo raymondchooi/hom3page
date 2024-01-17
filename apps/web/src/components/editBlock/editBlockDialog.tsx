@@ -35,8 +35,9 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   const balance = useBalance({ address, chainId: sepolia.id });
 
   const [bought, setBought] = useState(false);
-  const [selectedBlocksForEditing, setSelectedBlocksForEditing] =
-    useState<Map<string, object>>();
+  const [selectedBlocksForEditing, setSelectedBlocksForEditing] = useState<
+    Map<string, object>
+  >(new Map());
   const [editBappId, setEditBappId] = useState<string>("");
   const [editBappValue, setEditBappValue] = useState<string>("");
   //TODO save this somewhere
