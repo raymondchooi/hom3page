@@ -230,7 +230,7 @@ function SelectBlocks({
                       width: BLOCK_WIDTH,
                       height: BLOCK_HEIGHT,
                     }}
-                    title={`${purchasableBlocks.get(blockId) && !bought ? "Not owned: " : ""}${blockId.toString()}`}
+                    title={`${purchasableBlocks.get(blockId) && !bought ? "Not owned: #" : "#"}${blockId.toString()}`}
                   >
                     {renderBlockContent(blockId, isBlockSelected)}
                   </button>

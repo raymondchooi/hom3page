@@ -146,7 +146,11 @@ export default function Wall() {
             }
 
             return (
-              <div key={blockData.id} className="relative">
+              <div
+                key={blockData.id}
+                className="relative"
+                title={`#${blockData.id}`}
+              >
                 <div
                   style={{
                     width: BLOCK_WIDTH,
@@ -184,7 +188,11 @@ export default function Wall() {
           }
 
           return (
-            <div key={blockData.id} className="relative">
+            <div
+              key={blockData.id}
+              className="relative"
+              title={`#${blockData.id}`}
+            >
               <div
                 style={{
                   width: BLOCK_WIDTH,
