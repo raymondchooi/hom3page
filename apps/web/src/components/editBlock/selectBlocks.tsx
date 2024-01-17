@@ -101,7 +101,9 @@ function SelectBlocks({
     return groupBlocksIntoRectangles(blockIds);
   }, [blockIds]);
 
-  function handleBlockSelect(blockId: string) {
+  function handleBlockSelect(blockId: string, selectable: boolean) {
+    if (!selectable) return;
+
     const blockIdString = blockId.toString();
 
     if (!selectedBlocksForEditing) {
@@ -233,7 +235,12 @@ function SelectBlocks({
                         ? "cursor-not-allowed border-dashed border-gray-200 bg-gray-200 hover:border-gray-400"
                         : "border-transparent ",
                     )}
-                    onClick={() => handleBlockSelect(blockId)}
+                    onClick={() =>
+                      handleBlockSelect(
+                        blockId,
+                        !(purchasableBlocks.get(blockId) && !bought),
+                      )
+                    }
                     style={{
                       width: BLOCK_WIDTH,
                       height: BLOCK_HEIGHT,
