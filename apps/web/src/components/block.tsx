@@ -11,15 +11,21 @@ import ImageBlock from "./blocks/image";
 
 interface BlockProps {
   blockData: BlockData;
+  editing?: boolean;
 }
 
-export default function Block({ blockData }: BlockProps) {
+export default function Block({ blockData, editing }: BlockProps) {
+  // TODO move this to a shared place
   function renderBlock() {
     if (blockData?.type === "profile") return <Profile blockData={blockData} />;
     else if (blockData?.type === "text") return <Text blockData={blockData} />;
     else if (blockData?.type === "image")
       return <ImageBlock blockData={blockData} />;
     else if (!!blockData?.wallLink) return <WallLink blockData={blockData} />;
+    else if (editing)
+      return (
+        <Text blockData={{ id: blockData.id, content: blockData.content }} />
+      );
 
     return <Available blockData={blockData} />;
   }

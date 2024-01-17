@@ -4,21 +4,15 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useAccount, useBalance, sepolia } from "wagmi";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-import { Button, BappSummary } from "components";
+import { Button, BappEdit, BappCarousel } from "components";
 import {
   Dialog,
   DialogBody,
   DialogDescription,
   DialogTitle,
 } from "components/dialog";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "components/carousel";
 import { BAPPS_BASE_URL } from "constants/urls";
 import { type BlockData } from "models/BlockData";
 import BuyButton from "./buyButton";
@@ -43,6 +37,11 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   const [bought, setBought] = useState(false);
   const [selectedBlocksForEditing, setSelectedBlocksForEditing] =
     useState<Map<string, object>>();
+  const [editBappId, setEditBappId] = useState<string>("");
+  const [editBappValue, setEditBappValue] = useState<string>("");
+  //TODO save this somewhere
+  const [bAppStoredValues, setBAppStoredValues] =
+    useState<Record<string, string>>();
 
   const blockIds = useMemo(() => {
     return editBlockParam
@@ -104,6 +103,30 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
     router.push(`${pathname}?${currentParams.toString()}`);
   }
 
+  function handleBappEditSave() {
+    setEditBappId("");
+
+    for (const blockId of selectedBlocksForEditing!.keys()) {
+      setBAppStoredValues((prev) => ({
+        ...prev,
+        [blockId]: editBappValue,
+      }));
+    }
+  }
+
+  function handleBappEditBackClick() {
+    setEditBappId("");
+    setEditBappValue("");
+  }
+
+  function handleBappEditValueChange(value: string) {
+    setEditBappValue(value);
+  }
+
+  function handleBappSummaryClick(bappId: string) {
+    if (ownedBlocks.size > 0 || bought) setEditBappId(bappId);
+  }
+
   return (
     <Dialog open={open} onClose={setOpen}>
       <DialogTitle className="flex items-center justify-between">
@@ -162,11 +185,24 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
             purchasableBlocks={purchasableBlocks}
             bought={bought}
             blockIds={blockIds}
+            editBappValue={editBappValue}
+            bAppStoredValues={bAppStoredValues}
             selectedBlocksForEditing={selectedBlocksForEditing}
             setSelectedBlocksForEditing={setSelectedBlocksForEditing}
           />
 
-          <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex justify-between">
+            {!!editBappId ? (
+              <button
+                className="flex cursor-pointer items-center text-left hover:scale-105"
+                onClick={handleBappEditBackClick}
+              >
+                <ArrowLeftIcon className="mr-2 inline-block h-4 w-4" />
+                Back
+              </button>
+            ) : (
+              <div></div>
+            )}
             <Link
               className="cursor-pointer text-right underline"
               href={BAPPS_BASE_URL}
@@ -175,65 +211,15 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
             </Link>
           </div>
 
-          <Carousel
-            opts={{
-              align: "start",
-            }}
-            className="mt-2 w-full"
-          >
-            <CarouselContent>
-              <CarouselItem className="basis-1/3">
-                <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-                  <BappSummary
-                    id="1"
-                    title="Text"
-                    description="Add text to your block"
-                    image="/logo_plain.jpg"
-                  />
-                </div>
-              </CarouselItem>
-              <CarouselItem className="basis-1/3">
-                <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-                  <BappSummary
-                    id="2"
-                    title="Image"
-                    description="Add an image to your block"
-                    image="/logo_plain.jpg"
-                  />
-                </div>
-              </CarouselItem>
-              <CarouselItem className="basis-1/3">
-                <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-                  <BappSummary
-                    id="3"
-                    title="Text2"
-                    description="Add text2 to your block"
-                    image="/logo_plain.jpg"
-                  />
-                </div>
-              </CarouselItem>
-              <CarouselItem className="basis-1/3">
-                <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-                  <BappSummary
-                    id="4"
-                    title="Text3"
-                    description="Add text3 to your block"
-                    image="/logo_plain.jpg"
-                  />
-                </div>
-              </CarouselItem>
-              <CarouselItem className="basis-1/3">
-                <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-                  <BappSummary
-                    id="5"
-                    title="Text4"
-                    description="Add text4 to your block"
-                    image="/logo_plain.jpg"
-                  />
-                </div>
-              </CarouselItem>
-            </CarouselContent>
-          </Carousel>
+          {editBappId ? (
+            <BappEdit
+              bAppId={editBappId}
+              onSave={handleBappEditSave}
+              onChange={handleBappEditValueChange}
+            />
+          ) : (
+            <BappCarousel onBappClick={handleBappSummaryClick} />
+          )}
         </DialogDescription>
       </DialogBody>
     </Dialog>

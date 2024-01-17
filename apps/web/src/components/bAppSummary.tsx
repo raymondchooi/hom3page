@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 
 export interface BAppSummaryProps {
@@ -6,11 +5,25 @@ export interface BAppSummaryProps {
   title: string;
   description: string;
   image: string;
+  onClick?: (bAppId: string) => void;
 }
 
-function BAppSummary({ id, title, description, image }: BAppSummaryProps) {
+function BAppSummary({
+  id,
+  title,
+  description,
+  image,
+  onClick,
+}: BAppSummaryProps) {
+  function handleClick() {
+    onClick && onClick(id);
+  }
+
   return (
-    <Link className="group flex cursor-pointer flex-col" href={`/?bApp=${id}`}>
+    <button
+      className="group flex cursor-pointer flex-col"
+      onClick={handleClick}
+    >
       <div className="flex items-center">
         <div className="mr-4 flex-shrink-0">
           <Image
@@ -28,7 +41,7 @@ function BAppSummary({ id, title, description, image }: BAppSummaryProps) {
       </div>
 
       <p className="mt-1 w-full text-sm text-gray-600">{description}</p>
-    </Link>
+    </button>
   );
 }
 

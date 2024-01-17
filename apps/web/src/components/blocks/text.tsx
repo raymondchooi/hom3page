@@ -14,7 +14,7 @@ function Text({ blockData }: TextProps) {
 
     const resizeText = () => {
       const fontSize = Math.min(
-        container.clientWidth / 10,
+        container.clientWidth / 5,
         container.clientHeight / 2,
       );
       container.style.fontSize = `${fontSize}px`;

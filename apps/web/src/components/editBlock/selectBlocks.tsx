@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 
+import { Block } from "components";
 import { WALL_WIDTH } from "constants/wall";
 import { BLOCK_WIDTH, BLOCK_HEIGHT } from "constants/block";
 import { cn } from "utils/tailwind";
@@ -10,6 +11,8 @@ interface SelectBlocksProps {
   purchasableBlocks: Map<string, object>;
   bought: boolean;
   blockIds: string[];
+  editBappValue?: string;
+  bAppStoredValues?: Record<string, string>;
   selectedBlocksForEditing: Map<string, object> | undefined;
   setSelectedBlocksForEditing: (
     selectedBlocksForEditing: Map<string, object>,
@@ -20,6 +23,8 @@ function SelectBlocks({
   purchasableBlocks,
   bought,
   blockIds,
+  editBappValue,
+  bAppStoredValues,
   selectedBlocksForEditing,
   setSelectedBlocksForEditing,
 }: SelectBlocksProps) {
@@ -142,6 +147,22 @@ function SelectBlocks({
     setSelectedBlocksForEditing(new Map(selectedBlocksForEditing));
   }
 
+  function renderBlockContent(blockId: string) {
+    const blockContent =
+      bAppStoredValues?.[blockId] || editBappValue || blockId;
+
+    return (
+      <Block
+        key={blockContent}
+        blockData={{
+          id: blockId,
+          content: blockContent,
+        }}
+        editing
+      />
+    );
+  }
+
   return (
     <div className="mt-4 flex gap-x-6 overflow-x-auto">
       {Array.from(rectangleBlockGroups.values()).map((group, i) => {
@@ -167,12 +188,6 @@ function SelectBlocks({
 
               return (
                 <div key={blockId} className="group relative">
-                  <div
-                    style={{
-                      width: BLOCK_WIDTH,
-                      height: BLOCK_HEIGHT,
-                    }}
-                  ></div>
                   <div
                     className={cn(
                       "absolute left-0 top-0 border-2 border-gray-500",
@@ -205,7 +220,7 @@ function SelectBlocks({
                   ></div>
                   <button
                     className={cn(
-                      "absolute left-0 top-0 z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-red-600",
+                      "relative z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-red-600",
                       purchasableBlocks.get(blockId) && !bought
                         ? "cursor-not-allowed border-dashed border-gray-200 bg-gray-200 hover:border-gray-400"
                         : "border-transparent ",
@@ -217,7 +232,7 @@ function SelectBlocks({
                     }}
                     title={`${purchasableBlocks.get(blockId) && !bought ? "Not owned: " : ""}${blockId.toString()}`}
                   >
-                    {blockId}
+                    {renderBlockContent(blockId)}
                   </button>
                 </div>
               );
