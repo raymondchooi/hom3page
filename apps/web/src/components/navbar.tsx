@@ -7,6 +7,7 @@ import { Menu, Popover, Transition } from "@headlessui/react";
 import { useModal, Avatar } from "connectkit";
 import { useAccount, useDisconnect } from "wagmi";
 
+import { Button } from "components";
 import { shortenWalletAddress } from "utils/text";
 import { cn } from "utils/tailwind";
 
@@ -67,7 +68,7 @@ export default function Navbar() {
                 <div className="flex items-center justify-end ">
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-5 flex-shrink-0 ">
-                    <div>
+                    <>
                       {isConnected ? (
                         <Menu.Button className="relative flex rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                           <span className="absolute -inset-1.5" />
@@ -75,14 +76,13 @@ export default function Navbar() {
                           <Avatar address={address} size={32} radius={16} />
                         </Menu.Button>
                       ) : (
-                        <button
-                          onClick={() => setOpen(true)}
-                          className="ml-6 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                          Connect Wallet
-                        </button>
+                        <div className="relative z-[1]">
+                          <Button onClick={() => setOpen(true)} fancy>
+                            Connect Wallet
+                          </Button>
+                        </div>
                       )}
-                    </div>
+                    </>
                     <Transition
                       as={Fragment}
                       enter="transition ease-out duration-100"

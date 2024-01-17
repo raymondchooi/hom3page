@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import React from "react";
 import { Link } from "./link";
 
-const styles = {
+export const styles = {
   base: [
     // Base
     "relative isolate inline-flex items-center justify-center gap-x-2 rounded-lg border text-base/6 font-semibold",
@@ -72,6 +72,9 @@ const styles = {
 
     // Icon
     "[--btn-icon:theme(colors.zinc.500)] data-[active]:[--btn-icon:theme(colors.zinc.700)] data-[hover]:[--btn-icon:theme(colors.zinc.700)] dark:[--btn-icon:theme(colors.zinc.500)] dark:data-[active]:[--btn-icon:theme(colors.zinc.400)] dark:data-[hover]:[--btn-icon:theme(colors.zinc.400)]",
+  ],
+  fancy: [
+    "relative before:z-[-1] isolation-auto bg-zinc-900 border-0 text-zinc-100 transition-colors before:rounded-[calc(theme(borderRadius.lg)+1px)] duration-200  ease-in-out justify-center text-center cursor-pointer hover:bg-zinc-950 before:content-[''] before:absolute before:bg-gradient-to-r before:from-green-500 before:via-cyan-500 before:to-teal-500 before:inset-[-2px] before:transition-all before:duration-200 before:ease-0 before:bg-gradient-to-r before:from-green-500 before:via-cyan-500 before:to-teal-500 hover:before:shadow-lg hover:before:shadow-[rgba(0,220,130,0.5)],hover:before:shadow-2xl hover:before:shadow-[rgba(54,228,218,0.5)]",
   ],
   colors: {
     "dark/zinc": [
@@ -176,9 +179,15 @@ const styles = {
 };
 
 type ButtonProps = (
-  | { color?: keyof typeof styles.colors; outline?: never; plain?: never }
-  | { color?: never; outline: true; plain?: never }
-  | { color?: never; outline?: never; plain: true }
+  | {
+      color?: keyof typeof styles.colors;
+      fancy?: never;
+      outline?: never;
+      plain?: never;
+    }
+  | { color?: never; fancy?: never; outline: true; plain?: never }
+  | { color?: never; fancy?: never; outline?: never; plain: true }
+  | { color?: never; fancy: true; outline?: never; plain?: never }
 ) & { children: React.ReactNode; buttonType?: "button" | "submit" } & (
     | React.InputHTMLAttributes<HTMLButtonElement>
     | React.ComponentPropsWithoutRef<typeof Link>
@@ -189,6 +198,7 @@ const Button = React.forwardRef(function Button(
     color,
     outline,
     plain,
+    fancy,
     className,
     children,
     buttonType = "button",
@@ -199,11 +209,13 @@ const Button = React.forwardRef(function Button(
   const classes = clsx(
     className,
     styles.base,
-    outline
-      ? styles.outline
-      : plain
-        ? styles.plain
-        : clsx(styles.solid, styles.colors[color ?? "dark/zinc"]),
+    fancy
+      ? styles.fancy
+      : outline
+        ? styles.outline
+        : plain
+          ? styles.plain
+          : clsx(styles.solid, styles.colors[color ?? "dark/zinc"]),
   );
 
   return "href" in props ? (

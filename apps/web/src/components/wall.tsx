@@ -261,20 +261,20 @@ export default function Wall() {
                         ? Array.from(selectedBlocks.keys()).join(", ")
                         : "-"}
                     </div>
-                    <Button color="indigo" onClick={handleConfirmSelection}>
+                    <Button color="emerald" onClick={handleConfirmSelection}>
                       Confirm Selection
                     </Button>{" "}
                   </>
                 )}
 
-                <div className="mt-4 flex items-center justify-center gap-x-2">
-                  <Button onClick={() => zoomIn()} color="purple">
+                <div className="mt-4 flex items-center justify-center gap-x-3">
+                  <Button onClick={() => zoomIn()} fancy>
                     +
                   </Button>
-                  <Button onClick={() => centerView()} color="purple">
+                  <Button onClick={() => centerView()} fancy>
                     <HomeIcon className="h-5 w-5 text-white" />
                   </Button>
-                  <Button onClick={() => zoomOut()} color="purple">
+                  <Button onClick={() => zoomOut()} fancy>
                     -
                   </Button>
                 </div>
