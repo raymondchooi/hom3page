@@ -30,7 +30,9 @@ export default function Wall() {
 
   const [editBlockDialogOpen, setEditBlockDialogOpen] =
     useState<boolean>(false);
-  const [selectedBlocks, setSelectedBlocks] = useState<Map<string, object>>();
+  const [selectedBlocks, setSelectedBlocks] = useState<Map<string, object>>(
+    new Map(),
+  );
 
   const wallId = decodeURIComponent(params?.id?.toString() ?? "0")
     .toString()
