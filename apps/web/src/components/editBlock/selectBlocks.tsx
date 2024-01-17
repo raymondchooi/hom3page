@@ -57,12 +57,20 @@ function SelectBlocks({
         const otherRow = Math.floor(parseInt(blockIds[j] ?? "1") / WALL_WIDTH);
         const otherCol = parseInt(blockIds[j] ?? "1") % WALL_WIDTH;
 
-        // Check if this block can form a rectangle with the current block
-        if (
-          (Math.abs(row - otherRow) <= 1 && col === otherCol) ||
-          (row === otherRow && Math.abs(col - otherCol) <= 1)
-        ) {
-          rectangles.push({ id: blockIds[j], row: otherRow, col: otherCol });
+        // Iterate over the rectangles array
+        for (let k = 0; k < rectangles.length; k++) {
+          const rectangle = rectangles[k];
+
+          // Check if this block can form a rectangle with the current rectangle
+          if (
+            (Math.abs(rectangle?.row - otherRow) <= 1 &&
+              rectangle?.col === otherCol) ||
+            (rectangle?.row === otherRow &&
+              Math.abs(rectangle?.col - otherCol) <= 1)
+          ) {
+            rectangles.push({ id: blockIds[j], row: otherRow, col: otherCol });
+            break; // Break the loop as we have found a rectangle
+          }
         }
       }
 
