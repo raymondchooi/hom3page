@@ -147,7 +147,7 @@ function SelectBlocks({
     setSelectedBlocksForEditing(new Map(selectedBlocksForEditing));
   }
 
-  function renderBlockContent(blockId: string) {
+  function renderBlockContent(blockId: string, isBlockSelected: boolean) {
     const blockContent =
       bAppStoredValues?.[blockId] || editBappValue || blockId;
 
@@ -156,7 +156,7 @@ function SelectBlocks({
         key={blockContent}
         blockData={{
           id: blockId,
-          content: blockContent,
+          content: isBlockSelected ? blockContent : blockId,
         }}
         editing
       />
@@ -175,7 +175,7 @@ function SelectBlocks({
             className="grid gap-0"
           >
             {group.blockIds.map((blockId: string) => {
-              const isBlockSelected = selectedBlocksForEditing?.has(
+              const isBlockSelected = !!selectedBlocksForEditing?.has(
                 blockId.toString(),
               );
               const isFirstBlockFromSelected = isBlockSelected
@@ -232,7 +232,7 @@ function SelectBlocks({
                     }}
                     title={`${purchasableBlocks.get(blockId) && !bought ? "Not owned: " : ""}${blockId.toString()}`}
                   >
-                    {renderBlockContent(blockId)}
+                    {renderBlockContent(blockId, isBlockSelected)}
                   </button>
                 </div>
               );
