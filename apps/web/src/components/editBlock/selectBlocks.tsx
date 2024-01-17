@@ -63,7 +63,8 @@ function SelectBlocks({
 
           // Check if this block can form a rectangle with the current rectangle
           if (
-            (Math.abs(rectangle?.row ?? 0 - otherRow) <= 1 &&
+            (rectangle?.row &&
+              Math.abs(rectangle?.row - otherRow) <= 1 &&
               rectangle?.col === otherCol) ||
             (rectangle?.row === otherRow &&
               Math.abs(rectangle?.col - otherCol) <= 1)
