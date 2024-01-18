@@ -8,4 +8,7 @@ export type { IBlockStore } from "./IBlockStore";
 export type { IBlockToken } from "./IBlockToken";
 export type { IERC20 } from "./IERC20";
 export type { IGhoToken } from "./IGhoToken";
+export type { IHom3DepositVault } from "./IHom3DepositVault";
+export type { IHom3Vault } from "./IHom3Vault";
+export type { IVaultData } from "./IVaultData";
 export type { IWallGenerator } from "./IWallGenerator";

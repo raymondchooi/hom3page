@@ -75,6 +75,44 @@ const _abi = [
     type: "error",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "messageId_",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint64",
+        name: "sourceChainId_",
+        type: "uint64",
+      },
+    ],
+    name: "MessageReceived",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "messageId_",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint64",
+        name: "destinationChain_",
+        type: "uint64",
+      },
+    ],
+    name: "MessageSent",
+    type: "event",
+  },
+  {
     inputs: [],
     name: "ETH_CHAIN_SELECTOR",
     outputs: [

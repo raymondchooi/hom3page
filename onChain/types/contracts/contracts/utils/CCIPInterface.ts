@@ -8,6 +8,7 @@ import type {
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
   AddressLike,
   ContractRunner,
   ContractMethod,
@@ -17,6 +18,7 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "../../common";
@@ -66,6 +68,10 @@ export interface CCIPInterfaceInterface extends Interface {
       | "getRouter"
       | "supportsInterface"
   ): FunctionFragment;
+
+  getEvent(
+    nameOrSignatureOrTopic: "MessageReceived" | "MessageSent"
+  ): EventFragment;
 
   encodeFunctionData(
     functionFragment: "ETH_CHAIN_SELECTOR",
@@ -118,6 +124,38 @@ export interface CCIPInterfaceInterface extends Interface {
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
+}
+
+export namespace MessageReceivedEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    sourceChainId_: BigNumberish
+  ];
+  export type OutputTuple = [messageId_: string, sourceChainId_: bigint];
+  export interface OutputObject {
+    messageId_: string;
+    sourceChainId_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace MessageSentEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    destinationChain_: BigNumberish
+  ];
+  export type OutputTuple = [messageId_: string, destinationChain_: bigint];
+  export interface OutputObject {
+    messageId_: string;
+    destinationChain_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export interface CCIPInterface extends BaseContract {
@@ -215,5 +253,42 @@ export interface CCIPInterface extends BaseContract {
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
 
-  filters: {};
+  getEvent(
+    key: "MessageReceived"
+  ): TypedContractEvent<
+    MessageReceivedEvent.InputTuple,
+    MessageReceivedEvent.OutputTuple,
+    MessageReceivedEvent.OutputObject
+  >;
+  getEvent(
+    key: "MessageSent"
+  ): TypedContractEvent<
+    MessageSentEvent.InputTuple,
+    MessageSentEvent.OutputTuple,
+    MessageSentEvent.OutputObject
+  >;
+
+  filters: {
+    "MessageReceived(bytes32,uint64)": TypedContractEvent<
+      MessageReceivedEvent.InputTuple,
+      MessageReceivedEvent.OutputTuple,
+      MessageReceivedEvent.OutputObject
+    >;
+    MessageReceived: TypedContractEvent<
+      MessageReceivedEvent.InputTuple,
+      MessageReceivedEvent.OutputTuple,
+      MessageReceivedEvent.OutputObject
+    >;
+
+    "MessageSent(bytes32,uint64)": TypedContractEvent<
+      MessageSentEvent.InputTuple,
+      MessageSentEvent.OutputTuple,
+      MessageSentEvent.OutputObject
+    >;
+    MessageSent: TypedContractEvent<
+      MessageSentEvent.InputTuple,
+      MessageSentEvent.OutputTuple,
+      MessageSentEvent.OutputObject
+    >;
+  };
 }

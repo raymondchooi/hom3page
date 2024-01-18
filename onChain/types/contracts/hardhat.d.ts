@@ -202,9 +202,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IGhoToken__factory>;
     getContractFactory(
+      name: "IHom3DepositVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IHom3DepositVault__factory>;
+    getContractFactory(
       name: "IHom3ProfileToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IHom3ProfileToken__factory>;
+    getContractFactory(
+      name: "IHom3Vault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IHom3Vault__factory>;
+    getContractFactory(
+      name: "IVaultData",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IVaultData__factory>;
     getContractFactory(
       name: "IWallGenerator",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -245,6 +257,10 @@ declare module "hardhat/types/runtime" {
       name: "ERC721AVotes",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721AVotes__factory>;
+    getContractFactory(
+      name: "Hom3DepositVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Hom3DepositVault__factory>;
     getContractFactory(
       name: "Hom3Vault",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -498,10 +514,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IGhoToken>;
     getContractAt(
+      name: "IHom3DepositVault",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IHom3DepositVault>;
+    getContractAt(
       name: "IHom3ProfileToken",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.IHom3ProfileToken>;
+    getContractAt(
+      name: "IHom3Vault",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IHom3Vault>;
+    getContractAt(
+      name: "IVaultData",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IVaultData>;
     getContractAt(
       name: "IWallGenerator",
       address: string | ethers.Addressable,
@@ -552,6 +583,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ERC721AVotes>;
+    getContractAt(
+      name: "Hom3DepositVault",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Hom3DepositVault>;
     getContractAt(
       name: "Hom3Vault",
       address: string | ethers.Addressable,
@@ -762,9 +798,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IGhoToken>;
     deployContract(
+      name: "IHom3DepositVault",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IHom3DepositVault>;
+    deployContract(
       name: "IHom3ProfileToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IHom3ProfileToken>;
+    deployContract(
+      name: "IHom3Vault",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IHom3Vault>;
+    deployContract(
+      name: "IVaultData",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IVaultData>;
     deployContract(
       name: "IWallGenerator",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -805,6 +853,10 @@ declare module "hardhat/types/runtime" {
       name: "ERC721AVotes",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC721AVotes>;
+    deployContract(
+      name: "Hom3DepositVault",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Hom3DepositVault>;
     deployContract(
       name: "Hom3Vault",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -1058,10 +1110,25 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IGhoToken>;
     deployContract(
+      name: "IHom3DepositVault",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IHom3DepositVault>;
+    deployContract(
       name: "IHom3ProfileToken",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IHom3ProfileToken>;
+    deployContract(
+      name: "IHom3Vault",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IHom3Vault>;
+    deployContract(
+      name: "IVaultData",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IVaultData>;
     deployContract(
       name: "IWallGenerator",
       args: any[],
@@ -1112,6 +1179,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC721AVotes>;
+    deployContract(
+      name: "Hom3DepositVault",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Hom3DepositVault>;
     deployContract(
       name: "Hom3Vault",
       args: any[],
