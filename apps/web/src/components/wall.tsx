@@ -95,13 +95,15 @@ export default function Wall() {
       const randomTypeIndex = Math.floor(Math.random() * 4);
       if (randomTypeIndex === 0) {
         blockData.type = "text";
+        blockData.owner = `0x${index}`;
         blockData.content = `Hello  ${index}`;
       } else if (randomTypeIndex === 1) {
         blockData.wallLink = `/${index}`;
         blockData.owner = `0x${index}`;
       } else if (randomTypeIndex === 2) {
         blockData.type = "image";
-        blockData.content = "/ateam.png";
+        blockData.owner = `0x${index}`;
+        blockData.content = "img:/ateam.png|alt:ateam";
       }
 
       if (i === 212) {

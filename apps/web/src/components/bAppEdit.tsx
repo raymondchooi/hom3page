@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "components";
 import EditText from "./editBlock/editText";
+import EditImage from "./editBlock/editImage";
 
 interface BappEdit {
   onSave: () => void;
@@ -20,17 +20,15 @@ function BappEdit({ onSave, bAppId, onChange }: BappEdit) {
   }
 
   function renderBappEdit() {
-    if (bAppId) return <EditText onValueChange={handleValueChange} />;
+    if (bAppId === "text")
+      return <EditText onSave={handleSave} onChange={handleValueChange} />;
+    if (bAppId === "image")
+      return <EditImage onSave={handleSave} onChange={handleValueChange} />;
     return <></>;
   }
   return (
     <div className="flex w-full flex-col justify-center">
       {renderBappEdit()}
-      <div className="z-[10] flex w-full">
-        <Button onClick={handleSave} fancy="less" className="w-full">
-          Save
-        </Button>
-      </div>
     </div>
   );
 }

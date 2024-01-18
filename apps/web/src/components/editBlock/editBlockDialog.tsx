@@ -186,6 +186,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
             purchasableBlocks={purchasableBlocks}
             bought={bought}
             blockIds={blockIds}
+            editBappId={editBappId}
             editBappValue={editBappValue}
             bAppStoredValues={bAppStoredValues}
             selectedBlocksForEditing={selectedBlocksForEditing}

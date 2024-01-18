@@ -23,7 +23,7 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
         <CarouselItem className="basis-1/3">
           <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
             <BappSummary
-              id="1"
+              id="text"
               title="Text"
               description="Add text to your block"
               image="/logo_plain.jpg"
@@ -34,7 +34,7 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
         <CarouselItem className="basis-1/3">
           <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
             <BappSummary
-              id="2"
+              id="image"
               title="Image"
               description="Add an image to your block"
               image="/logo_plain.jpg"

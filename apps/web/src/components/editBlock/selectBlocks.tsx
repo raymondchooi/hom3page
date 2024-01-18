@@ -11,6 +11,7 @@ interface SelectBlocksProps {
   purchasableBlocks: Map<string, object>;
   bought: boolean;
   blockIds: string[];
+  editBappId?: string;
   editBappValue?: string;
   bAppStoredValues?: Record<string, string>;
   selectedBlocksForEditing: Map<string, object>;
@@ -30,6 +31,7 @@ function SelectBlocks({
   purchasableBlocks,
   bought,
   blockIds,
+  editBappId,
   editBappValue,
   bAppStoredValues,
   selectedBlocksForEditing,
@@ -247,6 +249,7 @@ function SelectBlocks({
         key={blockContent}
         blockData={{
           id: blockId,
+          type: editBappId,
           content: isBlockSelected ? blockContent : blockId,
         }}
         editing
