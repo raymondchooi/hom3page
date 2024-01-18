@@ -129,7 +129,11 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   }
 
   return (
-    <Dialog open={open} onClose={setOpen} className="bg-zinc-900">
+    <Dialog
+      open={open}
+      onClose={setOpen}
+      className="border border-zinc-800 bg-zinc-900"
+    >
       <DialogTitle className="flex items-center justify-between">
         <div className="flex items-center justify-start">
           <div className="mr-4 overflow-auto text-xl font-semibold text-gray-200">
