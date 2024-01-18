@@ -26,13 +26,13 @@ import type {
 export declare namespace IBlockStore {
   export type SaleRecipeStruct = {
     salesMessageId_: BytesLike;
-    success: boolean;
+    failed_: boolean;
   };
 
   export type SaleRecipeStructOutput = [
     salesMessageId_: string,
-    success: boolean
-  ] & { salesMessageId_: string; success: boolean };
+    failed_: boolean
+  ] & { salesMessageId_: string; failed_: boolean };
 
   export type SaleStruct = {
     tokens_: BigNumberish[][];

@@ -45,13 +45,13 @@ export declare namespace IBlockSales {
 
   export type SaleRecipeStruct = {
     salesMessageId_: BytesLike;
-    success: boolean;
+    failed: boolean;
   };
 
   export type SaleRecipeStructOutput = [
     salesMessageId_: string,
-    success: boolean
-  ] & { salesMessageId_: string; success: boolean };
+    failed: boolean
+  ] & { salesMessageId_: string; failed: boolean };
 }
 
 export declare namespace Client {

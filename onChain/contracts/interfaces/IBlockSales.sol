@@ -49,7 +49,7 @@ interface IBlockSales {
 
     struct SaleRecipe {
         bytes32 salesMessageId_;
-        bool success;
+        bool failed;
     }
 
     function buyBlock(uint256 tokenId) external;

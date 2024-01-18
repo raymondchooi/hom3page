@@ -146,17 +146,20 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         Sale memory payload = abi.decode(any2EvmMessage.data, (Sale));
 
         if (!payload.multiBuy_) {
-            NFT.transferFrom(
-                address(this),
-                payload.buyer_,
-                payload.tokens_[0][0]
-            );
-            _totalSold++;
-            _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
-            emit SaleMade(_msgSender(), 1, chainId);
+            if (NFT.ownerOf(payload.tokens_[0][0]) != address(this))
+                _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
+            else {
+                NFT.transferFrom(
+                    address(this),
+                    payload.buyer_,
+                    payload.tokens_[0][0]
+                );
+                _totalSold++;
+                emit SaleMade(payload.buyer_, 1, chainId);
+            }
         } else {
             bool happy = _checkOwnershipOfBatch(payload.tokens_);
-            emit SaleMade(_msgSender(), 0, chainId);
+            emit SaleMade(payload.buyer_, 0, chainId);
             if (!happy) {}
             // _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
             /* else {
@@ -166,13 +169,13 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
                     for (uint x = 0; x < payload.tokens_[i].length; x++)
                         NFT.transferFrom(
                             address(this),
-                            msg.sender,
+                            payload.buyer_,
                             payload.tokens_[i][x]
                         );
             }
             _totalSold += totalOrder;
             //_returnSalesRecipe(SaleRecipe(messageId, true), chainId);
-            emit SaleMade(_msgSender(), totalOrder, chainId);
+            emit SaleMade(payload.buyer_, totalOrder, chainId);
         } */
         }
     }
@@ -233,7 +236,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
                 tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
                 extraArgs: Client._argsToBytes(
                     // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: 200_000})
+                    Client.EVMExtraArgsV1({gasLimit: 500_000})
                 ),
                 // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
                 feeToken: feeTokenAddress_
@@ -267,9 +270,8 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     function _checkOwnershipOfBatch(
         uint256[][] memory tokenIds_
     ) internal view returns (bool) {
-        uint numElements = (tokenIds_.length);
         unchecked {
-            for (uint i = 0; i < numElements; i++)
+            for (uint i = 0; i < tokenIds_.length; i++)
                 for (uint x = 0; x < tokenIds_[i].length; x++)
                     if (NFT.ownerOf(tokenIds_[i][x]) != address(this))
                         return false;

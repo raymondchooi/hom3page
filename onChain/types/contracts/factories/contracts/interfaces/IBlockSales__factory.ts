@@ -107,7 +107,7 @@ const _abi = [
           },
           {
             internalType: "bool",
-            name: "success",
+            name: "failed",
             type: "bool",
           },
         ],

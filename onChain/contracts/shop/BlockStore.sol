@@ -108,7 +108,15 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         uint256 cost = COST_PER_BLOCK * (totalOrder);
         require(GHO.balanceOf(_msgSender()) >= cost, "Insufficient Funds");
         bool succsess = GHO.transferFrom(_msgSender(), address(this), cost);
-        if (succsess) {}
+        if (succsess) {
+            Sale memory saleData = Sale(
+                tokenIds_,
+                totalOrder,
+                _msgSender(),
+                true
+            );
+            _startCrossChainPurchase(saleData);
+        }
     }
 
     function _startCrossChainPurchase(Sale memory saleData_) internal {
@@ -219,9 +227,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         );
         _saleRecipes[messageId].saleComplete_ = true;
 
-        if (payload.success) {
-            _saleRecipes[messageId].saleFailed_ = false;
-        } else {
+        if (payload.failed_) {
             GHO.transfer(
                 _saleRecipes[messageId].saleData_.buyer_,
                 COST_PER_BLOCK * _saleRecipes[messageId].saleData_.totalItems_
