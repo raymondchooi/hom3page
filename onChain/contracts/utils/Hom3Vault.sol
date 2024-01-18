@@ -6,12 +6,7 @@ import {IGhoToken, IERC20} from "../interfaces/IGhoToken.sol";
 
 import {OnlyActive, Ownable, Context} from "../security/onlyActive.sol";
 import {IERC721A} from "./ERC721AVotes.sol";
-
-import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
-import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
+import "./CCIPInterface.sol";
 
 contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
     IGhoToken public immutable PAYMENT_TOKEN;
@@ -74,18 +69,6 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
     }
 
     /**   @dev  DEPOSIT CONTROL  */
-    function depositFunds(
-        uint256 profileId_,
-        uint256 amount_
-    ) external override onlyProfileOwner(profileId_) {
-        if (_checkTokenBalance(_msgSender()) < amount_) revert BalanceToLow();
-
-        bool success = _transferTokens(address(this), msg.sender, amount_);
-        if (success) {
-            _deposit[profileId_] += amount_;
-            emit DepositedFunds(profileId_, amount_);
-        }
-    }
 
     function withdrawFunds(
         uint256 profileId_,

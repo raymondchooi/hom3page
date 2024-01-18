@@ -65,7 +65,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
                 newMessage
             );
             _pastMessages[messageId] = PastMessage(newMessage, false);
-            emit DepositedFunds(profileId_, amount_);
+            emit DepositedFundsRequested(messageId, profileId_, amount_);
         }
     }
 
@@ -79,6 +79,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
             revert VaultBalanceToLow();
 
         _deposit[profileId_] -= amount_;
+        _escrow[profileId_] += amount_;
 
         Message memory newMessage = Message(
             0x0,
@@ -98,13 +99,23 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     }
 
     function _executeWithdrawal(Message memory message) internal {
+        if (_escrow[message.profileId_] < message.value_) {
+            emit EscrowBalanceToLow(
+                message.profileId_,
+                message.returnMessageId_
+            );
+            return;
+        }
+
+        _escrow[message.profileId_] -= message.value_;
+        _pastMessages[message.returnMessageId_].fullFilled_ = true;
+
         _transferTokens(
             address(this),
             HOM3_PROFILE.ownerOf(message.profileId_),
             message.value_
         );
-        _deposit[message.profileId_] -= message.value_;
-        _pastMessages[message.returnMessageId_].fullFilled_ = true;
+
         emit WithdrewFunds(message.profileId_, message.value_);
     }
 
@@ -113,6 +124,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         _deposit[message.profileId_] += message.value_;
 
         _pastMessages[message.returnMessageId_].fullFilled_ = true;
+        emit DepositedFunds(message.profileId_, message.value_);
     }
 
     /**     @dev    CROSS CHAIN   */
@@ -146,7 +158,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
                     _pastMessages[message.returnMessageId_].message_.action_ ==
                     MessageActions.DEPOSIT
                 ) _executeWithdrawal(message);
-            }
+            } 
         }
     }
 

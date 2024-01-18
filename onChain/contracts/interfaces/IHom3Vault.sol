@@ -16,8 +16,6 @@ interface IHom3Vault is IVaultData {
         bytes calldata calldata_
     ) external;
 
-    function depositFunds(uint256 profileId_, uint256 amount_) external;
-
     function withdrawFunds(uint256 profileId_, uint256 amount_) external;
 
     function setSpend(uint256 profileId_, uint256 amount_) external;
