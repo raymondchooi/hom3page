@@ -293,7 +293,7 @@ export default function Wall() {
                     </Button>
                   </div>
                 </div>
-                <h2 className="mt-6 tracking-wider text-gray-700 hover:animate-pulse">
+                <h2 className="mt-6 rounded-lg bg-zinc-950/80 px-4 py-1 tracking-wider text-gray-700 hover:animate-pulse">
                   Explore web3
                 </h2>
               </div>
