@@ -120,6 +120,8 @@ export type { CCIPInterface } from "./contracts/utils/CCIPInterface";
 export { CCIPInterface__factory } from "./factories/contracts/utils/CCIPInterface__factory";
 export type { ERC721AVotes } from "./contracts/utils/ERC721AVotes";
 export { ERC721AVotes__factory } from "./factories/contracts/utils/ERC721AVotes__factory";
+export type { Hom3Vault } from "./contracts/utils/Hom3Vault";
+export { Hom3Vault__factory } from "./factories/contracts/utils/Hom3Vault__factory";
 export type { ERC721A__IERC721Receiver } from "./erc721a/contracts/ERC721A.sol/ERC721A__IERC721Receiver";
 export { ERC721A__IERC721Receiver__factory } from "./factories/erc721a/contracts/ERC721A.sol/ERC721A__IERC721Receiver__factory";
 export type { ERC721A } from "./erc721a/contracts/ERC721A.sol/ERC721A";

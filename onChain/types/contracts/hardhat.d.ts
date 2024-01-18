@@ -246,6 +246,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721AVotes__factory>;
     getContractFactory(
+      name: "Hom3Vault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Hom3Vault__factory>;
+    getContractFactory(
       name: "ERC721A__IERC721Receiver",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721A__IERC721Receiver__factory>;
@@ -549,6 +553,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ERC721AVotes>;
     getContractAt(
+      name: "Hom3Vault",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Hom3Vault>;
+    getContractAt(
       name: "ERC721A__IERC721Receiver",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -797,6 +806,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC721AVotes>;
     deployContract(
+      name: "Hom3Vault",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Hom3Vault>;
+    deployContract(
       name: "ERC721A__IERC721Receiver",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC721A__IERC721Receiver>;
@@ -1099,6 +1112,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC721AVotes>;
+    deployContract(
+      name: "Hom3Vault",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Hom3Vault>;
     deployContract(
       name: "ERC721A__IERC721Receiver",
       args: any[],
