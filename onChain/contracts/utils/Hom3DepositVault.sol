@@ -5,7 +5,7 @@ import {IHom3DepositVault} from "../interfaces/IHom3DepositVault.sol";
 import {IGhoToken, IERC20} from "../interfaces/IGhoToken.sol";
 import {OnlyActive, Ownable, Context} from "../security/onlyActive.sol";
 import {IERC721A} from "./ERC721AVotes.sol";
-import "./CCIPInterface.sol";
+import "../helpers/CCIPInterface.sol";
 
 contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     IGhoToken public immutable PAYMENT_TOKEN;
@@ -13,8 +13,8 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
 
     address internal _masterVault;
     uint64 public immutable MASTER_CHAIN;
-    mapping(uint256 => uint256) private _escrow; //Profile No. to amount
 
+    mapping(uint256 => uint256) private _escrow; //Profile No. to amount
     mapping(uint256 => uint256) private _deposit; //Profile No. to amount
     mapping(uint256 => address) private _spender;
     mapping(uint256 => uint256) private _allowance; //Profile No. to amount
@@ -158,7 +158,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
                     _pastMessages[message.returnMessageId_].message_.action_ ==
                     MessageActions.DEPOSIT
                 ) _executeWithdrawal(message);
-            } 
+            }
         }
     }
 
@@ -237,7 +237,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     }
 
     /**  @dev   GETTERS         */
-    function getProfileDespoited(
+    function getProfileDeposits(
         uint256 profileId_
     ) external view override returns (uint256) {
         return _deposit[profileId_];

@@ -6,45 +6,26 @@ import {IGhoToken, IERC20} from "../interfaces/IGhoToken.sol";
 
 import {OnlyActive, Ownable, Context} from "../security/onlyActive.sol";
 import {IERC721A} from "./ERC721AVotes.sol";
-import "./CCIPInterface.sol";
+import "../helpers/CCIPInterface.sol";
 
-contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
+contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
     IGhoToken public immutable PAYMENT_TOKEN;
     IERC721A public immutable HOM3_PROFILE;
-    LinkTokenInterface public immutable LINK_TOKEN;
 
+    mapping(uint256 => uint256) private _escrow; //Profile No. to amount
     mapping(uint256 => uint256) private _deposit; //Profile No. to amount
-    mapping(uint256 => address) private _spender;
+    mapping(uint256 => uint256) private _spender;
     mapping(uint256 => uint256) private _allowance; //Profile No. to amount
 
-    //  Errors
-    error MessageNotFromBlockSales(address contractTringToMessage_);
-    error MessageNotFromSalesChain(uint64 chainMessageOriginated);
-    error NotBlockSalesContract();
-    error NotEnoughBalanceForFee(
-        uint256 currentBalance,
-        uint256 calculatedFees
-    ); // Used to m
-    error DEVELOPMENT_ERROR(string note_);
-    //  Allowed chains mapping
-    mapping(uint64 => address) private _saleStores;
-    mapping(uint64 => bool) private _chainAllowed;
-    //  Check sender is allowed
-    modifier onlyAllowlisted(uint64 _sourceChainSelector, address _sender) {
-        if (!_chainAllowed[_sourceChainSelector])
-            revert MessageNotFromSalesChain(_sourceChainSelector);
-        if (_saleStores[_sourceChainSelector] != _sender)
-            revert MessageNotFromBlockSales(_sender);
-        _;
-    }
+    mapping(bytes32 => PastMessage) private _pastMessages;
 
     modifier onlyProfileOwner(uint256 profileId_) {
         if (!_checkSenderIsOwner(profileId_)) revert NotOwnerOfProfile();
         _;
     }
 
-    modifier onlySpender(uint256 profileId_) {
-        if (_spender[profileId_] != _msgSender()) revert NotATrustedSpender();
+    modifier onlySpender(uint256 profileId_, uint256 spender_) {
+        if (_spender[profileId_] != spender_) revert NotATrustedSpender();
         _;
     }
 
@@ -53,36 +34,24 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
         address profileContract_,
         address ccipRouter_,
         address linkToken_
-    ) CCIPReceiver(ccipRouter_) Ownable(msg.sender) {
+    ) CCIPInterface(linkToken_, ccipRouter_) Ownable(msg.sender) {
         PAYMENT_TOKEN = IGhoToken(ghoToken_);
         HOM3_PROFILE = IERC721A(profileContract_);
-        LINK_TOKEN = LinkTokenInterface(linkToken_);
     }
 
     function spend(
         uint256 profileId_,
+        uint256 spender_,
         uint256 amount_,
         bytes calldata calldata_
-    ) external onlySpender(profileId_) {
+    ) external onlySpender(profileId_, spender_) {
         if (_allowance[profileId_] < amount_) revert AllowanceToLow();
         if (_deposit[profileId_] < amount_) revert BalanceToLow();
-    }
-
-    /**   @dev  DEPOSIT CONTROL  */
-
-    function withdrawFunds(
-        uint256 profileId_,
-        uint256 amount_
-    ) external override onlyProfileOwner(profileId_) {
-        if (!_checkProfileHasEnough(profileId_, amount_)) revert BalanceToLow();
-
-        if (PAYMENT_TOKEN.balanceOf(address(this)) < amount_)
-            revert VaultBalanceToLow();
-
+        _deposit[spender_] += spender_;
+        _allowance[profileId_] -= amount_;
         _deposit[profileId_] -= amount_;
-        _transferTokens(address(this), msg.sender, amount_);
 
-        emit WithdrewFunds(profileId_, amount_);
+        // Logic for bApp to spend tokens
     }
 
     /**   @dev   Spending Settings */
@@ -97,7 +66,7 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
 
     function setSpender(
         uint256 profileId_,
-        address spender_
+        uint256 spender_
     ) external override onlyProfileOwner(profileId_) {
         _spender[profileId_] = spender_;
         emit SetSpender(profileId_, spender_);
@@ -113,8 +82,8 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
     function removeSpender(
         uint256 profileId_
     ) external override onlyProfileOwner(profileId_) {
-        _spender[profileId_] = address(0);
-        emit SetSpender(profileId_, address(0));
+        _spender[profileId_] = 0;
+        emit SetSpender(profileId_, 0);
     }
 
     /**     @dev    CROSS CHAIN   */
@@ -144,16 +113,6 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
         _messageSwitch(message.action_, any2EvmMessage);
     }
 
-    /**     @dev    TOKEN MOVMENT */
-
-    function _transferTokens(
-        address from_,
-        address to_,
-        uint256 amount_
-    ) internal returns (bool) {
-        return PAYMENT_TOKEN.transferFrom(from_, to_, amount_);
-    }
-
     /**  @dev   CHECKERS         */
     function _checkSenderIsOwner(
         uint256 profileId_
@@ -169,7 +128,9 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
         return _deposit[profileId_] >= amount_;
     }
 
-    function _checkTokenBalance(address account_) internal returns (uint256) {
+    function _checkTokenBalance(
+        address account_
+    ) internal view returns (uint256) {
         return PAYMENT_TOKEN.balanceOf(account_);
     }
 
@@ -190,7 +151,7 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
 
     function withdrawAllToDev() external {
         //  Get LINK
-        IERC20 link = IERC20(address(LINK_TOKEN));
+        IERC20 link = IERC20(address(_linkToken));
         uint linkBalance = link.balanceOf(address(this));
         link.transfer(_msgSender(), linkBalance);
 

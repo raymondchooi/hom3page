@@ -8,6 +8,10 @@ import {
   BlockStoreArguments,
   BlockSalesArguments,
 } from "./deploymentArguments/sales.arguments";
+import {
+  Hom3PageDepositVaultArguments,
+  Hom3PageVaultArguments,
+} from "./deploymentArguments/vaults.arguments";
 
 const deploymentFiles: Deployment = {
   BlockToken: GenericDeployer,
@@ -20,6 +24,8 @@ export const deploymentArgumentStore: ArgumentStore = {
   BlockToken: BlockTokenArguments,
   BlockSales: BlockSalesArguments,
   BlockStore: BlockStoreArguments,
+  Hom3Vault: Hom3PageVaultArguments,
+  Hom3DepositVault: Hom3PageDepositVaultArguments,
 };
 
 export default deploymentFiles;
