@@ -3,3 +3,4 @@
 /* eslint-disable */
 export type { CCIPInterface } from "./CCIPInterface";
 export type { ERC721AVotes } from "./ERC721AVotes";
+export type { Hom3Vault } from "./Hom3Vault";
