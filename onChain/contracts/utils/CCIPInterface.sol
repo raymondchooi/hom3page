@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IBlockSales} from "../interfaces/IBlockSales.sol";
-import {IBlockStore} from "../interfaces/IBlockStore.sol";
-
-import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/IERC20.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
@@ -18,7 +14,10 @@ abstract contract CCIPInterface is CCIPReceiver {
     error MessageNotFromBlockSales(address contractTringToMessage_);
     error MessageNotFromSalesChain(uint64 chainMessageOriginated);
     error NotBlockSalesContract();
-    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
+    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees);
+
+    event MessageSent(bytes32 messageId_, uint64 destinationChain_);
+    event MessageReceived(bytes32 messageId_, uint64 sourceChainId_);
 
     //  Cross Chain endpoints
     uint64 public constant OP_CHAIN_SELECTOR = 2664363617261496610;
@@ -27,13 +26,19 @@ abstract contract CCIPInterface is CCIPReceiver {
 
     uint64 public constant SALES_CONTRACT_CHAIN = MATIC_CHAIN_SELECTOR;
 
-    uint constant SALES_RECIPE_GAS = 300_000;
+    enum Chains {
+        ETH,
+        OP,
+        MATIC
+    }
+
+    uint constant SALES_RECIPE_GAS = 500_000;
     uint constant SALES_ORDER_GAS = 2_000_000;
 
     IRouterClient private _router;
-    LinkTokenInterface private _linkToken;
+    LinkTokenInterface internal _linkToken;
 
-    bool private _useLinkAsPayment = true;
+    bool private _useLinkAsPayment = false;
 
     mapping(uint64 => address) private _saleStores;
     mapping(uint64 => bool) private _chainAllowed;
@@ -139,5 +144,11 @@ abstract contract CCIPInterface is CCIPReceiver {
     function _getPaymentAddress() internal view returns (address) {
         if (_useLinkAsPayment) return address(_linkToken);
         else return address(0);
+    }
+
+    function _getChainAddress(Chains selector_) internal pure returns (uint64) {
+        if (selector_ == Chains.ETH) return ETH_CHAIN_SELECTOR;
+        if (selector_ == Chains.OP) return OP_CHAIN_SELECTOR;
+        if (selector_ == Chains.MATIC) return MATIC_CHAIN_SELECTOR;
     }
 }

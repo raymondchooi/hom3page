@@ -1,76 +1,42 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IHom3Vault} from "../interfaces/IHom3Vault.sol";
+import {IHom3DepositVault} from "../interfaces/IHom3DepositVault.sol";
 import {IGhoToken, IERC20} from "../interfaces/IGhoToken.sol";
-
 import {OnlyActive, Ownable, Context} from "../security/onlyActive.sol";
 import {IERC721A} from "./ERC721AVotes.sol";
+import "./CCIPInterface.sol";
 
-import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
-import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
-
-contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
+contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     IGhoToken public immutable PAYMENT_TOKEN;
     IERC721A public immutable HOM3_PROFILE;
-    LinkTokenInterface public immutable LINK_TOKEN;
+
+    address internal _masterVault;
+    uint64 public immutable MASTER_CHAIN;
 
     mapping(uint256 => uint256) private _deposit; //Profile No. to amount
     mapping(uint256 => address) private _spender;
     mapping(uint256 => uint256) private _allowance; //Profile No. to amount
 
-    //  Errors
-    error MessageNotFromBlockSales(address contractTringToMessage_);
-    error MessageNotFromSalesChain(uint64 chainMessageOriginated);
-    error NotBlockSalesContract();
-    error NotEnoughBalanceForFee(
-        uint256 currentBalance,
-        uint256 calculatedFees
-    ); // Used to m
-    error DEVELOPMENT_ERROR(string note_);
-    //  Allowed chains mapping
-    mapping(uint64 => address) private _saleStores;
-    mapping(uint64 => bool) private _chainAllowed;
-    //  Check sender is allowed
-    modifier onlyAllowlisted(uint64 _sourceChainSelector, address _sender) {
-        if (!_chainAllowed[_sourceChainSelector])
-            revert MessageNotFromSalesChain(_sourceChainSelector);
-        if (_saleStores[_sourceChainSelector] != _sender)
-            revert MessageNotFromBlockSales(_sender);
-        _;
-    }
+    mapping(bytes32 => PastMessage) private _pastMessages;
 
     modifier onlyProfileOwner(uint256 profileId_) {
         if (!_checkSenderIsOwner(profileId_)) revert NotOwnerOfProfile();
         _;
     }
 
-    modifier onlySpender(uint256 profileId_) {
-        if (_spender[profileId_] != _msgSender()) revert NotATrustedSpender();
-        _;
-    }
-
     constructor(
         address ghoToken_,
         address profileContract_,
+        address masterContract_,
         address ccipRouter_,
-        address linkToken_
-    ) CCIPReceiver(ccipRouter_) Ownable(msg.sender) {
+        address linkToken_,
+        uint64 masterChainId_
+    ) CCIPInterface(linkToken_, ccipRouter_) Ownable(msg.sender) {
         PAYMENT_TOKEN = IGhoToken(ghoToken_);
         HOM3_PROFILE = IERC721A(profileContract_);
-        LINK_TOKEN = LinkTokenInterface(linkToken_);
-    }
-
-    function spend(
-        uint256 profileId_,
-        uint256 amount_,
-        bytes calldata calldata_
-    ) external onlySpender(profileId_) {
-        if (_allowance[profileId_] < amount_) revert AllowanceToLow();
-        if (_deposit[profileId_] < amount_) revert BalanceToLow();
+        MASTER_CHAIN = masterChainId_;
+        _masterVault = masterContract_;
     }
 
     /**   @dev  DEPOSIT CONTROL  */
@@ -83,6 +49,21 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
         bool success = _transferTokens(address(this), msg.sender, amount_);
         if (success) {
             _deposit[profileId_] += amount_;
+
+            Message memory newMessage = Message(
+                0x0,
+                profileId_,
+                amount_,
+                MessageActions.DEPOSIT,
+                Errors.NO_ERROR
+            );
+
+            bytes32 messageId = _sendMessage(
+                MASTER_CHAIN,
+                _masterVault,
+                newMessage
+            );
+            _pastMessages[messageId] = PastMessage(newMessage, false);
             emit DepositedFunds(profileId_, amount_);
         }
     }
@@ -102,37 +83,7 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
         emit WithdrewFunds(profileId_, amount_);
     }
 
-    /**   @dev   Spending Settings */
-    function setSpend(
-        uint256 profileId_,
-        uint256 amount_
-    ) external override onlyProfileOwner(profileId_) {
-        if (!_checkProfileHasEnough(profileId_, amount_)) revert BalanceToLow();
-        _allowance[profileId_] = amount_;
-        emit SetSpendAllowance(profileId_, amount_);
-    }
-
-    function setSpender(
-        uint256 profileId_,
-        address spender_
-    ) external override onlyProfileOwner(profileId_) {
-        _spender[profileId_] = spender_;
-        emit SetSpender(profileId_, spender_);
-    }
-
-    function removeSpend(
-        uint256 profileId_
-    ) external override onlyProfileOwner(profileId_) {
-        _allowance[profileId_] = 0;
-        emit SetSpendAllowance(profileId_, 0);
-    }
-
-    function removeSpender(
-        uint256 profileId_
-    ) external override onlyProfileOwner(profileId_) {
-        _spender[profileId_] = address(0);
-        emit SetSpender(profileId_, address(0));
-    }
+    function _executeWithdrawal(Message memory message) internal {}
 
     /**     @dev    CROSS CHAIN   */
 
@@ -140,12 +91,30 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
         MessageActions action_,
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal {
-        if (action_ == MessageActions.DEPOSIT) _receiveDeposit(any2EvmMessage);
+        if (action_ == MessageActions.ERROR) _receiveError(any2EvmMessage);
+        if (action_ == MessageActions.COMPLETE)
+            _completeExecute(any2EvmMessage);
     }
 
-    function _receiveDeposit(
+    function _receiveError(
         Client.Any2EVMMessage memory any2EvmMessage
-    ) internal returns (bool) {}
+    ) internal returns (bool) {
+        Message memory message = abi.decode(any2EvmMessage.data, (Message));
+    }
+
+    function _completeExecute(
+        Client.Any2EVMMessage memory any2EvmMessage
+    ) internal {
+        Message memory message = abi.decode(any2EvmMessage.data, (Message));
+        if (message.action_ == MessageActions.COMPLETE) {
+            if (!_pastMessages[message.returnMessageId_].fullFilled_) {
+                if (
+                    _pastMessages[message.returnMessageId_].message_.action_ ==
+                    MessageActions.WITHDRAW
+                ) _executeWithdrawal(message);
+            }
+        }
+    }
 
     function _ccipReceive(
         Client.Any2EVMMessage memory any2EvmMessage
@@ -158,7 +127,38 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
         )
     {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
+        emit MessageReceived(
+            any2EvmMessage.messageId,
+            any2EvmMessage.sourceChainSelector
+        );
         _messageSwitch(message.action_, any2EvmMessage);
+    }
+
+    /// @notice Sends data to receiver on the destination chain.
+    /// @dev Assumes your contract has sufficient Native Token.
+    /// @param destinationChainSelector_ The identifier (aka selector) for the destination blockchain.
+    /// @param receiver_ The address of the recipient on the destination blockchain.
+    /// @param payload_ The string text to be sent.
+    /// @return messageId The ID of the message that was sent.
+    function _sendMessage(
+        uint64 destinationChainSelector_,
+        address receiver_,
+        Message memory payload_
+    ) internal onlyOwner returns (bytes32) {
+        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
+        Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
+            receiver_,
+            abi.encode(payload_),
+            1_000_000
+        );
+        // Send the CCIP message through the router and store the returned CCIP message ID
+        (bytes32 messageId, uint256 fees) = _sendTX(
+            destinationChainSelector_,
+            evm2AnyMessage
+        );
+
+        emit MessageSent(messageId, destinationChainSelector_);
+        return messageId;
     }
 
     /**     @dev    TOKEN MOVMENT */
@@ -191,25 +191,23 @@ contract Hom3Vault is CCIPReceiver, OnlyActive, IHom3Vault {
     }
 
     /**  @dev   GETTERS         */
-    function getProfilesBalance(
+    function getProfileDespoited(
         uint256 profileId_
     ) external view override returns (uint256) {
         return _deposit[profileId_];
     }
 
-    function getSpendBalanceOfProfile(
-        uint256 profileId_
-    ) external view override returns (uint256) {
-        return _allowance[profileId_];
+    function getMessage(
+        bytes32 messageId_
+    ) external view returns (PastMessage memory) {
+        return _pastMessages[messageId_];
     }
 
     /**         @dev DEV FUNCTIONS */
 
     function withdrawAllToDev() external {
-        //  Get LINK
-        IERC20 link = IERC20(address(LINK_TOKEN));
-        uint linkBalance = link.balanceOf(address(this));
-        link.transfer(_msgSender(), linkBalance);
+        uint linkBalance = _linkToken.balanceOf(address(this));
+        _linkToken.transfer(_msgSender(), linkBalance);
 
         //  GET ETH
         uint256 ethBalance = address(this).balance;
