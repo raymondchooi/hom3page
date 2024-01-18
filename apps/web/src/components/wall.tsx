@@ -250,7 +250,7 @@ export default function Wall() {
           {({ zoomIn, zoomOut, centerView }) => (
             <>
               <TransformComponent>
-                <div className="flex h-[calc(100vh-52px)] w-screen  items-center justify-center">
+                <div className="flex h-screen w-screen  items-center justify-center">
                   <div className="grid min-w-[960px] grid-cols-24 gap-0">
                     {renderBlocks}
                   </div>

@@ -2,7 +2,6 @@ import "styles/global.css";
 
 import { Inter } from "next/font/google";
 
-import { Navbar } from "components";
 import { ConnectkitProvider } from "utils/connectkit";
 
 const inter = Inter({
@@ -26,7 +25,6 @@ export default function RootLayout({
       <body className={`font-sans ${inter.variable} relative`}>
         <ConnectkitProvider>
           <>{children}</>
-          <Navbar />
         </ConnectkitProvider>
       </body>
     </html>
