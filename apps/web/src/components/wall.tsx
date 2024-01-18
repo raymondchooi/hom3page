@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import {
   useParams,
   useSearchParams,
@@ -271,12 +272,18 @@ export default function Wall() {
                   </>
                 )}
 
-                <div className="mt-4 flex items-center justify-center gap-x-3">
+                <div className="mt-4 flex h-5 items-center justify-center gap-x-3">
                   <Button onClick={() => zoomIn()} fancy="less">
                     +
                   </Button>
                   <Button onClick={() => centerView()} fancy="less">
-                    <HomeIcon className="h-5 w-5 " />
+                    <Image
+                      className="my-1"
+                      width={21}
+                      height={21}
+                      src="/home3.svg"
+                      alt="Hom3page logo"
+                    />
                   </Button>
                   <Button onClick={() => zoomOut()} fancy="less">
                     -
