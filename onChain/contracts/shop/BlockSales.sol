@@ -160,23 +160,25 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         } else {
             bool happy = _checkOwnershipOfBatch(payload.tokens_);
             emit SaleMade(payload.buyer_, 0, chainId);
-            if (!happy) {}
-            // _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
-            /* else {
-            (uint totalOrder, uint numElements) = (0, payload.tokens_.length);
-            unchecked {
-                for (uint i = 0; i < numElements; i++)
-                    for (uint x = 0; x < payload.tokens_[i].length; x++)
-                        NFT.transferFrom(
-                            address(this),
-                            payload.buyer_,
-                            payload.tokens_[i][x]
-                        );
+            if (!happy) {
+                // _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
+            } else {
+                (uint totalOrder, uint numElements) = (
+                    0,
+                    payload.tokens_.length
+                );
+                unchecked {
+                    for (uint i = 0; i < numElements; i++)
+                        for (uint x = 0; x < payload.tokens_[i].length; x++)
+                            NFT.transferFrom(
+                                address(this),
+                                payload.buyer_,
+                                payload.tokens_[i][x]
+                            );
+                }
+                _totalSold += totalOrder;
+                emit SaleMade(payload.buyer_, totalOrder, chainId);
             }
-            _totalSold += totalOrder;
-            //_returnSalesRecipe(SaleRecipe(messageId, true), chainId);
-            emit SaleMade(payload.buyer_, totalOrder, chainId);
-        } */
         }
     }
 

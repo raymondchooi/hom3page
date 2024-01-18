@@ -1,9 +1,10 @@
 /** @format */
 
+import { Addressable } from "ethers";
 import { ChainName } from "./tokenAddress";
 
 const deployedContracts: {
-  [chain in ChainName]?: { [name in ContractNames]?: string };
+  [chain in ChainName]?: { [name in ContractNames]?: string | Addressable };
 } = {
   hardhat: {
     BlockToken: "",
@@ -19,8 +20,8 @@ const deployedContracts: {
     BlockSales: "",
   },
   maticMumbai: {
-    BlockToken: "0x5efceC35dE2612EFE9489AC8022BB8e1E7924D4D",
-    BlockSales: "0x05B45a4EA7dB5dc72c1a9089cD9D2FF4612308BA",
+    BlockToken: "0xfC188d60Db347E24056878492253574E36c00fce",
+    BlockSales: "0xB83F4A0ECa3384986de75113D119FEa5C462F42f",
     BlockStore: "",
   },
 };
