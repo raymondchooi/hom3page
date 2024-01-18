@@ -1,28 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IHom3Vault {
-    event DepositedFunds(uint256 profileId_, uint256 amount_);
-    event WithdrewFunds(uint256 profileId_, uint256 amount_);
+import {IVaultData} from "./IVaultData.sol";
+
+interface IHom3Vault is IVaultData {
     event SetSpendAllowance(uint256 profileId_, uint256 amount_);
     event SetSpender(uint256 profileId_, address spender_);
 
-    error NotOwnerOfProfile();
-    error NotEnoughBalance();
-    error VaultBalanceToLow();
-
-    enum MessageActions {
-        DEPOSIT,
-        WITHDRAW,
-        ERROR
-    }
-
-    struct Message {
-        bytes32 messageId_;
-        uint256 profileId_;
-        uint256 value_;
-        MessageActions action_;
-    }
+    error NotATrustedSpender();
+    error AllowanceToLow();
 
     function spend(
         uint256 profileId_,
