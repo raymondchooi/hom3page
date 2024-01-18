@@ -180,7 +180,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
               </div>
             </li>
             <li className="pl-4">
-              Edit bApps
+              {`Edit block${ownedBlocks.size > 1 ? "s" : ""}`}
               {/** TODO change bought to ownedBlocks.size */}
               <span className="ml-2 text-xs">{`(${selectedBlocksForEditing?.size ?? 0} selected)`}</span>
             </li>
