@@ -260,7 +260,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         token.transfer(_msgSender(), balance);
     }
 
-    function withdrawFunds() external payable override onlyOwner {
+    function withdrawFunds() external override onlyOwner {
         uint256 balance = address(this).balance;
         (bool sent, bytes memory data) = _msgSender().call{value: balance}("");
         require(sent, "Failed to send Ether");

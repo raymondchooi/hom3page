@@ -275,7 +275,7 @@ const _abi = [
     inputs: [],
     name: "withdrawFunds",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

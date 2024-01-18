@@ -237,7 +237,7 @@ export interface IBlockSales extends BaseContract {
     "nonpayable"
   >;
 
-  withdrawFunds: TypedContractMethod<[], [void], "payable">;
+  withdrawFunds: TypedContractMethod<[], [void], "nonpayable">;
 
   withdrawTokens: TypedContractMethod<
     [tokenAddress_: AddressLike],
@@ -260,7 +260,7 @@ export interface IBlockSales extends BaseContract {
   ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawFunds"
-  ): TypedContractMethod<[], [void], "payable">;
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawTokens"
   ): TypedContractMethod<[tokenAddress_: AddressLike], [void], "nonpayable">;
