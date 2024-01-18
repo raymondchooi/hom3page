@@ -9,7 +9,6 @@ import {
   usePathname,
 } from "next/navigation";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { HomeIcon } from "@heroicons/react/24/outline";
 import { useAccount } from "wagmi";
 
 import { Block, Button, EditBlockDialog } from "components";
@@ -273,10 +272,10 @@ export default function Wall() {
                 )}
 
                 <div className="mt-4 flex h-5 items-center justify-center gap-x-3">
+                  <Button onClick={() => zoomOut()} fancy="less">
+                    -
+                  </Button>
                   <Button onClick={() => centerView()} fancy="less">
-                    <Button onClick={() => zoomOut()} fancy="less">
-                      -
-                    </Button>
                     <Image
                       className="my-1"
                       width={21}
