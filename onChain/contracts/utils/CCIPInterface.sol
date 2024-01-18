@@ -14,9 +14,11 @@ abstract contract CCIPInterface is CCIPReceiver {
     error MessageNotFromBlockSales(address contractTringToMessage_);
     error MessageNotFromSalesChain(uint64 chainMessageOriginated);
     error NotBlockSalesContract();
-    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
+    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees);
 
-    event MessageSent(uint32 messageIs_, uint64 destinationChain_);
+    event MessageSent(bytes32 messageId_, uint64 destinationChain_);
+    event MessageReceived(bytes32 messageId_, uint64 sourceChainId_);
+
     //  Cross Chain endpoints
     uint64 public constant OP_CHAIN_SELECTOR = 2664363617261496610;
     uint64 public constant ETH_CHAIN_SELECTOR = 16015286601757825753;
@@ -34,7 +36,7 @@ abstract contract CCIPInterface is CCIPReceiver {
     uint constant SALES_ORDER_GAS = 2_000_000;
 
     IRouterClient private _router;
-    LinkTokenInterface private _linkToken;
+    LinkTokenInterface internal _linkToken;
 
     bool private _useLinkAsPayment = false;
 

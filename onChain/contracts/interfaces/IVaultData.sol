@@ -22,10 +22,15 @@ interface IVaultData {
     }
 
     struct Message {
-        bytes32 messageId_;
+        bytes32 returnMessageId_;
         uint256 profileId_;
         uint256 value_;
         MessageActions action_;
         Errors errors_;
+    }
+
+    struct ActionStore {
+        bytes32 messageId_;
+        MessageActions action_;
     }
 }

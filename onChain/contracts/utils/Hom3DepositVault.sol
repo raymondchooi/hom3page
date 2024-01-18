@@ -11,38 +11,32 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     IGhoToken public immutable PAYMENT_TOKEN;
     IERC721A public immutable HOM3_PROFILE;
 
+    address internal _masterVault;
+    uint64 public immutable MASTER_CHAIN;
+
     mapping(uint256 => uint256) private _deposit; //Profile No. to amount
     mapping(uint256 => address) private _spender;
     mapping(uint256 => uint256) private _allowance; //Profile No. to amount
+
+    mapping(bytes32 => Message) private _pastMessages;
 
     modifier onlyProfileOwner(uint256 profileId_) {
         if (!_checkSenderIsOwner(profileId_)) revert NotOwnerOfProfile();
         _;
     }
 
-    modifier onlySpender(uint256 profileId_) {
-        if (_spender[profileId_] != _msgSender()) revert NotATrustedSpender();
-        _;
-    }
-
     constructor(
         address ghoToken_,
         address profileContract_,
+        address masterContract_,
         address ccipRouter_,
-        address linkToken_
+        address linkToken_,
+        uint64 masterChainId_
     ) CCIPInterface(linkToken_, ccipRouter_) Ownable(msg.sender) {
         PAYMENT_TOKEN = IGhoToken(ghoToken_);
         HOM3_PROFILE = IERC721A(profileContract_);
-        LINK_TOKEN = LinkTokenInterface(linkToken_);
-    }
-
-    function spend(
-        uint256 profileId_,
-        uint256 amount_,
-        bytes calldata calldata_
-    ) external onlySpender(profileId_) {
-        if (_allowance[profileId_] < amount_) revert AllowanceToLow();
-        if (_deposit[profileId_] < amount_) revert BalanceToLow();
+        MASTER_CHAIN = masterChainId_;
+        _masterVault = masterContract_;
     }
 
     /**   @dev  DEPOSIT CONTROL  */
@@ -55,6 +49,16 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         bool success = _transferTokens(address(this), msg.sender, amount_);
         if (success) {
             _deposit[profileId_] += amount_;
+
+            Message memory newMessage = Message(
+                0x0,
+                profileId_,
+                amount_,
+                MessageActions.DEPOSIT,
+                Errors.NO_ERROR
+            );
+
+            _sendDeposit(profileId_, MASTER_CHAIN, newMessage);
             emit DepositedFunds(profileId_, amount_);
         }
     }
@@ -76,19 +80,23 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
 
     /**     @dev    CROSS CHAIN   */
 
-    function _sendDeposit() internal returns (bytes32) {
-        Message memory newMessage = Message();
-
+    function _sendDeposit(
+        uint256 profileId_,
+        uint64 chainId_,
+        Message memory message_
+    ) internal returns (bytes32 messageId) {
+        messageId = _sendMessage(chainId_, _masterVault, message_);
+        _pastMessages[messageId] = message_;
     }
 
     function _messageSwitch(
         MessageActions action_,
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal {
-        if (action_ == MessageActions.DEPOSIT) _receiveDeposit(any2EvmMessage);
+        if (action_ == MessageActions.ERROR) _receiveError(any2EvmMessage);
     }
 
-    function _receiveDeposit(
+    function _receiveError(
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal returns (bool) {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
@@ -105,6 +113,10 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         )
     {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
+        emit MessageReceived(
+            any2EvmMessage.messageId,
+            any2EvmMessage.sourceChainSelector
+        );
         _messageSwitch(message.action_, any2EvmMessage);
     }
 
@@ -118,7 +130,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         uint64 destinationChainSelector_,
         address receiver_,
         Message memory payload_
-    ) internal onlyOwner returns (bytes32 messageId) {
+    ) internal onlyOwner returns (bytes32) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
             receiver_,
@@ -126,12 +138,12 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
             1_000_000
         );
         // Send the CCIP message through the router and store the returned CCIP message ID
-        messageId = _sendTX(destinationChainSelector_, evm2AnyMessage);
+        (bytes32 messageId, uint256 fees) = _sendTX(
+            destinationChainSelector_,
+            evm2AnyMessage
+        );
 
-        // Emit an event with message details
         emit MessageSent(messageId, destinationChainSelector_);
-
-        // Return the CCIP message ID
         return messageId;
     }
 
@@ -165,10 +177,16 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     }
 
     /**  @dev   GETTERS         */
-    function getProfilesDeposits(
+    function getProfileDespoited(
         uint256 profileId_
     ) external view override returns (uint256) {
         return _deposit[profileId_];
+    }
+
+    function getMessage(
+        bytes32 messageId_
+    ) external view returns (Message memory) {
+        return _pastMessages[messageId_];
     }
 
     /**         @dev DEV FUNCTIONS */
