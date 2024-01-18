@@ -273,10 +273,10 @@ export default function Wall() {
                 )}
 
                 <div className="mt-4 flex h-5 items-center justify-center gap-x-3">
-                  <Button onClick={() => zoomIn()} fancy="less">
-                    +
-                  </Button>
                   <Button onClick={() => centerView()} fancy="less">
+                  <Button onClick={() => zoomOut()} fancy="less">
+                    -
+                  </Button>
                     <Image
                       className="my-1"
                       width={21}
@@ -285,8 +285,8 @@ export default function Wall() {
                       alt="Hom3page logo"
                     />
                   </Button>
-                  <Button onClick={() => zoomOut()} fancy="less">
-                    -
+                  <Button onClick={() => zoomIn()} fancy="less">
+                    +
                   </Button>
                 </div>
               </div>
