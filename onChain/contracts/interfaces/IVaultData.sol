@@ -12,13 +12,20 @@ interface IVaultData {
     enum MessageActions {
         DEPOSIT,
         WITHDRAW,
-        ERROR
+        ERROR,
+        COMPLETE
     }
 
     enum Errors {
         NO_ERROR,
         BALANCE_TO_LOW,
-        UNKNOWN_ERROR
+        UNKNOWN_ERROR,
+        ALREADY_EXECUTED
+    }
+
+    struct PastMessage {
+        Message message_;
+        bool fullFilled_;
     }
 
     struct Message {

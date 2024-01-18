@@ -8,5 +8,7 @@ interface IHom3DepositVault is IVaultData {
 
     function withdrawFunds(uint256 profileId_, uint256 amount_) external;
 
-    function getProfileDespoited(uint256 profileId_) external view;
+    function getProfileDespoited(
+        uint256 profileId_
+    ) external view returns (uint256);
 }

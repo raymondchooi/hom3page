@@ -18,7 +18,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     mapping(uint256 => address) private _spender;
     mapping(uint256 => uint256) private _allowance; //Profile No. to amount
 
-    mapping(bytes32 => Message) private _pastMessages;
+    mapping(bytes32 => PastMessage) private _pastMessages;
 
     modifier onlyProfileOwner(uint256 profileId_) {
         if (!_checkSenderIsOwner(profileId_)) revert NotOwnerOfProfile();
@@ -58,7 +58,12 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
                 Errors.NO_ERROR
             );
 
-            _sendDeposit(profileId_, MASTER_CHAIN, newMessage);
+            bytes32 messageId = _sendMessage(
+                MASTER_CHAIN,
+                _masterVault,
+                newMessage
+            );
+            _pastMessages[messageId] = PastMessage(newMessage, false);
             emit DepositedFunds(profileId_, amount_);
         }
     }
@@ -78,28 +83,37 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         emit WithdrewFunds(profileId_, amount_);
     }
 
-    /**     @dev    CROSS CHAIN   */
+    function _executeWithdrawal(Message memory message) internal {}
 
-    function _sendDeposit(
-        uint256 profileId_,
-        uint64 chainId_,
-        Message memory message_
-    ) internal returns (bytes32 messageId) {
-        messageId = _sendMessage(chainId_, _masterVault, message_);
-        _pastMessages[messageId] = message_;
-    }
+    /**     @dev    CROSS CHAIN   */
 
     function _messageSwitch(
         MessageActions action_,
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal {
         if (action_ == MessageActions.ERROR) _receiveError(any2EvmMessage);
+        if (action_ == MessageActions.COMPLETE)
+            _completeExecute(any2EvmMessage);
     }
 
     function _receiveError(
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal returns (bool) {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
+    }
+
+    function _completeExecute(
+        Client.Any2EVMMessage memory any2EvmMessage
+    ) internal {
+        Message memory message = abi.decode(any2EvmMessage.data, (Message));
+        if (message.action_ == MessageActions.COMPLETE) {
+            if (!_pastMessages[message.returnMessageId_].fullFilled_) {
+                if (
+                    _pastMessages[message.returnMessageId_].message_.action_ ==
+                    MessageActions.WITHDRAW
+                ) _executeWithdrawal(message);
+            }
+        }
     }
 
     function _ccipReceive(
@@ -185,7 +199,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
 
     function getMessage(
         bytes32 messageId_
-    ) external view returns (Message memory) {
+    ) external view returns (PastMessage memory) {
         return _pastMessages[messageId_];
     }
 
