@@ -12,7 +12,7 @@ const deployedContracts: {
   },
   ethSepolia: {
     BlockToken: "",
-    BlockStore: "0xc4014748b0e171c34c285BDD3bb4914307DEFFbd",
+    BlockStore: "0x7B3088FAf5647480aD814c68933e1bB025A70250",
   },
   opGoerli: {
     BlockToken: "",
@@ -20,7 +20,7 @@ const deployedContracts: {
   },
   maticMumbai: {
     BlockToken: "0x5efceC35dE2612EFE9489AC8022BB8e1E7924D4D",
-    BlockSales: "0x7133b35Ce392Ef452C2A39Afd08699F227e099E6",
+    BlockSales: "0x05B45a4EA7dB5dc72c1a9089cD9D2FF4612308BA",
     BlockStore: "",
   },
 };
