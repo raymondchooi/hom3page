@@ -60,7 +60,11 @@ const CONTRACTS: NetworkContracts = {
    maticMumbai:"0x52D800ca262522580CeBAD275395ca6e7598C014"
 
 }
-    export  {CONTRACTS,DEFAULT_PAYMENT_TOKEN};
+
+const COST_PER_BLOCK = 100 * 10 **6;
+
+
+    export  {CONTRACTS,DEFAULT_PAYMENT_TOKEN,COST_PER_BLOCK};
 
 
 /**  {BlockToken: {},
