@@ -147,7 +147,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
 
         if (!payload.multiBuy_) {
             if (NFT.ownerOf(payload.tokens_[0][0]) != address(this))
-                _returnSalesRecipe(
+                _returnSalesError(
                     SaleRecipe(messageId, true),
                     chainId,
                     payload.buyer_
@@ -164,7 +164,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         } else {
             bool happy = _checkOwnershipOfBatch(payload.tokens_);
             if (!happy) {
-                _returnSalesRecipe(
+                _returnSalesError(
                     SaleRecipe(messageId, false),
                     chainId,
                     payload.buyer_
@@ -191,7 +191,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         }
     }
 
-    function _returnSalesRecipe(
+    function _returnSalesError(
         SaleRecipe memory recipe_,
         uint64 chainId_,
         address buyer_
@@ -216,7 +216,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         messageId = router.ccipSend{value: fees}(chainId_, evm2AnyMessage);
 
         // Emit an event saying message failed
-        emit SaleFailed(chainId_, messageId);
+        emit SaleFailed(chainId_, recipe_.salesMessageId_);
         emit MessageSent(messageId, chainId_, buyer_);
         // Return the CCIP message ID
         return messageId;
