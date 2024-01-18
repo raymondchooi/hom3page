@@ -32,8 +32,9 @@ export type ContractNames =
 
   export type ContractStore = {[contract in ContractNames]?:  {address: string , abi: any}}
   export type NetworkContracts = {[ChainName in string]: ContractStore};
+  export type DefaultPaymentContracts = {[chain in ChainName]?: string}
 
-const Contracts: NetworkContracts = {
+const CONTRACTS: NetworkContracts = {
     ethSepolia:  {
         BlockStore: {
                 address: "0x03F09634Ca9Cd65999e4Dbd15bc558F757e67B00", abi:BlockStoreABI 
@@ -53,8 +54,13 @@ const Contracts: NetworkContracts = {
     }
     
 }
-    export default Contracts;
 
+ const DEFAULT_PAYMENT_TOKEN: DefaultPaymentContracts = {
+    ethSepolia:"0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8",
+   maticMumbai:"0x52D800ca262522580CeBAD275395ca6e7598C014"
+
+}
+    export  {CONTRACTS,DEFAULT_PAYMENT_TOKEN};
 
 
 /**  {BlockToken: {},
