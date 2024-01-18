@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import {IVaultData} from "./IVaultData.sol";
 
 interface IHom3Vault is IVaultData {
+    event SpendTriggered(uint256 profileId_, uint256 spender_, uint256 amount_);
     event SetSpendAllowance(uint256 profileId_, uint256 amount_);
     event SetSpender(uint256 profileId_, uint256 spender_);
 
@@ -12,6 +13,7 @@ interface IHom3Vault is IVaultData {
 
     function spend(
         uint256 profileId_,
+        uint256 spender_,
         uint256 amount_,
         bytes calldata calldata_
     ) external;

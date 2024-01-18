@@ -50,7 +50,7 @@ contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
         _deposit[spender_] += spender_;
         _allowance[profileId_] -= amount_;
         _deposit[profileId_] -= amount_;
-
+        emit SpendTriggered(profileId_, spender_, amount_);
         // Logic for bApp to spend tokens
     }
 
@@ -88,16 +88,37 @@ contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
 
     /**     @dev    CROSS CHAIN   */
 
+    function _receiveComplete(
+        Client.Any2EVMMessage memory any2EvmMessage
+    ) internal {
+        Message memory message = abi.decode(any2EvmMessage.data, (Message));
+    }
+
     function _messageSwitch(
         MessageActions action_,
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal {
-        if (action_ == MessageActions.DEPOSIT) _receiveDeposit(any2EvmMessage);
+        if (action_ == MessageActions.ERROR) _receiveError(any2EvmMessage);
+        else if (action_ == MessageActions.DEPOSIT)
+            _receiveDeposit(any2EvmMessage);
+        else if (action_ == MessageActions.COMPLETE)
+            _receiveComplete(any2EvmMessage);
+    }
+
+    function _receiveError(
+        Client.Any2EVMMessage memory any2EvmMessage
+    ) internal {
+        Message memory message = abi.decode(any2EvmMessage.data, (Message));
     }
 
     function _receiveDeposit(
         Client.Any2EVMMessage memory any2EvmMessage
-    ) internal returns (bool) {}
+    ) internal returns (bool) {
+        Message memory message = abi.decode(any2EvmMessage.data, (Message));
+        _deposit[message.profileId_] += message.value_;
+
+        emit DepositedFunds(message.profileId_, message.value_);
+    }
 
     function _ccipReceive(
         Client.Any2EVMMessage memory any2EvmMessage

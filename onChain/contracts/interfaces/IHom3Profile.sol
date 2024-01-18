@@ -9,7 +9,7 @@ interface IHom3ProfileToken {
     error NotOwnerOfProfile();
     error OneProfilePerAccount();
 
-    function mintProfile(address owner_) external;
+    function signUpAndCreateLens(address owner_) external;
 
     function signUpWithLens(address owner_, uint256 lensProfileId_) external;
 

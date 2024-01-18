@@ -119,7 +119,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         emit WithdrewFunds(message.profileId_, message.value_);
     }
 
-    function executeDeposit(Message memory message) internal {
+    function _executeDeposit(Message memory message) internal {
         _escrow[message.profileId_] -= message.value_;
         _deposit[message.profileId_] += message.value_;
 
@@ -135,7 +135,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     ) internal {
         if (action_ == MessageActions.ERROR) _receiveError(any2EvmMessage);
         if (action_ == MessageActions.COMPLETE)
-            _completeExecute(any2EvmMessage);
+            _receiveComplete(any2EvmMessage);
     }
 
     function _receiveError(
@@ -144,21 +144,20 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
     }
 
-    function _completeExecute(
+    function _receiveComplete(
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
-        if (message.action_ == MessageActions.COMPLETE) {
-            if (!_pastMessages[message.returnMessageId_].fullFilled_) {
-                if (
-                    _pastMessages[message.returnMessageId_].message_.action_ ==
-                    MessageActions.WITHDRAW
-                ) _executeWithdrawal(message);
-                else if (
-                    _pastMessages[message.returnMessageId_].message_.action_ ==
-                    MessageActions.DEPOSIT
-                ) _executeWithdrawal(message);
-            }
+
+        if (!_pastMessages[message.returnMessageId_].fullFilled_) {
+            if (
+                _pastMessages[message.returnMessageId_].message_.action_ ==
+                MessageActions.WITHDRAW
+            ) _executeWithdrawal(message);
+            else if (
+                _pastMessages[message.returnMessageId_].message_.action_ ==
+                MessageActions.DEPOSIT
+            ) _executeDeposit(message);
         }
     }
 
