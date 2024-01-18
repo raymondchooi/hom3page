@@ -498,7 +498,7 @@ export interface BlockSales extends BaseContract {
     "nonpayable"
   >;
 
-  withdrawFunds: TypedContractMethod<[], [void], "payable">;
+  withdrawFunds: TypedContractMethod<[], [void], "nonpayable">;
 
   withdrawLink: TypedContractMethod<[], [void], "nonpayable">;
 
@@ -586,7 +586,7 @@ export interface BlockSales extends BaseContract {
   ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawFunds"
-  ): TypedContractMethod<[], [void], "payable">;
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawLink"
   ): TypedContractMethod<[], [void], "nonpayable">;

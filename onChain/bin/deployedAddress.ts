@@ -20,8 +20,8 @@ const deployedContracts: {
     BlockSales: "",
   },
   maticMumbai: {
-    BlockToken: "0x20Cc45aD3013387DE9a3B4FE3660A66B32461758",
-    BlockSales: "0x5f4Ae9F3167f6cb4dc4e7711Ae8a6152a5926ccd",
+    BlockToken: "0x6cF261aFe4e3654d77bdb93aDa25A4C3FB4038CC",
+    BlockSales: "0x146a9c4862086C96C87bEEe501410f5f8D3160FB",
     BlockStore: "",
   },
 };

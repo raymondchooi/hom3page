@@ -247,7 +247,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
                 tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
                 extraArgs: Client._argsToBytes(
                     // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: 500_000})
+                    Client.EVMExtraArgsV1({gasLimit: 200_000})
                 ),
                 // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
                 feeToken: feeTokenAddress_
@@ -261,7 +261,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         token.transfer(_msgSender(), balance);
     }
 
-    function withdrawFunds() external payable override onlyOwner {
+    function withdrawFunds() external override onlyOwner {
         uint256 balance = address(this).balance;
         (bool sent, bytes memory data) = _msgSender().call{value: balance}("");
         require(sent, "Failed to send Ether");

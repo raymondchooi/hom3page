@@ -509,7 +509,7 @@ export interface BlockStore extends BaseContract {
 
   withdrawAllToDev: TypedContractMethod<[], [void], "nonpayable">;
 
-  withdrawFunds: TypedContractMethod<[], [void], "payable">;
+  withdrawFunds: TypedContractMethod<[], [void], "nonpayable">;
 
   withdrawTokens: TypedContractMethod<
     [tokenAddress_: AddressLike],
@@ -585,7 +585,7 @@ export interface BlockStore extends BaseContract {
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawFunds"
-  ): TypedContractMethod<[], [void], "payable">;
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawTokens"
   ): TypedContractMethod<[tokenAddress_: AddressLike], [void], "nonpayable">;
