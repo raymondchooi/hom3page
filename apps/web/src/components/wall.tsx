@@ -270,24 +270,32 @@ export default function Wall() {
                     </Button>{" "}
                   </>
                 )}
-
-                <div className="mt-4 flex h-5 items-center justify-center gap-x-3">
-                  <Button onClick={() => zoomOut()} fancy="less">
-                    -
-                  </Button>
-                  <Button onClick={() => centerView()} fancy="less">
-                    <Image
-                      className="my-1"
-                      width={21}
-                      height={21}
-                      src="/home3.svg"
-                      alt="Hom3page logo"
-                    />
-                  </Button>
-                  <Button onClick={() => zoomIn()} fancy="less">
-                    +
-                  </Button>
+                <div className="mt-4 flex  items-center justify-center">
+                  <div className="flex h-5 items-center justify-center gap-x-3">
+                    <Button onClick={() => zoomOut()} fancy="less">
+                      -
+                    </Button>
+                    <Button
+                      onClick={() => centerView()}
+                      fancy="less"
+                      className="group"
+                    >
+                      <Image
+                        className="my-1 group-hover:animate-pulse"
+                        width={21}
+                        height={21}
+                        src="/logo_without_bg.png"
+                        alt="Hom3page logo"
+                      />
+                    </Button>
+                    <Button onClick={() => zoomIn()} fancy="less">
+                      +
+                    </Button>
+                  </div>
                 </div>
+                <h2 className="mt-6 tracking-wider text-gray-700 hover:animate-pulse">
+                  Explore web3
+                </h2>
               </div>
             </>
           )}
