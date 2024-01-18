@@ -13,7 +13,7 @@ const deployedContracts: {
   },
   ethSepolia: {
     BlockToken: "",
-    BlockStore: "0x7B3088FAf5647480aD814c68933e1bB025A70250",
+    BlockStore: "0x03F09634Ca9Cd65999e4Dbd15bc558F757e67B00",
   },
   opGoerli: {
     BlockToken: "",

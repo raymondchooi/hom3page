@@ -12,31 +12,29 @@ const taskDescription = "Setup the sales contract";
 task(taskId, taskDescription).setAction(async (_args, hre) => {
   console.log(`🟠 [TASK] ${taskId} : Mounted`);
   const contractname = "BlockSales";
-  const [deployer] = await hre.ethers.getSigners();
+  const [notThis, orThis, deployer] = await hre.ethers.getSigners();
   const { name } = await hre.ethers.provider.getNetwork();
 
   console.log(
     `🟠 [TASK] ${taskId} : Connecting to ${contractname} at ${deployedContracts[name]?.BlockSales}`
   );
+  const chainId = hre.ethers.toBigInt(16015286601757825753);
 
   //    Set BlockStore data
   const salesContract = await hre.ethers.getContractAt(
     contractname,
-    deployedContracts[name]?.BlockSales,
+    deployedContracts[name]?.BlockSales!,
     deployer
   );
   console.log(`🟠 [TASK] ${taskId} : Connected to contract`);
 
-  const chainStateTx = await salesContract.setBlockStoreActive(
-    "16015286601757825753",
-    true
-  );
+  const chainStateTx = await salesContract.setBlockStoreActive(chainId, true);
   await chainStateTx.wait();
   console.log(`🟠 [TASK] ${taskId} : Allowed Eth Sepolia Chain`);
 
-  const chainSaleAddressTx = await salesContract.setBlockStoreActive(
-    "16015286601757825753",
-    deployedContracts.ethSepolia?.BlockStore
+  const chainSaleAddressTx = await salesContract.setBlockStore(
+    chainId,
+    deployedContracts.ethSepolia?.BlockStore!
   );
   await chainSaleAddressTx.wait();
   console.log(`🟠 [TASK] ${taskId} : Added Store to Chain allow`);

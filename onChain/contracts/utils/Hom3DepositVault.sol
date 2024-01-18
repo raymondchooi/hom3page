@@ -13,6 +13,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
 
     address internal _masterVault;
     uint64 public immutable MASTER_CHAIN;
+    mapping(uint256 => uint256) private _escrow; //Profile No. to amount
 
     mapping(uint256 => uint256) private _deposit; //Profile No. to amount
     mapping(uint256 => address) private _spender;
@@ -48,7 +49,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
 
         bool success = _transferTokens(address(this), msg.sender, amount_);
         if (success) {
-            _deposit[profileId_] += amount_;
+            _escrow[profileId_] += amount_;
 
             Message memory newMessage = Message(
                 0x0,
@@ -78,12 +79,41 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
             revert VaultBalanceToLow();
 
         _deposit[profileId_] -= amount_;
-        _transferTokens(address(this), msg.sender, amount_);
 
-        emit WithdrewFunds(profileId_, amount_);
+        Message memory newMessage = Message(
+            0x0,
+            profileId_,
+            amount_,
+            MessageActions.WITHDRAW,
+            Errors.NO_ERROR
+        );
+
+        bytes32 messageId = _sendMessage(
+            MASTER_CHAIN,
+            _masterVault,
+            newMessage
+        );
+        _pastMessages[messageId] = PastMessage(newMessage, false);
+        emit WithdrewFundsRequested(messageId, profileId_, amount_);
     }
 
-    function _executeWithdrawal(Message memory message) internal {}
+    function _executeWithdrawal(Message memory message) internal {
+        _transferTokens(
+            address(this),
+            HOM3_PROFILE.ownerOf(message.profileId_),
+            message.value_
+        );
+        _deposit[message.profileId_] -= message.value_;
+        _pastMessages[message.returnMessageId_].fullFilled_ = true;
+        emit WithdrewFunds(message.profileId_, message.value_);
+    }
+
+    function executeDeposit(Message memory message) internal {
+        _escrow[message.profileId_] -= message.value_;
+        _deposit[message.profileId_] += message.value_;
+
+        _pastMessages[message.returnMessageId_].fullFilled_ = true;
+    }
 
     /**     @dev    CROSS CHAIN   */
 
@@ -98,7 +128,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
 
     function _receiveError(
         Client.Any2EVMMessage memory any2EvmMessage
-    ) internal returns (bool) {
+    ) internal {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
     }
 
@@ -111,6 +141,10 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
                 if (
                     _pastMessages[message.returnMessageId_].message_.action_ ==
                     MessageActions.WITHDRAW
+                ) _executeWithdrawal(message);
+                else if (
+                    _pastMessages[message.returnMessageId_].message_.action_ ==
+                    MessageActions.DEPOSIT
                 ) _executeWithdrawal(message);
             }
         }
@@ -201,6 +235,12 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         bytes32 messageId_
     ) external view returns (PastMessage memory) {
         return _pastMessages[messageId_];
+    }
+
+    function getProfilesEscrowedBalance(
+        uint256 profileId_
+    ) external view returns (uint256) {
+        return _escrow[profileId_];
     }
 
     /**         @dev DEV FUNCTIONS */

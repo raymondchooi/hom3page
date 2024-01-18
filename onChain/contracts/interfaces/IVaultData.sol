@@ -4,6 +4,11 @@ pragma solidity ^0.8.20;
 interface IVaultData {
     event DepositedFunds(uint256 profileId_, uint256 amount_);
     event WithdrewFunds(uint256 profileId_, uint256 amount_);
+    event WithdrewFundsRequested(
+        bytes32 messageId_,
+        uint256 profileId_,
+        uint256 amount_
+    );
 
     error NotOwnerOfProfile();
     error BalanceToLow();
