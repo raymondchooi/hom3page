@@ -98,38 +98,27 @@ const _abi = [
         name: "receiver",
         type: "address",
       },
-      {
-        components: [
-          {
-            internalType: "bytes32",
-            name: "salesMessageId_",
-            type: "bytes32",
-          },
-          {
-            internalType: "bool",
-            name: "failed",
-            type: "bool",
-          },
-        ],
-        indexed: false,
-        internalType: "struct IBlockSales.SaleRecipe",
-        name: "payload",
-        type: "tuple",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "feeToken",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "fees",
-        type: "uint256",
-      },
     ],
     name: "MessageSent",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint64",
+        name: "chainId_",
+        type: "uint64",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "messageId_",
+        type: "bytes32",
+      },
+    ],
+    name: "SaleFailed",
     type: "event",
   },
   {

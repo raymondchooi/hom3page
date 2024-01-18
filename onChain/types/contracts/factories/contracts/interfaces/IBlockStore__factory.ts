@@ -143,6 +143,31 @@ const _abi = [
       },
       {
         indexed: true,
+        internalType: "uint64",
+        name: "chainId_",
+        type: "uint64",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "messageId_",
+        type: "bytes32",
+      },
+    ],
+    name: "SaleFailed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "buyer_",
+        type: "address",
+      },
+      {
+        indexed: true,
         internalType: "uint256",
         name: "amount_",
         type: "uint256",

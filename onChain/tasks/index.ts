@@ -5,3 +5,4 @@ export * from "./upgradeProxy";
 export * from "./verifyContract";
 export * from "./test-single";
 export * from "./deployHom3";
+export * from "./setUpSales";

@@ -42,16 +42,6 @@ export declare namespace IBlockSales {
     buyer_: string;
     multiBuy_: boolean;
   };
-
-  export type SaleRecipeStruct = {
-    salesMessageId_: BytesLike;
-    failed: boolean;
-  };
-
-  export type SaleRecipeStructOutput = [
-    salesMessageId_: string,
-    failed: boolean
-  ] & { salesMessageId_: string; failed: boolean };
 }
 
 export declare namespace Client {
@@ -107,7 +97,9 @@ export interface BlockSalesInterface extends Interface {
       | "setBlockStore"
       | "setBlockStoreActive"
       | "supportsInterface"
+      | "testSendMessage"
       | "transferOwnership"
+      | "withdrawAllToDev"
       | "withdrawBlock"
       | "withdrawFunds"
       | "withdrawLink"
@@ -120,6 +112,7 @@ export interface BlockSalesInterface extends Interface {
       | "MessageReceived"
       | "MessageSent"
       | "OwnershipTransferred"
+      | "SaleFailed"
       | "SaleMade"
   ): EventFragment;
 
@@ -176,8 +169,16 @@ export interface BlockSalesInterface extends Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "testSendMessage",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawAllToDev",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawBlock",
@@ -246,7 +247,15 @@ export interface BlockSalesInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "testSendMessage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawAllToDev",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -308,26 +317,17 @@ export namespace MessageSentEvent {
   export type InputTuple = [
     messageId: BytesLike,
     destinationChainSelector: BigNumberish,
-    receiver: AddressLike,
-    payload: IBlockSales.SaleRecipeStruct,
-    feeToken: AddressLike,
-    fees: BigNumberish
+    receiver: AddressLike
   ];
   export type OutputTuple = [
     messageId: string,
     destinationChainSelector: bigint,
-    receiver: string,
-    payload: IBlockSales.SaleRecipeStructOutput,
-    feeToken: string,
-    fees: bigint
+    receiver: string
   ];
   export interface OutputObject {
     messageId: string;
     destinationChainSelector: bigint;
     receiver: string;
-    payload: IBlockSales.SaleRecipeStructOutput;
-    feeToken: string;
-    fees: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -341,6 +341,19 @@ export namespace OwnershipTransferredEvent {
   export interface OutputObject {
     previousOwner: string;
     newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SaleFailedEvent {
+  export type InputTuple = [chainId_: BigNumberish, messageId_: BytesLike];
+  export type OutputTuple = [chainId_: bigint, messageId_: string];
+  export interface OutputObject {
+    chainId_: bigint;
+    messageId_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -469,11 +482,15 @@ export interface BlockSales extends BaseContract {
     "view"
   >;
 
+  testSendMessage: TypedContractMethod<[], [void], "nonpayable">;
+
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
     [void],
     "nonpayable"
   >;
+
+  withdrawAllToDev: TypedContractMethod<[], [void], "nonpayable">;
 
   withdrawBlock: TypedContractMethod<
     [tokenId_: BigNumberish],
@@ -556,8 +573,14 @@ export interface BlockSales extends BaseContract {
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
   getFunction(
+    nameOrSignature: "testSendMessage"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawAllToDev"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawBlock"
   ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
@@ -600,6 +623,13 @@ export interface BlockSales extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
+    key: "SaleFailed"
+  ): TypedContractEvent<
+    SaleFailedEvent.InputTuple,
+    SaleFailedEvent.OutputTuple,
+    SaleFailedEvent.OutputObject
+  >;
+  getEvent(
     key: "SaleMade"
   ): TypedContractEvent<
     SaleMadeEvent.InputTuple,
@@ -630,7 +660,7 @@ export interface BlockSales extends BaseContract {
       MessageReceivedEvent.OutputObject
     >;
 
-    "MessageSent(bytes32,uint64,address,tuple,address,uint256)": TypedContractEvent<
+    "MessageSent(bytes32,uint64,address)": TypedContractEvent<
       MessageSentEvent.InputTuple,
       MessageSentEvent.OutputTuple,
       MessageSentEvent.OutputObject
@@ -650,6 +680,17 @@ export interface BlockSales extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "SaleFailed(uint64,bytes32)": TypedContractEvent<
+      SaleFailedEvent.InputTuple,
+      SaleFailedEvent.OutputTuple,
+      SaleFailedEvent.OutputObject
+    >;
+    SaleFailed: TypedContractEvent<
+      SaleFailedEvent.InputTuple,
+      SaleFailedEvent.OutputTuple,
+      SaleFailedEvent.OutputObject
     >;
 
     "SaleMade(address,uint256,uint64)": TypedContractEvent<

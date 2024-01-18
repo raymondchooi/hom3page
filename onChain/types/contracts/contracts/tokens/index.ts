@@ -2,5 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { BlockToken } from "./BlockToken";
+export type { Hom3ProfileToken } from "./Hom3ProfileToken";
 export type { InnerBlockToken } from "./InnerBlockToken";
 export type { StINRWLToken } from "./StINRWLToken";

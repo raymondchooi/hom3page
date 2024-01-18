@@ -84,7 +84,11 @@ export interface IBlockStoreInterface extends Interface {
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic: "MessageReceived" | "MessageSent" | "SaleMade"
+    nameOrSignatureOrTopic:
+      | "MessageReceived"
+      | "MessageSent"
+      | "SaleFailed"
+      | "SaleMade"
   ): EventFragment;
 
   encodeFunctionData(
@@ -176,6 +180,28 @@ export namespace MessageSentEvent {
     payload: IBlockStore.SaleStructOutput;
     feeToken: string;
     fees: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SaleFailedEvent {
+  export type InputTuple = [
+    buyer_: AddressLike,
+    chainId_: BigNumberish,
+    messageId_: BytesLike
+  ];
+  export type OutputTuple = [
+    buyer_: string,
+    chainId_: bigint,
+    messageId_: string
+  ];
+  export interface OutputObject {
+    buyer_: string;
+    chainId_: bigint;
+    messageId_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -305,6 +331,13 @@ export interface IBlockStore extends BaseContract {
     MessageSentEvent.OutputObject
   >;
   getEvent(
+    key: "SaleFailed"
+  ): TypedContractEvent<
+    SaleFailedEvent.InputTuple,
+    SaleFailedEvent.OutputTuple,
+    SaleFailedEvent.OutputObject
+  >;
+  getEvent(
     key: "SaleMade"
   ): TypedContractEvent<
     SaleMadeEvent.InputTuple,
@@ -333,6 +366,17 @@ export interface IBlockStore extends BaseContract {
       MessageSentEvent.InputTuple,
       MessageSentEvent.OutputTuple,
       MessageSentEvent.OutputObject
+    >;
+
+    "SaleFailed(address,uint64,bytes32)": TypedContractEvent<
+      SaleFailedEvent.InputTuple,
+      SaleFailedEvent.OutputTuple,
+      SaleFailedEvent.OutputObject
+    >;
+    SaleFailed: TypedContractEvent<
+      SaleFailedEvent.InputTuple,
+      SaleFailedEvent.OutputTuple,
+      SaleFailedEvent.OutputObject
     >;
 
     "SaleMade(address,uint256,uint64)": TypedContractEvent<

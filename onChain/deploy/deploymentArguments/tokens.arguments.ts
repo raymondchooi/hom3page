@@ -9,6 +9,17 @@ export const BlockTokenArguments = (
   networkName?: string
 ) => {
   const name_: string = "Hom3Page Blocks";
+  const symbol_: string = "BLOCK";
+  const version_: string = "1";
+
+  return [name_, symbol_, version_];
+};
+
+export const ProfileTokenArguments = (
+  deployer?: string | Addressable,
+  networkName?: string
+) => {
+  const name_: string = "Hom3Page Profile";
   const symbol_: string = "HOM3";
   const version_: string = "1";
 
