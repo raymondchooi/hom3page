@@ -191,11 +191,17 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         }
     }
 
+    function testSendMessage() external onlyOwner {
+        bytes32 message_ = 0x0;
+        SaleRecipe memory recipe_ = SaleRecipe(message_, true);
+        _returnSalesError(recipe_, MATIC_CHAIN_SELECTOR, address(0));
+    }
+
     function _returnSalesError(
         SaleRecipe memory recipe_,
         uint64 chainId_,
         address buyer_
-    ) internal onlyOwner returns (bytes32 messageId) {
+    ) internal returns (bytes32 messageId) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(
             _saleStores[chainId_],

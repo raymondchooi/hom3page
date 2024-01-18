@@ -97,6 +97,7 @@ export interface BlockSalesInterface extends Interface {
       | "setBlockStore"
       | "setBlockStoreActive"
       | "supportsInterface"
+      | "testSendMessage"
       | "transferOwnership"
       | "withdrawAllToDev"
       | "withdrawBlock"
@@ -166,6 +167,10 @@ export interface BlockSalesInterface extends Interface {
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "testSendMessage",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -239,6 +244,10 @@ export interface BlockSalesInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "testSendMessage",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -473,6 +482,8 @@ export interface BlockSales extends BaseContract {
     "view"
   >;
 
+  testSendMessage: TypedContractMethod<[], [void], "nonpayable">;
+
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
     [void],
@@ -561,6 +572,9 @@ export interface BlockSales extends BaseContract {
   getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "testSendMessage"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;

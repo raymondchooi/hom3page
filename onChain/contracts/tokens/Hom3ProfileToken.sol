@@ -25,7 +25,7 @@ contract Hom3ProfileToken is ERC721Votes, OnlyActive, IHom3ProfileToken {
         address lensProtocol_
     ) ERC721(name_, symbol_) EIP712(name_, version_) Ownable(msg.sender) {
         PAYMENT_TOKEN = IERC20(paymentToken_);
-        LENS_PROTOCOL = lensProtocol_;
+        LENS_PROTOCOL = 0x4fbffF20302F3326B20052ab9C217C44F6480900;
     }
 
     modifier onlyProfileOwner(uint256 profileId_) {
@@ -38,7 +38,51 @@ contract Hom3ProfileToken is ERC721Votes, OnlyActive, IHom3ProfileToken {
         _;
     }
 
-    function mintProfile(address owner_) external {
+    /**
+     * @dev Add logic for checking One-per-wallet on transfers
+     */
+    function transferFrom(
+        address from_,
+        address to_,
+        uint256 tokenId_
+    ) public virtual override(ERC721) onlyOnePerWallet(to_) {
+        super.transferFrom(from_, to_, tokenId_);
+    }
+
+    function safeTransferFrom(
+        address from_,
+        address to_,
+        uint256 tokenId_,
+        bytes memory data_
+    ) public virtual override(ERC721) onlyOnePerWallet(to_) {
+        super.safeTransferFrom(from_, to_, tokenId_, data_);
+    }
+
+    function mintProfile(
+        address owner_
+    ) external override is_active onlyOnePerWallet(owner_) {
+        require(
+            PAYMENT_TOKEN.balanceOf(_msgSender()) > COST_PER_PROFILE,
+            "Incorrect Payment"
+        );
+
+        bool succsess = PAYMENT_TOKEN.transferFrom(
+            _msgSender(),
+            address(this),
+            COST_PER_PROFILE
+        );
+
+        if (succsess) {
+            uint256 tokenId = _profilesMinted + 1;
+            _mint(owner_, tokenId);
+            emit ProfileCreated(owner_, tokenId);
+        } else revert("Payment Failed");
+    }
+
+    function signUpWithLens(
+        address owner_,
+        uint256 lensProfileId_
+    ) external override is_active {
         require(
             PAYMENT_TOKEN.balanceOf(_msgSender()) > COST_PER_PROFILE,
             "Incorrect Payment"
@@ -88,5 +132,9 @@ contract Hom3ProfileToken is ERC721Votes, OnlyActive, IHom3ProfileToken {
     function _baseURI() internal view virtual override returns (string memory) {
         return
             "https://hom3page.vercel.app/metadata/blockTokenHoldingMetadata.json";
+    }
+
+    function getTotalProfilesCreated() external view returns (uint256) {
+        return _profilesMinted;
     }
 }

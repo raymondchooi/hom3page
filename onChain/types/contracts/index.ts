@@ -98,6 +98,8 @@ export type { IBlockToken } from "./contracts/interfaces/IBlockToken";
 export { IBlockToken__factory } from "./factories/contracts/interfaces/IBlockToken__factory";
 export type { IGhoToken } from "./contracts/interfaces/IGhoToken";
 export { IGhoToken__factory } from "./factories/contracts/interfaces/IGhoToken__factory";
+export type { IHom3ProfileToken } from "./contracts/interfaces/IHom3Profile.sol/IHom3ProfileToken";
+export { IHom3ProfileToken__factory } from "./factories/contracts/interfaces/IHom3Profile.sol/IHom3ProfileToken__factory";
 export type { IWallGenerator } from "./contracts/interfaces/IWallGenerator";
 export { IWallGenerator__factory } from "./factories/contracts/interfaces/IWallGenerator__factory";
 export type { OnlyActive } from "./contracts/security/onlyActive.sol/OnlyActive";

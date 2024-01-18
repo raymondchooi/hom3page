@@ -26,8 +26,13 @@ import type {
 export interface Hom3ProfileTokenInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "BUY_CAP"
       | "CLOCK_MODE"
+      | "COST_PER_PROFILE"
+      | "LENS_PROTOCOL"
+      | "PAYMENT_TOKEN"
       | "approve"
+      | "assignLensProfile"
       | "balanceOf"
       | "clock"
       | "delegate"
@@ -37,6 +42,7 @@ export interface Hom3ProfileTokenInterface extends Interface {
       | "getApproved"
       | "getPastTotalSupply"
       | "getPastVotes"
+      | "getTotalProfilesCreated"
       | "getVotes"
       | "isActive"
       | "isApprovedForAll"
@@ -50,6 +56,7 @@ export interface Hom3ProfileTokenInterface extends Interface {
       | "safeTransferFrom(address,address,uint256,bytes)"
       | "setActiveState"
       | "setApprovalForAll"
+      | "signUpWithLens"
       | "supportsInterface"
       | "symbol"
       | "tokenURI"
@@ -66,16 +73,34 @@ export interface Hom3ProfileTokenInterface extends Interface {
       | "DelegateVotesChanged"
       | "EIP712DomainChanged"
       | "OwnershipTransferred"
+      | "ProfileCreated"
       | "Transfer"
   ): EventFragment;
 
+  encodeFunctionData(functionFragment: "BUY_CAP", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "CLOCK_MODE",
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "COST_PER_PROFILE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "LENS_PROTOCOL",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PAYMENT_TOKEN",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "approve",
     values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "assignLensProfile",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "balanceOf",
@@ -118,6 +143,10 @@ export interface Hom3ProfileTokenInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getTotalProfilesCreated",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getVotes",
     values: [AddressLike]
   ): string;
@@ -158,6 +187,10 @@ export interface Hom3ProfileTokenInterface extends Interface {
     values: [AddressLike, boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "signUpWithLens",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -175,8 +208,25 @@ export interface Hom3ProfileTokenInterface extends Interface {
     values: [AddressLike]
   ): string;
 
+  decodeFunctionResult(functionFragment: "BUY_CAP", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "CLOCK_MODE", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "COST_PER_PROFILE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "LENS_PROTOCOL",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PAYMENT_TOKEN",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "assignLensProfile",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "clock", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "delegate", data: BytesLike): Result;
@@ -199,6 +249,10 @@ export interface Hom3ProfileTokenInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getPastVotes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalProfilesCreated",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getVotes", data: BytesLike): Result;
@@ -233,6 +287,10 @@ export interface Hom3ProfileTokenInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signUpWithLens",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -370,6 +428,19 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace ProfileCreatedEvent {
+  export type InputTuple = [owner_: AddressLike, profileId_: BigNumberish];
+  export type OutputTuple = [owner_: string, profileId_: bigint];
+  export interface OutputObject {
+    owner_: string;
+    profileId_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace TransferEvent {
   export type InputTuple = [
     from: AddressLike,
@@ -431,10 +502,24 @@ export interface Hom3ProfileToken extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  BUY_CAP: TypedContractMethod<[], [bigint], "view">;
+
   CLOCK_MODE: TypedContractMethod<[], [string], "view">;
+
+  COST_PER_PROFILE: TypedContractMethod<[], [bigint], "view">;
+
+  LENS_PROTOCOL: TypedContractMethod<[], [string], "view">;
+
+  PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
 
   approve: TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  assignLensProfile: TypedContractMethod<
+    [profileId_: BigNumberish, lensProfileId_: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -490,6 +575,8 @@ export interface Hom3ProfileToken extends BaseContract {
     "view"
   >;
 
+  getTotalProfilesCreated: TypedContractMethod<[], [bigint], "view">;
+
   getVotes: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
   isActive: TypedContractMethod<[], [boolean], "view">;
@@ -520,10 +607,10 @@ export interface Hom3ProfileToken extends BaseContract {
 
   "safeTransferFrom(address,address,uint256,bytes)": TypedContractMethod<
     [
-      from: AddressLike,
-      to: AddressLike,
-      tokenId: BigNumberish,
-      data: BytesLike
+      from_: AddressLike,
+      to_: AddressLike,
+      tokenId_: BigNumberish,
+      data_: BytesLike
     ],
     [void],
     "nonpayable"
@@ -541,6 +628,12 @@ export interface Hom3ProfileToken extends BaseContract {
     "nonpayable"
   >;
 
+  signUpWithLens: TypedContractMethod<
+    [owner_: AddressLike, lensProfileId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   supportsInterface: TypedContractMethod<
     [interfaceId: BytesLike],
     [boolean],
@@ -552,7 +645,7 @@ export interface Hom3ProfileToken extends BaseContract {
   tokenURI: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
 
   transferFrom: TypedContractMethod<
-    [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
+    [from_: AddressLike, to_: AddressLike, tokenId_: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -568,12 +661,31 @@ export interface Hom3ProfileToken extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "BUY_CAP"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "CLOCK_MODE"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "COST_PER_PROFILE"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "LENS_PROTOCOL"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "PAYMENT_TOKEN"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "approve"
   ): TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "assignLensProfile"
+  ): TypedContractMethod<
+    [profileId_: BigNumberish, lensProfileId_: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -634,6 +746,9 @@ export interface Hom3ProfileToken extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "getTotalProfilesCreated"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getVotes"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
@@ -675,10 +790,10 @@ export interface Hom3ProfileToken extends BaseContract {
     nameOrSignature: "safeTransferFrom(address,address,uint256,bytes)"
   ): TypedContractMethod<
     [
-      from: AddressLike,
-      to: AddressLike,
-      tokenId: BigNumberish,
-      data: BytesLike
+      from_: AddressLike,
+      to_: AddressLike,
+      tokenId_: BigNumberish,
+      data_: BytesLike
     ],
     [void],
     "nonpayable"
@@ -694,6 +809,13 @@ export interface Hom3ProfileToken extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "signUpWithLens"
+  ): TypedContractMethod<
+    [owner_: AddressLike, lensProfileId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
   getFunction(
@@ -705,7 +827,7 @@ export interface Hom3ProfileToken extends BaseContract {
   getFunction(
     nameOrSignature: "transferFrom"
   ): TypedContractMethod<
-    [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
+    [from_: AddressLike, to_: AddressLike, tokenId_: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -761,6 +883,13 @@ export interface Hom3ProfileToken extends BaseContract {
     OwnershipTransferredEvent.InputTuple,
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: "ProfileCreated"
+  ): TypedContractEvent<
+    ProfileCreatedEvent.InputTuple,
+    ProfileCreatedEvent.OutputTuple,
+    ProfileCreatedEvent.OutputObject
   >;
   getEvent(
     key: "Transfer"
@@ -846,6 +975,17 @@ export interface Hom3ProfileToken extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "ProfileCreated(address,uint256)": TypedContractEvent<
+      ProfileCreatedEvent.InputTuple,
+      ProfileCreatedEvent.OutputTuple,
+      ProfileCreatedEvent.OutputObject
+    >;
+    ProfileCreated: TypedContractEvent<
+      ProfileCreatedEvent.InputTuple,
+      ProfileCreatedEvent.OutputTuple,
+      ProfileCreatedEvent.OutputObject
     >;
 
     "Transfer(address,address,uint256)": TypedContractEvent<
