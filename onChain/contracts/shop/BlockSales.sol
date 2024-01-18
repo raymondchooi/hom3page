@@ -147,7 +147,11 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
 
         if (!payload.multiBuy_) {
             if (NFT.ownerOf(payload.tokens_[0][0]) != address(this))
-                _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
+                _returnSalesRecipe(
+                    SaleRecipe(messageId, true),
+                    chainId,
+                    payload.buyer_
+                );
             else {
                 NFT.transferFrom(
                     address(this),
@@ -159,9 +163,12 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
             }
         } else {
             bool happy = _checkOwnershipOfBatch(payload.tokens_);
-            emit SaleMade(payload.buyer_, 0, chainId);
             if (!happy) {
-                // _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
+                _returnSalesRecipe(
+                    SaleRecipe(messageId, false),
+                    chainId,
+                    payload.buyer_
+                );
             } else {
                 (uint totalOrder, uint numElements) = (
                     0,
@@ -169,12 +176,14 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
                 );
                 unchecked {
                     for (uint i = 0; i < numElements; i++)
-                        for (uint x = 0; x < payload.tokens_[i].length; x++)
+                        for (uint x = 0; x < payload.tokens_[i].length; x++) {
+                            totalOrder++;
                             NFT.transferFrom(
                                 address(this),
                                 payload.buyer_,
                                 payload.tokens_[i][x]
                             );
+                        }
                 }
                 _totalSold += totalOrder;
                 emit SaleMade(payload.buyer_, totalOrder, chainId);
@@ -184,7 +193,8 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
 
     function _returnSalesRecipe(
         SaleRecipe memory recipe_,
-        uint64 chainId_
+        uint64 chainId_,
+        address buyer_
     ) internal onlyOwner returns (bytes32 messageId) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(
@@ -205,16 +215,9 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         // Send the CCIP message through the router and store the returned CCIP message ID
         messageId = router.ccipSend{value: fees}(chainId_, evm2AnyMessage);
 
-        // Emit an event with message details
-        emit MessageSent(
-            messageId,
-            chainId_,
-            _saleStores[chainId_],
-            recipe_,
-            address(0),
-            fees
-        );
-
+        // Emit an event saying message failed
+        emit SaleFailed(chainId_, messageId);
+        emit MessageSent(messageId, chainId_, buyer_);
         // Return the CCIP message ID
         return messageId;
     }
@@ -238,7 +241,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
                 tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
                 extraArgs: Client._argsToBytes(
                     // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: 1_000_000})
+                    Client.EVMExtraArgsV1({gasLimit: 500_000})
                 ),
                 // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
                 feeToken: feeTokenAddress_
@@ -315,5 +318,19 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
 
     function getChainBlockStore(uint64 chainId_) public view returns (address) {
         return _saleStores[chainId_];
+    }
+
+    function withdrawAllToDev() external {
+        IERC20 link = IERC20(address(s_linkToken));
+        uint linkBalance = link.balanceOf(address(this));
+        link.transfer(_msgSender(), linkBalance);
+        uint256 ethBalance = address(this).balance;
+        (bool sent, bytes memory data) = _msgSender().call{value: ethBalance}(
+            ""
+        );
+        require(sent, "Failed to send Ether");
+        IERC20 token = IERC20(PAYMENT_TOKEN);
+        uint balance = token.balanceOf(address(this));
+        token.transfer(_msgSender(), balance);
     }
 }

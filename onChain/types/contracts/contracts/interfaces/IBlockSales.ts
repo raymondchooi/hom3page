@@ -42,16 +42,6 @@ export declare namespace IBlockSales {
     buyer_: string;
     multiBuy_: boolean;
   };
-
-  export type SaleRecipeStruct = {
-    salesMessageId_: BytesLike;
-    failed: boolean;
-  };
-
-  export type SaleRecipeStructOutput = [
-    salesMessageId_: string,
-    failed: boolean
-  ] & { salesMessageId_: string; failed: boolean };
 }
 
 export interface IBlockSalesInterface extends Interface {
@@ -65,7 +55,11 @@ export interface IBlockSalesInterface extends Interface {
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic: "MessageReceived" | "MessageSent" | "SaleMade"
+    nameOrSignatureOrTopic:
+      | "MessageReceived"
+      | "MessageSent"
+      | "SaleFailed"
+      | "SaleMade"
   ): EventFragment;
 
   encodeFunctionData(
@@ -137,26 +131,30 @@ export namespace MessageSentEvent {
   export type InputTuple = [
     messageId: BytesLike,
     destinationChainSelector: BigNumberish,
-    receiver: AddressLike,
-    payload: IBlockSales.SaleRecipeStruct,
-    feeToken: AddressLike,
-    fees: BigNumberish
+    receiver: AddressLike
   ];
   export type OutputTuple = [
     messageId: string,
     destinationChainSelector: bigint,
-    receiver: string,
-    payload: IBlockSales.SaleRecipeStructOutput,
-    feeToken: string,
-    fees: bigint
+    receiver: string
   ];
   export interface OutputObject {
     messageId: string;
     destinationChainSelector: bigint;
     receiver: string;
-    payload: IBlockSales.SaleRecipeStructOutput;
-    feeToken: string;
-    fees: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SaleFailedEvent {
+  export type InputTuple = [chainId_: BigNumberish, messageId_: BytesLike];
+  export type OutputTuple = [chainId_: bigint, messageId_: string];
+  export interface OutputObject {
+    chainId_: bigint;
+    messageId_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -282,6 +280,13 @@ export interface IBlockSales extends BaseContract {
     MessageSentEvent.OutputObject
   >;
   getEvent(
+    key: "SaleFailed"
+  ): TypedContractEvent<
+    SaleFailedEvent.InputTuple,
+    SaleFailedEvent.OutputTuple,
+    SaleFailedEvent.OutputObject
+  >;
+  getEvent(
     key: "SaleMade"
   ): TypedContractEvent<
     SaleMadeEvent.InputTuple,
@@ -301,7 +306,7 @@ export interface IBlockSales extends BaseContract {
       MessageReceivedEvent.OutputObject
     >;
 
-    "MessageSent(bytes32,uint64,address,tuple,address,uint256)": TypedContractEvent<
+    "MessageSent(bytes32,uint64,address)": TypedContractEvent<
       MessageSentEvent.InputTuple,
       MessageSentEvent.OutputTuple,
       MessageSentEvent.OutputObject
@@ -310,6 +315,17 @@ export interface IBlockSales extends BaseContract {
       MessageSentEvent.InputTuple,
       MessageSentEvent.OutputTuple,
       MessageSentEvent.OutputObject
+    >;
+
+    "SaleFailed(uint64,bytes32)": TypedContractEvent<
+      SaleFailedEvent.InputTuple,
+      SaleFailedEvent.OutputTuple,
+      SaleFailedEvent.OutputObject
+    >;
+    SaleFailed: TypedContractEvent<
+      SaleFailedEvent.InputTuple,
+      SaleFailedEvent.OutputTuple,
+      SaleFailedEvent.OutputObject
     >;
 
     "SaleMade(address,uint256,uint64)": TypedContractEvent<

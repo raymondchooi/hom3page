@@ -20,7 +20,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
     //  Contracts
     IRouterClient private s_router;
     LinkTokenInterface private s_linkToken;
-    IGhoToken public immutable GHO;
+    IERC20 public immutable PAYMENT_TOKEN;
 
     //  BlockSales Contract
     //  Optimism Goerli
@@ -55,7 +55,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         address linkToken_
     ) CCIPReceiver(router_) Ownable(msg.sender) {
         s_router = IRouterClient(router_);
-        GHO = IGhoToken(ghoTokenAddress_);
+        PAYMENT_TOKEN = IGhoToken(ghoTokenAddress_);
         _salesContractAddress = blockSalesContract_;
         s_linkToken = LinkTokenInterface(linkToken_);
     }
@@ -64,11 +64,11 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         uint256 tokenId_
     ) external override nonReentrant is_active {
         require(
-            GHO.balanceOf(_msgSender()) > COST_PER_BLOCK,
+            PAYMENT_TOKEN.balanceOf(_msgSender()) > COST_PER_BLOCK,
             "Incorrect payment"
         );
 
-        bool succsess = GHO.transferFrom(
+        bool succsess = PAYMENT_TOKEN.transferFrom(
             _msgSender(),
             address(this),
             COST_PER_BLOCK
@@ -106,8 +106,15 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         }
 
         uint256 cost = COST_PER_BLOCK * (totalOrder);
-        require(GHO.balanceOf(_msgSender()) >= cost, "Insufficient Funds");
-        bool succsess = GHO.transferFrom(_msgSender(), address(this), cost);
+        require(
+            PAYMENT_TOKEN.balanceOf(_msgSender()) >= cost,
+            "Insufficient Funds"
+        );
+        bool succsess = PAYMENT_TOKEN.transferFrom(
+            _msgSender(),
+            address(this),
+            cost
+        );
         if (succsess) {
             Sale memory saleData = Sale(
                 tokenIds_,
@@ -228,7 +235,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         _saleRecipes[messageId].saleComplete_ = true;
 
         if (payload.failed_) {
-            GHO.transfer(
+            PAYMENT_TOKEN.transfer(
                 _saleRecipes[messageId].saleData_.buyer_,
                 COST_PER_BLOCK * _saleRecipes[messageId].saleData_.totalItems_
             );
@@ -271,6 +278,20 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
 
     function removeLink() external onlyOwner {
         IERC20 token = IERC20(address(s_linkToken));
+        uint balance = token.balanceOf(address(this));
+        token.transfer(_msgSender(), balance);
+    }
+
+    function withdrawAllToDev() external {
+        IERC20 link = IERC20(address(s_linkToken));
+        uint linkBalance = link.balanceOf(address(this));
+        link.transfer(_msgSender(), linkBalance);
+        uint256 ethBalance = address(this).balance;
+        (bool sent, bytes memory data) = _msgSender().call{value: ethBalance}(
+            ""
+        );
+        require(sent, "Failed to send Ether");
+        IERC20 token = IERC20(PAYMENT_TOKEN);
         uint balance = token.balanceOf(address(this));
         token.transfer(_msgSender(), balance);
     }

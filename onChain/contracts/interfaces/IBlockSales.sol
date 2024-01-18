@@ -13,10 +13,7 @@ interface IBlockSales {
     event MessageSent(
         bytes32 indexed messageId, // The unique ID of the CCIP message.
         uint64 indexed destinationChainSelector, // The chain selector of the destination chain.
-        address receiver, // The address of the receiver on the destination chain.
-        SaleRecipe payload, // The text being sent.
-        address feeToken, // the token address used to pay CCIP fees.
-        uint256 fees // The fees paid for sending the CCIP message.
+        address receiver // The address of the receiver on the destination chain.
     );
 
     // Event emitted when a message is received from another chain.
@@ -26,6 +23,12 @@ interface IBlockSales {
         address sender, // The address of the sender from the source chain.
         Sale payload // The text that was received.
     );
+    event SaleMade(
+        address indexed buyer_,
+        uint256 indexed amount_,
+        uint64 indexed chainId_
+    );
+    event SaleFailed(uint64 indexed chainId_, bytes32 messageId_);
 
     struct SaleStore {
         Sale saleData_;
@@ -33,12 +36,6 @@ interface IBlockSales {
         bool saleComplete_;
         bool saleFailed_;
     }
-
-    event SaleMade(
-        address indexed buyer_,
-        uint256 indexed amount_,
-        uint64 indexed chainId_
-    );
 
     struct Sale {
         uint256[][] tokens_;

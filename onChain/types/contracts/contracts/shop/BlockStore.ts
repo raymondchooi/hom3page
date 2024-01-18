@@ -110,7 +110,7 @@ export declare namespace Client {
 export interface BlockStoreInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "GHO"
+      | "PAYMENT_TOKEN"
       | "buyBatchBlock"
       | "buyBlock"
       | "ccipReceive"
@@ -127,6 +127,7 @@ export interface BlockStoreInterface extends Interface {
       | "setSalesContract"
       | "supportsInterface"
       | "transferOwnership"
+      | "withdrawAllToDev"
       | "withdrawFunds"
       | "withdrawTokens"
   ): FunctionFragment;
@@ -137,10 +138,14 @@ export interface BlockStoreInterface extends Interface {
       | "MessageReceived"
       | "MessageSent"
       | "OwnershipTransferred"
+      | "SaleFailed"
       | "SaleMade"
   ): EventFragment;
 
-  encodeFunctionData(functionFragment: "GHO", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "PAYMENT_TOKEN",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "buyBatchBlock",
     values: [BigNumberish[][]]
@@ -197,6 +202,10 @@ export interface BlockStoreInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "withdrawAllToDev",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "withdrawFunds",
     values?: undefined
   ): string;
@@ -205,7 +214,10 @@ export interface BlockStoreInterface extends Interface {
     values: [AddressLike]
   ): string;
 
-  decodeFunctionResult(functionFragment: "GHO", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "PAYMENT_TOKEN",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "buyBatchBlock",
     data: BytesLike
@@ -253,6 +265,10 @@ export interface BlockStoreInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawAllToDev",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -346,6 +362,28 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace SaleFailedEvent {
+  export type InputTuple = [
+    buyer_: AddressLike,
+    chainId_: BigNumberish,
+    messageId_: BytesLike
+  ];
+  export type OutputTuple = [
+    buyer_: string,
+    chainId_: bigint,
+    messageId_: string
+  ];
+  export interface OutputObject {
+    buyer_: string;
+    chainId_: bigint;
+    messageId_: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace SaleMadeEvent {
   export type InputTuple = [
     buyer_: AddressLike,
@@ -407,7 +445,7 @@ export interface BlockStore extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  GHO: TypedContractMethod<[], [string], "view">;
+  PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
 
   buyBatchBlock: TypedContractMethod<
     [tokenIds_: BigNumberish[][]],
@@ -469,6 +507,8 @@ export interface BlockStore extends BaseContract {
     "nonpayable"
   >;
 
+  withdrawAllToDev: TypedContractMethod<[], [void], "nonpayable">;
+
   withdrawFunds: TypedContractMethod<[], [void], "payable">;
 
   withdrawTokens: TypedContractMethod<
@@ -482,7 +522,7 @@ export interface BlockStore extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "GHO"
+    nameOrSignature: "PAYMENT_TOKEN"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "buyBatchBlock"
@@ -541,6 +581,9 @@ export interface BlockStore extends BaseContract {
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "withdrawAllToDev"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "withdrawFunds"
   ): TypedContractMethod<[], [void], "payable">;
   getFunction(
@@ -574,6 +617,13 @@ export interface BlockStore extends BaseContract {
     OwnershipTransferredEvent.InputTuple,
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: "SaleFailed"
+  ): TypedContractEvent<
+    SaleFailedEvent.InputTuple,
+    SaleFailedEvent.OutputTuple,
+    SaleFailedEvent.OutputObject
   >;
   getEvent(
     key: "SaleMade"
@@ -626,6 +676,17 @@ export interface BlockStore extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "SaleFailed(address,uint64,bytes32)": TypedContractEvent<
+      SaleFailedEvent.InputTuple,
+      SaleFailedEvent.OutputTuple,
+      SaleFailedEvent.OutputObject
+    >;
+    SaleFailed: TypedContractEvent<
+      SaleFailedEvent.InputTuple,
+      SaleFailedEvent.OutputTuple,
+      SaleFailedEvent.OutputObject
     >;
 
     "SaleMade(address,uint256,uint64)": TypedContractEvent<

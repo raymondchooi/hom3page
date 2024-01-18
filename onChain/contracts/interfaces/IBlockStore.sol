@@ -33,6 +33,12 @@ interface IBlockStore {
         uint64 indexed chainId_
     );
 
+    event SaleFailed(
+        address indexed buyer_,
+        uint64 indexed chainId_,
+        bytes32 messageId_
+    );
+
     struct SaleStore {
         Sale saleData_;
         bytes32 messageId_;
