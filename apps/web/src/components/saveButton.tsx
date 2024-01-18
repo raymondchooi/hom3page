@@ -6,7 +6,7 @@ interface SaveButtonProps {
 
 function SaveButton({ onSaveClick }: SaveButtonProps) {
   return (
-    <div className="z-[10] flex w-full">
+    <div className="z-[10] mb-6 flex w-full">
       <Button onClick={onSaveClick} fancy="less" className="w-full">
         Save
       </Button>

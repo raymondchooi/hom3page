@@ -97,7 +97,7 @@ export default function Wall() {
       if (randomTypeIndex === 0) {
         blockData.type = "text";
         blockData.owner = `0x${index}`;
-        blockData.content = `Hello  ${index}`;
+        blockData.content = `text:Hello  ${index}`;
       } else if (randomTypeIndex === 1) {
         blockData.wallLink = `/${index}`;
         blockData.owner = `0x${index}`;
@@ -274,9 +274,9 @@ export default function Wall() {
 
                 <div className="mt-4 flex h-5 items-center justify-center gap-x-3">
                   <Button onClick={() => centerView()} fancy="less">
-                  <Button onClick={() => zoomOut()} fancy="less">
-                    -
-                  </Button>
+                    <Button onClick={() => zoomOut()} fancy="less">
+                      -
+                    </Button>
                     <Image
                       className="my-1"
                       width={21}

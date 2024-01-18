@@ -8,6 +8,8 @@ interface TextProps {
 function Text({ blockData }: TextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const text = blockData?.content?.split("text:")?.[1];
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -33,7 +35,7 @@ function Text({ blockData }: TextProps) {
       ref={containerRef}
       className="flex h-full w-full items-center justify-center p-1 text-gray-200"
     >
-      {blockData?.content ?? ""}
+      {text ?? ""}
     </div>
   );
 }

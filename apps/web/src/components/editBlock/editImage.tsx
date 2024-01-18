@@ -35,7 +35,7 @@ function EditText({ onSave, onChange }: EditTextProps) {
 
   return (
     <div className="mt-4 flex w-full flex-col justify-center">
-      <FieldGroup className="mb-6">
+      <FieldGroup>
         <Field>
           <Label className="text-gray-400">Image</Label>
           <FileUpload onFileUpload={handleImageUpload} />
