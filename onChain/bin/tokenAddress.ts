@@ -93,7 +93,7 @@ export const tokenAddress: TokenAddressList = {
     eth: productionChainAddresses.eth.usdc,
     arbitrum: productionChainAddresses.arbitrum.usdc,
     ethGoerli: "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
-    ethSepolia: "",
+    ethSepolia: "0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8",
     arbGoerli: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
     opGoerli: "0x69529987FA4A075D0C00B0128fa848dc9ebbE9CE",
     maticMumbai: "0x52D800ca262522580CeBAD275395ca6e7598C014",

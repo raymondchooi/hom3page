@@ -54,7 +54,7 @@ const _abi = [
           },
           {
             internalType: "bool",
-            name: "success",
+            name: "failed_",
             type: "bool",
           },
         ],
@@ -247,13 +247,7 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address payable",
-        name: "withdrawAddress_",
-        type: "address",
-      },
-    ],
+    inputs: [],
     name: "withdrawFunds",
     outputs: [],
     stateMutability: "payable",
@@ -261,11 +255,6 @@ const _abi = [
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "withdrawAddress_",
-        type: "address",
-      },
       {
         internalType: "address",
         name: "tokenAddress_",

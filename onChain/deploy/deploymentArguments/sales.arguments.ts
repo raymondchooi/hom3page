@@ -3,6 +3,7 @@ import { AddressLike, Addressable, ZeroAddress } from "ethers";
 import { ChainName, tokenAddress } from "../../bin/tokenAddress";
 import deployedDCAContracts from "../../bin/deployedAddress";
 import deployedContracts from "../../bin/deployedAddress";
+import deploymentConfig from "../../bin/deployments.config";
 
 export const BlockSalesArguments = (
   deployer: string | Addressable,
@@ -27,8 +28,9 @@ export const BlockStoreArguments = (
     networkName === "localhost" ? "hardhat" : networkName;
 
   const router_ = tokenAddress.ccipRouter[netName];
-  const ghoTokenAddress_ = tokenAddress.gho[netName];
-  const blockSalesContract_ = deployedContracts.opGoerli?.BlockSales;
+  const ghoTokenAddress_ = tokenAddress.usdc[netName];
+  const blockSalesContract_ =
+    deployedContracts[deploymentConfig().masterChain]?.BlockSales;
   const linkToken_ = tokenAddress.link[netName];
 
   return [router_, ghoTokenAddress_, blockSalesContract_, linkToken_];

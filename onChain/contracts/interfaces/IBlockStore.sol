@@ -49,19 +49,16 @@ interface IBlockStore {
 
     struct SaleRecipe {
         bytes32 salesMessageId_;
-        bool success;
+        bool failed_;
     }
 
     function buyBlock(uint256 tokenId) external;
 
     function buyBatchBlock(uint256[][] calldata tokenIds_) external;
 
-    function withdrawFunds(address payable withdrawAddress_) external payable;
+    function withdrawFunds() external payable;
 
-    function withdrawTokens(
-        address withdrawAddress_,
-        address tokenAddress_
-    ) external;
+    function withdrawTokens(address tokenAddress_) external;
 
     function getSaleStatus(bytes32 saleId_) external returns (SaleStore memory);
 }

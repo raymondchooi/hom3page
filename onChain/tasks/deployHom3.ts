@@ -21,7 +21,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
 
   const opGoerli: ContractNames[] = ["BlockToken", "BlockSales"];
   const ethSepolia: ContractNames[] = ["BlockStore"];
-  const maticMumbai: ContractNames[] = ["BlockStore"];
+  const maticMumbai: ContractNames[] = ["BlockToken", "BlockSales"];
   const deploymentAddresses: DeploymentStore[] = [];
   const deploys: { [chain in ChainName]?: ContractNames[] } = {
     opGoerli: opGoerli,

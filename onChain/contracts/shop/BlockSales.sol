@@ -19,6 +19,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     IERC721 public immutable NFT;
     IERC20 public immutable PAYMENT_TOKEN;
     IRouterClient private s_router;
+    LinkTokenInterface private s_linkToken;
 
     //  Cross Chain endpoints
     uint64 constant OP_CHAIN_SELECTOR = 2664363617261496610;
@@ -52,11 +53,13 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     constructor(
         address NFTAddress_,
         address paymentToken_,
-        address ccipRouter_
+        address ccipRouter_,
+        address linkToken_
     ) CCIPReceiver(ccipRouter_) Ownable(msg.sender) {
         s_router = IRouterClient(ccipRouter_);
         NFT = IERC721(NFTAddress_);
         PAYMENT_TOKEN = IERC20(paymentToken_);
+        s_linkToken = LinkTokenInterface(linkToken_);
     }
 
     fallback() external payable {}
@@ -142,55 +145,39 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         uint64 chainId = any2EvmMessage.sourceChainSelector;
         Sale memory payload = abi.decode(any2EvmMessage.data, (Sale));
 
-        // will remove after test
-        emit MessageReceived(
-            messageId,
-            chainId,
-            abi.decode(any2EvmMessage.sender, (address)), // abi-decoding of the sender address,
-            payload
-        );
-        bool happy = _checkOwnershipOfBatch(
-            payload.tokens_,
-            !payload.multiBuy_
-        );
-
-        (uint totalOrder, uint numElements) = (0, payload.tokens_.length);
-
-        emit SaleMade(_msgSender(), totalOrder, chainId);
-
-        //_returnSalesRecipe(SaleRecipe(messageId, false), chainId);
-        /* 
-                    CONNECTED OUT FOR TESTING
-        bool happy = _checkOwnershipOfBatch(
-            payload.tokens_,
-            !payload.multiBuy_
-        );
-        if (!happy) _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
-        else if (!payload.multiBuy_) {
-            //  Check it is the contracts
-            NFT.transferFrom(
-                address(this),
-                _msgSender(),
-                payload.tokens_[0][0]
-            );
-            _totalSold++;
-            _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
-            emit SaleMade(_msgSender(), 1, chainId);
+        if (!payload.multiBuy_) {
+            if (NFT.ownerOf(payload.tokens_[0][0]) != address(this))
+                _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
+            else {
+                NFT.transferFrom(
+                    address(this),
+                    payload.buyer_,
+                    payload.tokens_[0][0]
+                );
+                _totalSold++;
+                emit SaleMade(payload.buyer_, 1, chainId);
+            }
         } else {
+            bool happy = _checkOwnershipOfBatch(payload.tokens_);
+            emit SaleMade(payload.buyer_, 0, chainId);
+            if (!happy) {}
+            // _returnSalesRecipe(SaleRecipe(messageId, false), chainId);
+            /* else {
             (uint totalOrder, uint numElements) = (0, payload.tokens_.length);
             unchecked {
                 for (uint i = 0; i < numElements; i++)
                     for (uint x = 0; x < payload.tokens_[i].length; x++)
                         NFT.transferFrom(
                             address(this),
-                            msg.sender,
+                            payload.buyer_,
                             payload.tokens_[i][x]
                         );
             }
             _totalSold += totalOrder;
-            _returnSalesRecipe(SaleRecipe(messageId, true), chainId);
-            emit SaleMade(_msgSender(), totalOrder, chainId);
+            //_returnSalesRecipe(SaleRecipe(messageId, true), chainId);
+            emit SaleMade(payload.buyer_, totalOrder, chainId);
         } */
+        }
     }
 
     function _returnSalesRecipe(
@@ -249,7 +236,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
                 tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
                 extraArgs: Client._argsToBytes(
                     // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: 200_000})
+                    Client.EVMExtraArgsV1({gasLimit: 500_000})
                 ),
                 // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
                 feeToken: feeTokenAddress_
@@ -257,46 +244,37 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     }
 
     /** @notice WITHDRAWING MECHANICS */
-    function withdrawTokens(
-        address withdrawAddress_,
-        address tokenAddress_
-    ) external override onlyOwner {
+    function withdrawTokens(address tokenAddress_) external override onlyOwner {
         IERC20 token = IERC20(tokenAddress_);
         uint balance = token.balanceOf(address(this));
-        token.transfer(withdrawAddress_, balance);
+        token.transfer(_msgSender(), balance);
     }
 
-    function withdrawFunds(
-        address payable withdrawAddress_
-    ) external payable override onlyOwner {
+    function withdrawFunds() external payable override onlyOwner {
         uint256 balance = address(this).balance;
-        (bool sent, bytes memory data) = withdrawAddress_.call{value: balance}(
-            ""
-        );
+        (bool sent, bytes memory data) = _msgSender().call{value: balance}("");
         require(sent, "Failed to send Ether");
     }
 
-    function withdrawBlock(
-        address withdrawAddress_,
-        uint256 tokenId_
-    ) external override onlyOwner {
+    function withdrawBlock(uint256 tokenId_) external override onlyOwner {
         require(NFT.ownerOf(tokenId_) == address(this), "Token not available");
-        NFT.transferFrom(address(this), withdrawAddress_, tokenId_);
+        NFT.transferFrom(address(this), _msgSender(), tokenId_);
+    }
+
+    function withdrawLink() external onlyOwner {
+        IERC20 token = IERC20(address(s_linkToken));
+        uint balance = token.balanceOf(address(this));
+        token.transfer(_msgSender(), balance);
     }
 
     function _checkOwnershipOfBatch(
-        uint256[][] memory tokenIds_,
-        bool single_
+        uint256[][] memory tokenIds_
     ) internal view returns (bool) {
-        uint numElements = (tokenIds_.length);
         unchecked {
-            if (single_)
-                if (NFT.ownerOf(tokenIds_[0][0]) != address(this)) return false;
-                else
-                    for (uint i = 0; i < numElements; i++)
-                        for (uint x = 0; x < tokenIds_[i].length; x++)
-                            if (NFT.ownerOf(tokenIds_[i][x]) != address(this))
-                                return false;
+            for (uint i = 0; i < tokenIds_.length; i++)
+                for (uint x = 0; x < tokenIds_[i].length; x++)
+                    if (NFT.ownerOf(tokenIds_[i][x]) != address(this))
+                        return false;
         }
         return true;
     }
@@ -309,10 +287,6 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
 
     function getTotalSold() public view returns (uint256) {
         return _totalSold;
-    }
-
-    function getChainBlockStore(uint64 chainId_) public view returns (address) {
-        return _saleStores[chainId_];
     }
 
     /**   @notice SETTERS  */
@@ -335,5 +309,9 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
      */
     function setBlockStoreActive(uint64 chainId_, bool flag_) public onlyOwner {
         _chainAllowed[chainId_] = flag_;
+    }
+
+    function getChainBlockStore(uint64 chainId_) public view returns (address) {
+        return _saleStores[chainId_];
     }
 }

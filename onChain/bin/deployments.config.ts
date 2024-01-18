@@ -1,12 +1,14 @@
 /** @format */
 
 import { ContractNames } from "./deployedAddress";
+import { ChainName } from "./tokenAddress";
 
 // BlockToken BlockSales BlockStore
 
 export default function deploymentConfig() {
   const deployCue: ContractNames[] = ["BlockStore"];
+  const masterChain: ChainName = "maticMumbai";
   const ethernalEnabled: boolean = true;
 
-  return { deployCue, ethernalEnabled };0x35977d764d6506bc82b53ecae542ffcb2bde39a2;
+  return { deployCue, ethernalEnabled, masterChain };
 }

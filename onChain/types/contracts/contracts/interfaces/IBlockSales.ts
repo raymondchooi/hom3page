@@ -45,13 +45,13 @@ export declare namespace IBlockSales {
 
   export type SaleRecipeStruct = {
     salesMessageId_: BytesLike;
-    success: boolean;
+    failed: boolean;
   };
 
   export type SaleRecipeStructOutput = [
     salesMessageId_: string,
-    success: boolean
-  ] & { salesMessageId_: string; success: boolean };
+    failed: boolean
+  ] & { salesMessageId_: string; failed: boolean };
 }
 
 export interface IBlockSalesInterface extends Interface {
@@ -78,15 +78,15 @@ export interface IBlockSalesInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawBlock",
-    values: [AddressLike, BigNumberish]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawFunds",
-    values: [AddressLike]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawTokens",
-    values: [AddressLike, AddressLike]
+    values: [AddressLike]
   ): string;
 
   decodeFunctionResult(
@@ -234,19 +234,15 @@ export interface IBlockSales extends BaseContract {
   buyBlock: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
 
   withdrawBlock: TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
+    [tokenId_: BigNumberish],
     [void],
     "nonpayable"
   >;
 
-  withdrawFunds: TypedContractMethod<
-    [withdrawAddress_: AddressLike],
-    [void],
-    "payable"
-  >;
+  withdrawFunds: TypedContractMethod<[], [void], "payable">;
 
   withdrawTokens: TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
+    [tokenAddress_: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -263,21 +259,13 @@ export interface IBlockSales extends BaseContract {
   ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawBlock"
-  ): TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenId_: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawFunds"
-  ): TypedContractMethod<[withdrawAddress_: AddressLike], [void], "payable">;
+  ): TypedContractMethod<[], [void], "payable">;
   getFunction(
     nameOrSignature: "withdrawTokens"
-  ): TypedContractMethod<
-    [withdrawAddress_: AddressLike, tokenAddress_: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[tokenAddress_: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "MessageReceived"

@@ -14,7 +14,7 @@ import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications
 contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
     //  Set token cost to 100 $GHO
     //  Var to track contract sales
-    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 18; // GHO
+    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 6; // GHO
     uint8 internal constant BUY_CAP = 10;
     uint256 internal _totalSold;
     //  Contracts
@@ -24,7 +24,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
 
     //  BlockSales Contract
     //  Optimism Goerli
-    uint64 constant SALES_CONTRACT_CHAIN = 2664363617261496610;
+    uint64 constant SALES_CONTRACT_CHAIN = 12532609583862916517;
     address private _salesContractAddress;
 
     mapping(bytes32 => SaleStore) _saleRecipes;
@@ -108,7 +108,15 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         uint256 cost = COST_PER_BLOCK * (totalOrder);
         require(GHO.balanceOf(_msgSender()) >= cost, "Insufficient Funds");
         bool succsess = GHO.transferFrom(_msgSender(), address(this), cost);
-        if (succsess) {}
+        if (succsess) {
+            Sale memory saleData = Sale(
+                tokenIds_,
+                totalOrder,
+                _msgSender(),
+                true
+            );
+            _startCrossChainPurchase(saleData);
+        }
     }
 
     function _startCrossChainPurchase(Sale memory saleData_) internal {
@@ -219,9 +227,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         );
         _saleRecipes[messageId].saleComplete_ = true;
 
-        if (payload.success) {
-            _saleRecipes[messageId].saleFailed_ = false;
-        } else {
+        if (payload.failed_) {
             GHO.transfer(
                 _saleRecipes[messageId].saleData_.buyer_,
                 COST_PER_BLOCK * _saleRecipes[messageId].saleData_.totalItems_
@@ -241,22 +247,15 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         return _salesContractAddress;
     }
 
-    function withdrawTokens(
-        address withdrawAddress_,
-        address tokenAddress_
-    ) external override onlyOwner {
+    function withdrawTokens(address tokenAddress_) external override onlyOwner {
         IERC20 token = IERC20(tokenAddress_);
         uint balance = token.balanceOf(address(this));
-        token.transfer(withdrawAddress_, balance);
+        token.transfer(_msgSender(), balance);
     }
 
-    function withdrawFunds(
-        address payable withdrawAddress_
-    ) external payable override onlyOwner {
+    function withdrawFunds() external payable override onlyOwner {
         uint256 balance = address(this).balance;
-        (bool sent, bytes memory data) = withdrawAddress_.call{value: balance}(
-            ""
-        );
+        (bool sent, bytes memory data) = _msgSender().call{value: balance}("");
         require(sent, "Failed to send Ether");
     }
 
@@ -264,5 +263,15 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
         bytes32 saleId_
     ) external view override returns (SaleStore memory) {
         return _saleRecipes[saleId_];
+    }
+
+    function setSalesContract(address newAddress_) external onlyOwner {
+        _salesContractAddress = newAddress_;
+    }
+
+    function removeLink() external onlyOwner {
+        IERC20 token = IERC20(address(s_linkToken));
+        uint balance = token.balanceOf(address(this));
+        token.transfer(_msgSender(), balance);
     }
 }
