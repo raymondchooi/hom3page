@@ -73,7 +73,8 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     ) public virtual override(ERC721) onlyOnePerWallet(to_) {
         super.transferFrom(from_, to_, tokenId_);
         // send message to deposit vault
-        _emitProfileTransferred(tokenId_, to_);
+        if (_depositContractAddress != address(0))
+            _emitProfileTransferred(tokenId_, to_);
     }
 
     /**
@@ -88,7 +89,8 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     ) public virtual override(ERC721) onlyOnePerWallet(to_) {
         super.safeTransferFrom(from_, to_, tokenId_, data_);
         // send message to deposit vault
-        _emitProfileTransferred(tokenId_, to_);
+        if (_depositContractAddress != address(0))
+            _emitProfileTransferred(tokenId_, to_);
     }
 
     function signUpAndCreateLens(
@@ -121,6 +123,8 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
                 _setLensProfile(tokenId, lensProfileId, true);
             }
             _profilesMinted++;
+            if (_depositContractAddress != address(0))
+                _emitProfileTransferred(tokenId, owner_);
             emit ProfileCreated(owner_, tokenId);
         } else revert("Payment Failed");
     }
@@ -145,6 +149,8 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
             _mint(owner_, tokenId);
             _setLensProfile(tokenId, lensProfileId_, false);
             _profilesMinted++;
+            if (_depositContractAddress != address(0))
+                _emitProfileTransferred(tokenId, owner_);
             emit ProfileCreated(owner_, tokenId);
         } else revert("Payment or Profile Failed");
     }
@@ -164,6 +170,8 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
 
             _setLensProfile(tokenId, lensProfileId, true);
         }
+        if (_depositContractAddress != address(0))
+            _emitProfileTransferred(tokenId, owner_);
         _profilesMinted++;
         emit ProfileCreated(owner_, tokenId);
     }
@@ -219,6 +227,10 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
 
     function setSalesContract(address newContract_) external onlyOwner {
         BLOCK_SALES_CONTRACT = newContract_;
+    }
+
+    function setDepositContractAddress(address contract_) external onlyOwner {
+        _depositContractAddress = contract_;
     }
 
     function setLensProfile(

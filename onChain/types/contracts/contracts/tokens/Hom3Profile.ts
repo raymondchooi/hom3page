@@ -124,6 +124,7 @@ export interface Hom3ProfileInterface extends Interface {
       | "getVotes"
       | "isActive"
       | "isApprovedForAll"
+      | "isLensProfileActive"
       | "name"
       | "nonces"
       | "owner"
@@ -136,6 +137,7 @@ export interface Hom3ProfileInterface extends Interface {
       | "safeTransferFrom(address,address,uint256,bytes)"
       | "setActiveState"
       | "setApprovalForAll"
+      | "setDepositContractAddress"
       | "setLensProfile"
       | "setSalesContract"
       | "setSpend"
@@ -304,6 +306,10 @@ export interface Hom3ProfileInterface extends Interface {
     functionFragment: "isApprovedForAll",
     values: [AddressLike, AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "isLensProfileActive",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -342,6 +348,10 @@ export interface Hom3ProfileInterface extends Interface {
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
     values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setDepositContractAddress",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "setLensProfile",
@@ -496,6 +506,10 @@ export interface Hom3ProfileInterface extends Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "isLensProfileActive",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -530,6 +544,10 @@ export interface Hom3ProfileInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setDepositContractAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1051,6 +1069,12 @@ export interface Hom3Profile extends BaseContract {
     "view"
   >;
 
+  isLensProfileActive: TypedContractMethod<
+    [lensProfileId_: BigNumberish],
+    [boolean],
+    "view"
+  >;
+
   name: TypedContractMethod<[], [string], "view">;
 
   nonces: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
@@ -1104,6 +1128,12 @@ export interface Hom3Profile extends BaseContract {
 
   setApprovalForAll: TypedContractMethod<
     [operator: AddressLike, approved: boolean],
+    [void],
+    "nonpayable"
+  >;
+
+  setDepositContractAddress: TypedContractMethod<
+    [contract_: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -1331,6 +1361,9 @@ export interface Hom3Profile extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "isLensProfileActive"
+  ): TypedContractMethod<[lensProfileId_: BigNumberish], [boolean], "view">;
+  getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
@@ -1387,6 +1420,9 @@ export interface Hom3Profile extends BaseContract {
     [void],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "setDepositContractAddress"
+  ): TypedContractMethod<[contract_: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setLensProfile"
   ): TypedContractMethod<

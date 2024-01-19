@@ -49,6 +49,15 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   await tx1.wait();
   console.log(`🟠 [TASK] ${taskId} : Set profile contract on Sales `);
 
+  // Add the deposit contract to the profile
+  const addDepositAddressTx = await profileContract.setDepositContractAddress(
+    deployedContracts[name].Hom3DepositVault
+  );
+  await addDepositAddressTx.wait();
+  console.log(
+    `🟠 [TASK] ${taskId} :Added deposit contract to profile contract`
+  );
+
   // Set the chain to accept messages
   const chainStateTx = await salesContract.setBlockStoreActive(chainId, true);
   await chainStateTx.wait();
