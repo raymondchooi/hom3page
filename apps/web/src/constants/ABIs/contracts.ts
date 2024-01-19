@@ -3,7 +3,7 @@ import BlockStoreABI from "./blockSales.abi.json";
 import BlockTokenABI from "./blockSales.abi.json";
 import HomeProfileABI from "./blockSales.abi.json";
 import ERC20ABI from "./erc20.abi.json";
-import ERC721Votes from "./ERC721Votes.abi.json";
+import ERC721Votes from "./erc721Votes.abi.json";
 
 export type ChainName =
   | "eth"
