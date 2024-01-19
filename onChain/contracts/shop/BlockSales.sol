@@ -42,6 +42,19 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
     receive() external payable {}
 
     /** @notice SALES MECHANICS */
+
+    /**
+     * @notice function to buy blocks on deployed chain
+     * @dev tokenIds_ need to be formatted as an array or arrays,
+     *      with the blocks in arrays of their order.
+     *      NO MORE than 10 tokens per buy, no moore than 5 sub arrays
+     * 
+     *      Example
+     *          tokenIds_ = [[1,2,3],[21,22],[109],[]]
+     * 
+     * @param tokenIds_ embedded token ids
+     * @param multiBuy_ if it is a single block or multi
+     */
     function buyBlock(
         uint256[][] calldata tokenIds_,
         bool multiBuy_
@@ -51,6 +64,10 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
             : _buyBlock(tokenIds_[0][0], _msgSender());
     }
 
+    /**
+     * @param tokenId_ the id of the wanted block
+     * @param buyer_ address of the buyer
+     */
     function _buyBlock(uint256 tokenId_, address buyer_) internal {
         require(NFT.ownerOf(tokenId_) == address(this), "Token not available");
         require(

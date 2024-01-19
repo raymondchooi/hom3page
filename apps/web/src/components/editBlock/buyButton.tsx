@@ -35,7 +35,14 @@ function BuyButton({
     console.log("blocks", optimisedBlockIds);
 
     if (CONTRACTS?.maticMumbai?.BlockSales) {
-      if (purchasableBlocks.size === 1) {
+      await writeContract({
+        address: CONTRACTS.maticMumbai.BlockSales.address,
+        abi: CONTRACTS.maticMumbai.BlockSales.abi,
+        functionName: "allowance",
+        args: [],
+      })
+
+      if (purchasableBlocks.size === 1 && optimisedBlockIds?.[0]?.[0]) {
         const { hash } = await writeContract({
           address: CONTRACTS.maticMumbai.BlockSales.address,
           abi: CONTRACTS.maticMumbai.BlockSales.abi,
