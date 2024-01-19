@@ -7,7 +7,6 @@ import {
   DialogTitle,
 } from "components/dialog";
 import { Button } from "components";
-
 interface WelcomeDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -61,6 +60,13 @@ function WelcomeDialog({ open, setOpen }: WelcomeDialogProps) {
             web3 technology.
           </p>
         </DialogDescription>
+        <div className="flex">
+          <div className="z-[10] mt-8 flex w-full justify-center">
+            <Button fancy onClick={() => setOpen(false)} className="w-full">
+              Start exploring
+            </Button>
+          </div>
+        </div>
       </DialogBody>
     </Dialog>
   );
