@@ -242,15 +242,15 @@ function SelectBlocks({
 
   function renderBlockContent(blockId: string, isBlockSelected: boolean) {
     const blockContent =
-      bAppStoredValues?.[blockId] || editBappValue || blockId;
+      bAppStoredValues?.[blockId] || editBappValue || `text:${blockId}`;
 
     return (
       <Block
         key={blockContent}
         blockData={{
           id: blockId,
-          type: editBappId,
-          content: isBlockSelected ? blockContent : blockId,
+          type: editBappId || "text",
+          content: isBlockSelected ? blockContent : `text:${blockId}`,
         }}
         editing
       />
