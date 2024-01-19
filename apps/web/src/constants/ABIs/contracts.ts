@@ -68,10 +68,3 @@ const DEFAULT_PAYMENT_TOKEN: DefaultPaymentContracts = {
 const COST_PER_BLOCK = 100 * 10 ** 6;
 
 export { CONTRACTS, DEFAULT_PAYMENT_TOKEN, COST_PER_BLOCK };
-
-/**  {BlockToken: {},
-    BlockSales: {},
-    BlockStore: {},
-    ProfileToken: {},
-    Hom3Vault: {},
-    Hom3ProfileToken:{} */

@@ -5,6 +5,7 @@ import deployProxy from "../deploy/deployers/deployProxy";
 import { deploymentArgumentStore } from "../deploy/deploymentModules";
 import { ChainName, tokenAddress } from "../bin/tokenAddress";
 import deployedContracts from "../bin/deployedAddress";
+import { Addressable } from "ethers";
 
 const taskId = "setupSales";
 const taskDescription = "Setup the sales contract";
@@ -12,9 +13,11 @@ const taskDescription = "Setup the sales contract";
 task(taskId, taskDescription).setAction(async (_args, hre) => {
   console.log(`🟠 [TASK] ${taskId} : Mounted`);
   const contractname = "BlockSales";
-  const [deployer, notThisDeployer, noreThisDeployer] =
+  const [notThisDeployer, noreThisDeployer, deployer] =
     await hre.ethers.getSigners();
-  const { name } = await hre.ethers.provider.getNetwork();
+  const name = (await hre.ethers.provider
+    .getNetwork()
+    .then((result) => result.name)) as ChainName;
 
   console.log(
     `🟠 [TASK] ${taskId} : Connecting to ${contractname} at ${deployedContracts[name]?.BlockSales}`
@@ -32,7 +35,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
 
   const profileContract = await hre.ethers.getContractAt(
     "Hom3Profile",
-    deployedContracts[name]?.Hom3Profile!,
+    deployedContracts[name]?.Hom3Profile! as Addressable,
     deployer
   );
   console.log(`🟠 [TASK] ${taskId} : Connected to Profile Contract`);
@@ -51,7 +54,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
 
   // Add the deposit contract to the profile
   const addDepositAddressTx = await profileContract.setDepositContractAddress(
-    deployedContracts[name].Hom3DepositVault
+    deployedContracts[name]?.Hom3DepositVault as Addressable
   );
   await addDepositAddressTx.wait();
   console.log(
@@ -74,12 +77,12 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   // Allow Hom3Profile to
   const paymentToken = await hre.ethers.getContractAt(
     "ERC20",
-    tokenAddress.usdc[name],
+    tokenAddress.usdc[name] as Addressable,
     deployer
   );
 
   const approvalTx = await paymentToken.approve(
-    deployedContracts[name].Hom3Profile,
+    deployedContracts[name]?.Hom3Profile as Addressable,
     1000 * 10 ** 6
   );
   await approvalTx.wait();

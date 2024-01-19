@@ -1,11 +1,13 @@
 "use client";
 
+import { writeContract } from '@wagmi/core';
 import { Button } from "components";
+import {CONTRACTS} from 'constants/ABIs/contracts';
 
 interface BuyButtonProps {
   purchasableBlocks: Map<string, object>;
   balance: any;
-  optimisedBlockIds?: ((string | undefined)[] | undefined)[];
+  optimisedBlockIds?: ((string | undefined)[][] | undefined)[];
   setBought: (bought: boolean) => void;
   bought: boolean;
 }
@@ -17,9 +19,18 @@ function BuyButton({
   setBought,
   bought,
 }: BuyButtonProps) {
-  function handleBuyButtonClick() {
+  async function handleBuyButtonClick() {
     setBought(true);
     console.log("blocks", optimisedBlockIds);
+
+    if(CONTRACTS?.maticMumbai?.BlockSales){
+      const { hash } = await writeContract({
+        address: CONTRACTS.maticMumbai.BlockSales.address,
+        abi: CONTRACTS.maticMumbai.BlockSales.abi,
+        functionName: 'claim',
+        args: [69],
+      })
+    }
   }
 
   //TODO remove bought placeholder

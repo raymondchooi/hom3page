@@ -23,9 +23,9 @@ export const ProfileTokenArguments = (
   const symbol_: string = "HOM3";
   const version_: string = "1";
 
-  const paymentToken_ = tokenAddress.usdc[networkName];
-  const ccipRouter_ = tokenAddress.ccipRouter[networkName];
-  const linkToken_ = tokenAddress.link[networkName];
+  const paymentToken_ = tokenAddress.usdc[networkName as ChainName];
+  const ccipRouter_ = tokenAddress.ccipRouter[networkName as ChainName];
+  const linkToken_ = tokenAddress.link[networkName as ChainName];
   const lensProtocolContract_ = "0x4fbffF20302F3326B20052ab9C217C44F6480900";
 
   return [

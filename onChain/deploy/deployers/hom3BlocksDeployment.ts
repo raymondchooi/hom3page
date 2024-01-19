@@ -99,7 +99,7 @@ export default async function deploy({
 
       const linkToken = await hre.ethers.getContractAt(
         "ERC20",
-        tokenAddress?.link[hre.network.name as ChainName]!,
+        tokenAddress?.link[hre.network.name as ChainName] as Addressable,
         deployer
       );
 
@@ -129,7 +129,7 @@ export default async function deploy({
 
       const linkToken = await hre.ethers.getContractAt(
         "ERC20",
-        tokenAddress?.link[hre.network.name as ChainName]!,
+        tokenAddress?.link[hre.network.name as ChainName] as Addressable,
         deployer
       );
 
@@ -160,7 +160,7 @@ export default async function deploy({
 
       const linkToken = await hre.ethers.getContractAt(
         "ERC20",
-        tokenAddress?.link[hre.network.name as ChainName]!,
+        tokenAddress?.link[hre.network.name as ChainName] as Addressable,
         deployer
       );
 
