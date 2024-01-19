@@ -24,10 +24,10 @@ const deployedContracts: {
     Hom3Profile: "",
   },
   maticMumbai: {
-    BlockToken: "0x5324B3dc5bDe8C3808A6399bD9Aaecd0Ce1a2Ee2",
-    BlockSales: "0xE1c53FC99bc9f8Ab65588C223C198DB9d831636D",
+    BlockToken: "0x589d42796cE957b5C79Cb2F9B7Efd5Ba3ECA02c6",
+    BlockSales: "0xAc254be48217973B47c83aC834e5AF59A1B461ff",
     BlockStore: "",
-    Hom3Profile: "0x656311E4EC298BfbfF45F8745E5D508Bee186A3B",
+    Hom3Profile: "0x656fF433f9C1453321B2A939308E633C2B02a6C8",
     Hom3Vault: "",
   },
 };

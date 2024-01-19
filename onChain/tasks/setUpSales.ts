@@ -3,7 +3,7 @@
 import { task } from "hardhat/config";
 import deployProxy from "../deploy/deployers/deployProxy";
 import { deploymentArgumentStore } from "../deploy/deploymentModules";
-import { ChainName } from "../bin/tokenAddress";
+import { ChainName, tokenAddress } from "../bin/tokenAddress";
 import deployedContracts from "../bin/deployedAddress";
 
 const taskId = "setupSales";
@@ -37,11 +37,17 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   );
   console.log(`🟠 [TASK] ${taskId} : Connected to Profile Contract`);
 
+  // set the profile address on Sales
   const setSalesOnProfile = await profileContract.setSalesContract(
-    deployedContracts[name]?.BlockSales!
+    salesContract.target
   );
   await setSalesOnProfile.wait();
   console.log(`🟠 [TASK] ${taskId} : Set Sales address on Profile`);
+
+  // Set the profile contract address
+  const tx1 = await salesContract.setProfileAddress(profileContract.target);
+  await tx1.wait();
+  console.log(`🟠 [TASK] ${taskId} : Set profile contract on Sales `);
 
   // Set the chain to accept messages
   const chainStateTx = await salesContract.setBlockStoreActive(chainId, true);
@@ -56,16 +62,24 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   await chainSaleAddressTx.wait();
   console.log(`🟠 [TASK] ${taskId} : Added Store to Chain allow`);
 
-  // Set the profile contract address
-  const tx1 = await salesContract.setProfileAddress(deployedContract.target);
-  await tx1.wait();
-  console.log(
-    `🟠 [TASK] ${taskId} : Set profile contract on Sales : ${deployedContract.target} to ${tx1.hash}`
+  // Allow Hom3Profile to
+  const paymentToken = await hre.ethers.getContractAt(
+    "ERC20",
+    tokenAddress.usdc[name],
+    deployer
   );
+
+  const approvalTx = await paymentToken.approve(
+    deployedContracts[name].Hom3Profile,
+    1000 * 10 ** 6
+  );
+  await approvalTx.wait();
+  console.log(`🟠 [TASK] ${taskId} : Approved USDC Spend`);
+
   // Buy a single Block
   const buySingleTx = await salesContract.buyBlock(1);
   await buySingleTx.wait();
-  console.log(`🟢 Bought Block No.1 : ${buySingleTx.hash}`);
+  console.log(`🟠 [TASK] ${taskId} : Bought Block No.1`);
 
   console.log(`🟢 [TASK] ${taskId} : Finished`);
 });

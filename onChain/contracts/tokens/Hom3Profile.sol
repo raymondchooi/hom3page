@@ -234,10 +234,10 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
         bool beenChecked
     ) internal onlyProfileOwner(profileId_) {
         if (!beenChecked) {
-            if (LENS_PROTOCOL.ownerOf(profileId_) != _msgSender())
+            if (LENS_PROTOCOL.ownerOf(lensProfileId_) != _msgSender())
                 revert AddressDoesNotOwnLensProfile();
 
-            if (_lensProfileLinked[lensProfileId_])
+            if (isLensProfileActive(lensProfileId_))
                 revert LensProfileAlreadyActive();
         }
 
@@ -278,6 +278,12 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
 
     function checkIfHasLensProfile(address user_) internal returns (bool) {
         return LENS_PROTOCOL.balanceOf(user_) > 0;
+    }
+
+    function isLensProfileActive(
+        uint256 lensProfileId_
+    ) public view returns (bool) {
+        return _lensProfileLinked[lensProfileId_];
     }
 
     /**  @dev   GETTERS         */
