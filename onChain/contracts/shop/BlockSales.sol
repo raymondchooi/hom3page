@@ -48,10 +48,10 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
      * @dev tokenIds_ need to be formatted as an array or arrays,
      *      with the blocks in arrays of their order.
      *      NO MORE than 10 tokens per buy, no moore than 5 sub arrays
-     * 
+     *
      *      Example
-     *          tokenIds_ = [[1,2,3],[21,22],[109],[]]
-     * 
+     *          tokenIds_ = [[1,2,3],[21,22],[109],[54]]
+     *
      * @param tokenIds_ embedded token ids
      * @param multiBuy_ if it is a single block or multi
      */
@@ -87,9 +87,13 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         }
     }
 
+    /**
+     * @param tokenIds_ the nested arrays of token Ids
+     * @param buyer_ address of the buyer
+     */
     function _buyBatchBlock(
         uint256[][] calldata tokenIds_,
-        address owner_
+        address buyer_
     ) internal {
         (uint totalOrder, uint index, uint numElements) = (
             0,
@@ -108,17 +112,17 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         }
 
         uint256 cost = COST_PER_BLOCK * (totalOrder);
-        require(PAYMENT_TOKEN.balanceOf(owner_) >= cost, "Insufficient Funds");
+        require(PAYMENT_TOKEN.balanceOf(buyer_) >= cost, "Insufficient Funds");
 
-        bool succsess = PAYMENT_TOKEN.transferFrom(owner_, address(this), cost);
+        bool succsess = PAYMENT_TOKEN.transferFrom(buyer_, address(this), cost);
         if (succsess) {
             for (uint i = 0; i < numElements; i++) {
                 for (uint x = 0; x < tokenIds_[i].length; x++)
-                    NFT.transferFrom(address(this), owner_, tokenIds_[i][x]);
+                    NFT.transferFrom(address(this), buyer_, tokenIds_[i][x]);
             }
             _totalSold += totalOrder;
-            _doProfileThing(owner_);
-            emit SaleMade(owner_, totalOrder, OP_CHAIN_SELECTOR);
+            _doProfileThing(buyer_);
+            emit SaleMade(buyer_, totalOrder, OP_CHAIN_SELECTOR);
         }
     }
 

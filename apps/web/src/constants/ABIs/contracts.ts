@@ -2,6 +2,8 @@ import BlockSalesABI from "./blockSales.abi.json";
 import BlockStoreABI from "./blockSales.abi.json";
 import BlockTokenABI from "./blockSales.abi.json";
 import HomeProfileABI from "./blockSales.abi.json";
+import ERC20ABI from "./erc20.abi.json";
+import ERC721Votes from "./ERC721Votes.abi.json";
 
 export type ChainName =
   | "eth"
@@ -65,6 +67,12 @@ const DEFAULT_PAYMENT_TOKEN: DefaultPaymentContracts = {
   maticMumbai: "0x52D800ca262522580CeBAD275395ca6e7598C014",
 };
 
+const GENERIC_ABI = {
+  ERC20: ERC20ABI,
+  ERC721: ERC721Votes,
+  ERC721Votes: ERC721Votes,
+};
+
 const COST_PER_BLOCK = 100 * 10 ** 6;
 
-export { CONTRACTS, DEFAULT_PAYMENT_TOKEN, COST_PER_BLOCK };
+export { CONTRACTS, DEFAULT_PAYMENT_TOKEN, COST_PER_BLOCK, GENERIC_ABI };

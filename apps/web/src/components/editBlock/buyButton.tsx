@@ -1,12 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { writeContract } from "@wagmi/core";
-import { useAccount, useBalance, sepolia } from "wagmi";
+import { writeContract, readContract } from "@wagmi/core";
+import { useAccount, useBalance, useNetwork } from "wagmi";
+import { sepolia, optimismGoerli, polygonMumbai } from "wagmi/chains";
+import { useModal } from "connectkit";
 
 import { Button, Loader } from "components";
 import { ErrorMessage } from "components/fieldset";
-import { CONTRACTS, COST_PER_BLOCK } from "constants/ABIs/contracts";
+import {
+  CONTRACTS,
+  COST_PER_BLOCK,
+  ChainName,
+  DEFAULT_PAYMENT_TOKEN,
+  GENERIC_ABI,
+} from "constants/ABIs/contracts";
 
 interface BuyButtonProps {
   purchasableBlocks: Map<string, object>;
@@ -23,39 +31,74 @@ function BuyButton({
 }: BuyButtonProps) {
   const { address } = useAccount();
   const balance = useBalance({ address, chainId: sepolia.id });
+  const { chain, chains } = useNetwork();
+  const { openSwitchNetworks } = useModal();
 
   const [loading, setLoading] = useState(false);
 
-  const isBalanceSufficient =
-    balance?.data?.formatted || 0 >= COST_PER_BLOCK * purchasableBlocks.size;
+  const blocksCost = COST_PER_BLOCK * purchasableBlocks.size;
+  const isBalanceSufficient = balance?.data?.formatted || 0 >= blocksCost;
 
   async function handleBuyButtonClick() {
     setLoading(true);
     setBought(true);
     console.log("blocks", optimisedBlockIds);
 
-    if (CONTRACTS?.maticMumbai?.BlockSales) {
-      await writeContract({
-        address: CONTRACTS.maticMumbai.BlockSales.address,
-        abi: CONTRACTS.maticMumbai.BlockSales.abi,
-        functionName: "allowance",
-        args: [],
-      })
+    // get network
+    const network: ChainName =
+      chain?.id === sepolia.id
+        ? "ethSepolia"
+        : chain?.id === polygonMumbai.id
+          ? "maticMumbai"
+          : "eth";
+    if (network !== "maticMumbai" && network !== "ethSepolia") {
+      openSwitchNetworks();
+    }
+      const cost = purchasableBlocks.size * COST_PER_BLOCK;
+    const saleContract =
+      CONTRACTS?[network]?[network == "maticMumbai" ? "BlockSales" : "BlockStore"];
+      
 
-      if (purchasableBlocks.size === 1 && optimisedBlockIds?.[0]?.[0]) {
-        const { hash } = await writeContract({
-          address: CONTRACTS.maticMumbai.BlockSales.address,
-          abi: CONTRACTS.maticMumbai.BlockSales.abi,
-          functionName: "buyBlock",
-          args: [optimisedBlockIds[0][0]],
-        })
-      } else {
-        const { hash } = await writeContract({
-          address: CONTRACTS.maticMumbai.BlockSales.address,
-          abi: CONTRACTS.maticMumbai.BlockSales.abi,
-          functionName: "buyBatchBlocks",
-          args: [optimisedBlockIds],
-        });
+    if (
+      CONTRACTS?.maticMumbai?.BlockSales &&
+      CONTRACTS?.ethSepolia?.BlockStore
+    ) {
+      const allowance = await readContract(
+        {
+          address: DEFAULT_PAYMENT_TOKEN[network],
+          abi: GENERIC_ABI.ERC20,
+          functionName: "allowance",
+          args: [address, saleContract.address],
+        },
+        null,
+      );
+      if (optimisedBlockIds?.[0]?.[0]) {
+        let purchaseReturn = {};
+        if (cost > allowance) {
+          // They need to add allowance
+          const addAllowance = await writeContract({
+          address: DEFAULT_PAYMENT_TOKEN[network],
+          abi: GENERIC_ABI.ERC20,
+          functionName: "approve",
+          args: [ saleContract.address,cost],
+          });
+          
+        }
+
+             //@ts-ignore
+          purchaseReturn = await writeContract(
+            {
+              address:saleContract.address,
+              abi: saleContract.abi,
+              functionName: "buyBlock",
+              args: [
+              optimisedBlockIds[0][0],
+              purchasableBlocks.size === 1 ? true : false,
+              ],
+            },
+            null,
+          );
+    
       }
     }
   }
