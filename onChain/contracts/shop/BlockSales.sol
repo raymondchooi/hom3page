@@ -197,6 +197,12 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         return messageId;
     }
 
+    /**   @notice HOM£PROFILE  */
+
+    function _needsProfile(address buyer_) internal view returns (bool) {
+        return _Hom3ProfileContract.balanceOf(buyer_) < 1;
+    }
+
     /**   @notice CHECKERS  */
 
     function _checkOwnershipOfBatch(
@@ -211,9 +217,7 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         return true;
     }
 
-    function _checkIfHasProfile(address buyer_)internal returns(bool){
-        
-    }
+    function _checkIfHasProfile(address buyer_) internal returns (bool) {}
 
     /** @notice GETTERS */
 

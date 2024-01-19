@@ -5,6 +5,11 @@ interface IHom3Profile {
     event ProfileCreated(address owner_, uint256 profileId_);
 
     error OneProfilePerAccount();
+    error AccountHasLensProfile();
+    error ProfileDoesNotHaveLensAssigned();
+    error LensProfileAlreadyActive();
+    error AddressDoesNotOwnLensProfile();
+    error OnlyBlockSalesEntry();
 
     function signUpAndCreateLens(address owner_) external;
 

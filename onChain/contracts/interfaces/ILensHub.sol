@@ -6,7 +6,7 @@ import "../helpers/LensTypes.sol";
 interface ILensHub {
     function createProfile(
         Types.CreateProfileParams calldata createProfileParams
-    ) external;
+    ) external returns (uint256);
 
     function post(
         Types.PostParams calldata postParams
