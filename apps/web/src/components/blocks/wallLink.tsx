@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import type { BlockData } from "models/BlockData";
 
@@ -11,17 +12,15 @@ function WallLink({ blockData }: WallLinkProps) {
     <Link
       href={blockData?.wallLink ?? "/"}
       aria-label={`Go to wall ${blockData?.wallLink ?? "home"}`}
-      className="grid h-full w-full grid-cols-3 grid-rows-3 border border-gray-700"
+      className="flex h-full w-full items-center justify-center border-gray-700"
     >
-      <div className="border border-gray-700"></div>
-      <div className="border border-gray-700"></div>
-      <div className="border border-gray-700"></div>
-      <div className="border border-gray-700"></div>
-      <div className="border border-gray-700"></div>
-      <div className="border border-gray-700"></div>
-      <div className="border border-gray-700"></div>
-      <div className="border border-gray-700"></div>
-      <div className="border border-gray-700"></div>
+      <Image
+        src={"/blocks/link.svg"}
+        alt="Wall link"
+        width={15}
+        height={15}
+        className="opacity-70"
+      />
     </Link>
   );
 }

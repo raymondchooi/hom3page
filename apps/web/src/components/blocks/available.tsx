@@ -33,10 +33,10 @@ function Available({ blockData }: AvailableProps) {
       >
         <Image
           className="opacity-70"
-          src="/logo_plain.jpg"
+          src="/logo_without_bg.png"
           alt="Hom3page Logo"
-          width={40}
-          height={40}
+          width={15}
+          height={15}
         />
       </button>
     </>
