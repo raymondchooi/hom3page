@@ -1,6 +1,11 @@
 /** @format */
 
-import { Addressable, Contract, Signer } from "ethers";
+import {
+  Addressable,
+  Contract,
+  ContractTransactionResponse,
+  Signer,
+} from "ethers";
 import delay from "../../scripts/helpers/delay";
 import verifyContractOnScan from "../../scripts/helpers/verifyOnScan";
 import { DeploymentProps } from "../../types/deploymentArguments";
@@ -67,7 +72,7 @@ export default async function deploy({
     if (contractName === "BlockSales") {
       const tokenContract = (await hre.ethers.getContractFactory("BlockToken"))
         .attach(prevDeployments[0].deployment!)
-        .connect(deployer);
+        .connect(deployer) as BlockToken;
 
       const tx = await tokenContract.mintAllBlocks(deployedContract.target);
       await tx.wait();

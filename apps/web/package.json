@@ -13,7 +13,6 @@
     "@headlessui/react": "next",
     "@heroicons/react": "^2.1.1",
     "@t3-oss/env-nextjs": "^0.7.1",
-    "@wagmi/core": "1.x",
     "@wagmi/core": "^2.3.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

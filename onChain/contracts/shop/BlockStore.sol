@@ -48,16 +48,26 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         _setAllowedAddress(SALES_CONTRACT_CHAIN, blockSalesContract_);
     }
 
+    /** @notice SALES MECHANICS */
     function buyBlock(
-        uint256 tokenId_
+        uint256[][] calldata tokenIds_,
+        bool multiBuy_
     ) external override nonReentrant is_active {
+        if (!multiBuy_) {
+            _buyBlock(tokenIds_[0][0], _msgSender());
+        } else {
+            _buyBatchBlock(tokenIds_, _msgSender());
+        }
+    }
+
+    function _buyBlock(uint256 tokenId_, address buyer_) internal {
         require(
-            PAYMENT_TOKEN.balanceOf(_msgSender()) > COST_PER_BLOCK,
+            PAYMENT_TOKEN.balanceOf(buyer_) > COST_PER_BLOCK,
             "Incorrect payment"
         );
 
         bool succsess = PAYMENT_TOKEN.transferFrom(
-            _msgSender(),
+            buyer_,
             address(this),
             COST_PER_BLOCK
         );
@@ -68,15 +78,16 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
                 uint256[][] memory order = new uint256[][](1);
                 order[0] = batch;
 
-                Sale memory saleData = Sale(order, 1, _msgSender(), false);
+                Sale memory saleData = Sale(order, 1, buyer_, false);
                 _startCrossChainPurchase(saleData);
             }
         }
     }
 
-    function buyBatchBlock(
-        uint256[][] calldata tokenIds_
-    ) external override nonReentrant is_active {
+    function _buyBatchBlock(
+        uint256[][] calldata tokenIds_,
+        address buyer_
+    ) internal {
         (uint totalOrder, uint index, uint numElements) = (
             0,
             0,
@@ -94,22 +105,10 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         }
 
         uint256 cost = COST_PER_BLOCK * (totalOrder);
-        require(
-            PAYMENT_TOKEN.balanceOf(_msgSender()) >= cost,
-            "Insufficient Funds"
-        );
-        bool succsess = PAYMENT_TOKEN.transferFrom(
-            _msgSender(),
-            address(this),
-            cost
-        );
+        require(PAYMENT_TOKEN.balanceOf(buyer_) >= cost, "Insufficient Funds");
+        bool succsess = PAYMENT_TOKEN.transferFrom(buyer_, address(this), cost);
         if (succsess) {
-            Sale memory saleData = Sale(
-                tokenIds_,
-                totalOrder,
-                _msgSender(),
-                true
-            );
+            Sale memory saleData = Sale(tokenIds_, totalOrder, buyer_, true);
             _startCrossChainPurchase(saleData);
         }
     }

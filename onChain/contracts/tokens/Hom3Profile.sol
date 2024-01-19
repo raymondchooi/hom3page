@@ -200,6 +200,7 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
             _depositContractAddress,
             newMessage
         );
+        emit NewMessageSent(_depositContractAddress, messageId);
     }
 
     function _sendMessage(

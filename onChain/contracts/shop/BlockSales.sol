@@ -43,35 +43,41 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
 
     /** @notice SALES MECHANICS */
     function buyBlock(
-        uint256 tokenId
+        uint256[][] calldata tokenIds_,
+        bool multiBuy_
     ) external override nonReentrant is_active {
-        address owner = _msgSender();
-        require(NFT.ownerOf(tokenId) == address(this), "Token not available");
+        multiBuy_
+            ? _buyBatchBlock(tokenIds_, _msgSender())
+            : _buyBlock(tokenIds_[0][0], _msgSender());
+    }
+
+    function _buyBlock(uint256 tokenId_, address buyer_) internal {
+        require(NFT.ownerOf(tokenId_) == address(this), "Token not available");
         require(
-            PAYMENT_TOKEN.balanceOf(owner) > COST_PER_BLOCK,
+            PAYMENT_TOKEN.balanceOf(buyer_) > COST_PER_BLOCK,
             "Incorrect payment"
         );
         bool succsess = PAYMENT_TOKEN.transferFrom(
-            owner,
+            buyer_,
             address(this),
             COST_PER_BLOCK
         );
         if (succsess) {
-            NFT.transferFrom(address(this), owner, tokenId);
+            NFT.transferFrom(address(this), buyer_, tokenId_);
             _totalSold++;
-            _doProfileThing(owner);
-            emit SaleMade(owner, 1, OP_CHAIN_SELECTOR);
+            _doProfileThing(buyer_);
+            emit SaleMade(buyer_, 1, OP_CHAIN_SELECTOR);
         }
     }
 
-    function buyBatchBlock(
-        uint256[][] calldata tokenIds_
-    ) external override nonReentrant is_active {
-        (uint totalOrder, uint index, uint numElements, address owner) = (
+    function _buyBatchBlock(
+        uint256[][] calldata tokenIds_,
+        address owner_
+    ) internal {
+        (uint totalOrder, uint index, uint numElements) = (
             0,
             0,
-            tokenIds_.length,
-            _msgSender()
+            tokenIds_.length
         );
 
         if (numElements > 5) revert ToManyElementsInBuyArray();
@@ -85,21 +91,17 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         }
 
         uint256 cost = COST_PER_BLOCK * (totalOrder);
-        require(PAYMENT_TOKEN.balanceOf(owner) >= cost, "Insufficient Funds");
+        require(PAYMENT_TOKEN.balanceOf(owner_) >= cost, "Insufficient Funds");
 
-        bool succsess = PAYMENT_TOKEN.transferFrom(owner, address(this), cost);
+        bool succsess = PAYMENT_TOKEN.transferFrom(owner_, address(this), cost);
         if (succsess) {
             for (uint i = 0; i < numElements; i++) {
                 for (uint x = 0; x < tokenIds_[i].length; x++)
-                    NFT.transferFrom(
-                        address(this),
-                        msg.sender,
-                        tokenIds_[i][x]
-                    );
+                    NFT.transferFrom(address(this), owner_, tokenIds_[i][x]);
             }
             _totalSold += totalOrder;
-            _doProfileThing(owner);
-            emit SaleMade(owner, totalOrder, OP_CHAIN_SELECTOR);
+            _doProfileThing(owner_);
+            emit SaleMade(owner_, totalOrder, OP_CHAIN_SELECTOR);
         }
     }
 

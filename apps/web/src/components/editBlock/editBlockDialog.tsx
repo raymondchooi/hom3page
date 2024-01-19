@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useAccount, useBalance, sepolia } from "wagmi";
+import { useAccount, sepolia } from "wagmi";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import { Button, BappEdit, BappCarousel } from "components";
@@ -32,7 +32,6 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   const editBlockParam = searchParams.get("editBlock");
 
   const { address } = useAccount();
-  const balance = useBalance({ address, chainId: sepolia.id });
 
   const [bought, setBought] = useState(false);
   const [selectedBlocksForEditing, setSelectedBlocksForEditing] = useState<
@@ -165,7 +164,6 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
               <div className="flex flex-col items-start">
                 <BuyButton
                   purchasableBlocks={purchasableBlocks}
-                  balance={balance}
                   optimisedBlockIds={optimisedBlockIds}
                   setBought={setBought}
                   bought={bought}

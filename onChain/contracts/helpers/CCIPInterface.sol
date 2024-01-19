@@ -9,6 +9,8 @@ import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interface
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
 abstract contract CCIPInterface is CCIPReceiver {
+    event NewMessageSent(address recipient_, bytes32 messageId_);
+
     error DEVELOPMENT_ERROR(string note_);
     //  Errors
     error MessageNotFromBlockSales(address contractTringToMessage_);

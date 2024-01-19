@@ -49,9 +49,7 @@ interface IBlockSales {
         bool failed;
     }
 
-    function buyBlock(uint256 tokenId) external;
-
-    function buyBatchBlock(uint256[][] calldata tokenIds_) external;
+    function buyBlock(uint256[][] calldata tokenId_, bool multiBuy_) external;
 
     function withdrawFunds() external;
 
