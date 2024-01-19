@@ -25,17 +25,25 @@ import type {
 
 export interface IHom3ProfileTokenInterface extends Interface {
   getFunction(
-    nameOrSignature: "assignLensProfile" | "mintProfile" | "signUpWithLens"
+    nameOrSignature:
+      | "_setLensProfile"
+      | "blockPurchaseMint"
+      | "signUpAndCreateLens"
+      | "signUpWithLens"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "ProfileCreated"): EventFragment;
 
   encodeFunctionData(
-    functionFragment: "assignLensProfile",
+    functionFragment: "_setLensProfile",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "mintProfile",
+    functionFragment: "blockPurchaseMint",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signUpAndCreateLens",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -44,11 +52,15 @@ export interface IHom3ProfileTokenInterface extends Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "assignLensProfile",
+    functionFragment: "_setLensProfile",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "mintProfile",
+    functionFragment: "blockPurchaseMint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signUpAndCreateLens",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -113,13 +125,23 @@ export interface IHom3ProfileToken extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  assignLensProfile: TypedContractMethod<
+  _setLensProfile: TypedContractMethod<
     [profileId_: BigNumberish, lensProfileId_: BigNumberish],
     [void],
     "nonpayable"
   >;
 
-  mintProfile: TypedContractMethod<[owner_: AddressLike], [void], "nonpayable">;
+  blockPurchaseMint: TypedContractMethod<
+    [owner_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  signUpAndCreateLens: TypedContractMethod<
+    [owner_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   signUpWithLens: TypedContractMethod<
     [owner_: AddressLike, lensProfileId_: BigNumberish],
@@ -132,14 +154,17 @@ export interface IHom3ProfileToken extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "assignLensProfile"
+    nameOrSignature: "_setLensProfile"
   ): TypedContractMethod<
     [profileId_: BigNumberish, lensProfileId_: BigNumberish],
     [void],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "mintProfile"
+    nameOrSignature: "blockPurchaseMint"
+  ): TypedContractMethod<[owner_: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "signUpAndCreateLens"
   ): TypedContractMethod<[owner_: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "signUpWithLens"

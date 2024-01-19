@@ -18,7 +18,7 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
 
     mapping(bytes32 => PastMessage) private _pastMessages;
 
-    modifier onlyProfileOwner(uint256 profileId_) {
+    modifier onlyProfileOwner(uint256 profileId_) virtual {
         if (!_checkSenderIsOwner(profileId_)) revert NotOwnerOfProfile();
         _;
     }

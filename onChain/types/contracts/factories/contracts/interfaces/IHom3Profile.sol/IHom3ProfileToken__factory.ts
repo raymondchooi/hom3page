@@ -11,11 +11,6 @@ import type {
 const _abi = [
   {
     inputs: [],
-    name: "NotOwnerOfProfile",
-    type: "error",
-  },
-  {
-    inputs: [],
     name: "OneProfilePerAccount",
     type: "error",
   },
@@ -51,7 +46,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "assignLensProfile",
+    name: "_setLensProfile",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -64,7 +59,20 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "mintProfile",
+    name: "blockPurchaseMint",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner_",
+        type: "address",
+      },
+    ],
+    name: "signUpAndCreateLens",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

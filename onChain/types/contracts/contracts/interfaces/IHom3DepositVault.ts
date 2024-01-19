@@ -24,12 +24,14 @@ import type {
 
 export interface IHom3DepositVaultInterface extends Interface {
   getFunction(
-    nameOrSignature: "depositFunds" | "getProfileDespoited" | "withdrawFunds"
+    nameOrSignature: "depositFunds" | "getProfileDeposits" | "withdrawFunds"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
       | "DepositedFunds"
+      | "DepositedFundsRequested"
+      | "EscrowBalanceToLow"
       | "WithdrewFunds"
       | "WithdrewFundsRequested"
   ): EventFragment;
@@ -39,7 +41,7 @@ export interface IHom3DepositVaultInterface extends Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getProfileDespoited",
+    functionFragment: "getProfileDeposits",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -52,7 +54,7 @@ export interface IHom3DepositVaultInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getProfileDespoited",
+    functionFragment: "getProfileDeposits",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -67,6 +69,41 @@ export namespace DepositedFundsEvent {
   export interface OutputObject {
     profileId_: bigint;
     amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DepositedFundsRequestedEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    profileId_: BigNumberish,
+    amount_: BigNumberish
+  ];
+  export type OutputTuple = [
+    messageId_: string,
+    profileId_: bigint,
+    amount_: bigint
+  ];
+  export interface OutputObject {
+    messageId_: string;
+    profileId_: bigint;
+    amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace EscrowBalanceToLowEvent {
+  export type InputTuple = [userProfile_: BigNumberish, messageId_: BytesLike];
+  export type OutputTuple = [userProfile_: bigint, messageId_: string];
+  export interface OutputObject {
+    userProfile_: bigint;
+    messageId_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -158,7 +195,7 @@ export interface IHom3DepositVault extends BaseContract {
     "nonpayable"
   >;
 
-  getProfileDespoited: TypedContractMethod<
+  getProfileDeposits: TypedContractMethod<
     [profileId_: BigNumberish],
     [bigint],
     "view"
@@ -182,7 +219,7 @@ export interface IHom3DepositVault extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "getProfileDespoited"
+    nameOrSignature: "getProfileDeposits"
   ): TypedContractMethod<[profileId_: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "withdrawFunds"
@@ -198,6 +235,20 @@ export interface IHom3DepositVault extends BaseContract {
     DepositedFundsEvent.InputTuple,
     DepositedFundsEvent.OutputTuple,
     DepositedFundsEvent.OutputObject
+  >;
+  getEvent(
+    key: "DepositedFundsRequested"
+  ): TypedContractEvent<
+    DepositedFundsRequestedEvent.InputTuple,
+    DepositedFundsRequestedEvent.OutputTuple,
+    DepositedFundsRequestedEvent.OutputObject
+  >;
+  getEvent(
+    key: "EscrowBalanceToLow"
+  ): TypedContractEvent<
+    EscrowBalanceToLowEvent.InputTuple,
+    EscrowBalanceToLowEvent.OutputTuple,
+    EscrowBalanceToLowEvent.OutputObject
   >;
   getEvent(
     key: "WithdrewFunds"
@@ -224,6 +275,28 @@ export interface IHom3DepositVault extends BaseContract {
       DepositedFundsEvent.InputTuple,
       DepositedFundsEvent.OutputTuple,
       DepositedFundsEvent.OutputObject
+    >;
+
+    "DepositedFundsRequested(bytes32,uint256,uint256)": TypedContractEvent<
+      DepositedFundsRequestedEvent.InputTuple,
+      DepositedFundsRequestedEvent.OutputTuple,
+      DepositedFundsRequestedEvent.OutputObject
+    >;
+    DepositedFundsRequested: TypedContractEvent<
+      DepositedFundsRequestedEvent.InputTuple,
+      DepositedFundsRequestedEvent.OutputTuple,
+      DepositedFundsRequestedEvent.OutputObject
+    >;
+
+    "EscrowBalanceToLow(uint256,bytes32)": TypedContractEvent<
+      EscrowBalanceToLowEvent.InputTuple,
+      EscrowBalanceToLowEvent.OutputTuple,
+      EscrowBalanceToLowEvent.OutputObject
+    >;
+    EscrowBalanceToLow: TypedContractEvent<
+      EscrowBalanceToLowEvent.InputTuple,
+      EscrowBalanceToLowEvent.OutputTuple,
+      EscrowBalanceToLowEvent.OutputObject
     >;
 
     "WithdrewFunds(uint256,uint256)": TypedContractEvent<

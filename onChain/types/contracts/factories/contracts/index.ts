@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as factory from "./factory";
+export * as helpers from "./helpers";
 export * as interfaces from "./interfaces";
 export * as security from "./security";
 export * as shop from "./shop";

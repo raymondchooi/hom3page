@@ -52,11 +52,12 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
             _escrow[profileId_] += amount_;
 
             Message memory newMessage = Message(
-                0x0,
-                profileId_,
-                amount_,
                 MessageActions.DEPOSIT,
-                Errors.NO_ERROR
+                Errors.NO_ERROR,
+                "",
+                UpdateMessage(profileId_, address(0), 0),
+                0x0,
+                amount_
             );
 
             bytes32 messageId = _sendMessage(
@@ -82,11 +83,12 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         _escrow[profileId_] += amount_;
 
         Message memory newMessage = Message(
-            0x0,
-            profileId_,
-            amount_,
             MessageActions.WITHDRAW,
-            Errors.NO_ERROR
+            Errors.NO_ERROR,
+            "",
+            UpdateMessage(profileId_, _msgSender(), amount_),
+            0x0,
+            amount_
         );
 
         bytes32 messageId = _sendMessage(
@@ -99,32 +101,32 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     }
 
     function _executeWithdrawal(Message memory message) internal {
-        if (_escrow[message.profileId_] < message.value_) {
+        if (_escrow[message.update_.profileId_] < message.value_) {
             emit EscrowBalanceToLow(
-                message.profileId_,
+                message.update_.profileId_,
                 message.returnMessageId_
             );
             return;
         }
 
-        _escrow[message.profileId_] -= message.value_;
+        _escrow[message.update_.profileId_] -= message.value_;
         _pastMessages[message.returnMessageId_].fullFilled_ = true;
 
         _transferTokens(
             address(this),
-            HOM3_PROFILE.ownerOf(message.profileId_),
+            HOM3_PROFILE.ownerOf(message.update_.profileId_),
             message.value_
         );
 
-        emit WithdrewFunds(message.profileId_, message.value_);
+        emit WithdrewFunds(message.update_.profileId_, message.value_);
     }
 
     function _executeDeposit(Message memory message) internal {
-        _escrow[message.profileId_] -= message.value_;
-        _deposit[message.profileId_] += message.value_;
+        _escrow[message.update_.profileId_] -= message.value_;
+        _deposit[message.update_.profileId_] += message.value_;
 
         _pastMessages[message.returnMessageId_].fullFilled_ = true;
-        emit DepositedFunds(message.profileId_, message.value_);
+        emit DepositedFunds(message.update_.profileId_, message.value_);
     }
 
     /**     @dev    CROSS CHAIN   */

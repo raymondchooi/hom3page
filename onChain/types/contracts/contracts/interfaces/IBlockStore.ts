@@ -89,6 +89,7 @@ export interface IBlockStoreInterface extends Interface {
       | "MessageSent"
       | "SaleFailed"
       | "SaleMade"
+      | "SaleSubmitted"
   ): EventFragment;
 
   encodeFunctionData(
@@ -227,6 +228,19 @@ export namespace SaleMadeEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace SaleSubmittedEvent {
+  export type InputTuple = [messageId_: BytesLike, buyer_: AddressLike];
+  export type OutputTuple = [messageId_: string, buyer_: string];
+  export interface OutputObject {
+    messageId_: string;
+    buyer_: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface IBlockStore extends BaseContract {
   connect(runner?: ContractRunner | null): IBlockStore;
   waitForDeployment(): Promise<this>;
@@ -344,6 +358,13 @@ export interface IBlockStore extends BaseContract {
     SaleMadeEvent.OutputTuple,
     SaleMadeEvent.OutputObject
   >;
+  getEvent(
+    key: "SaleSubmitted"
+  ): TypedContractEvent<
+    SaleSubmittedEvent.InputTuple,
+    SaleSubmittedEvent.OutputTuple,
+    SaleSubmittedEvent.OutputObject
+  >;
 
   filters: {
     "MessageReceived(bytes32,uint64,address,tuple)": TypedContractEvent<
@@ -388,6 +409,17 @@ export interface IBlockStore extends BaseContract {
       SaleMadeEvent.InputTuple,
       SaleMadeEvent.OutputTuple,
       SaleMadeEvent.OutputObject
+    >;
+
+    "SaleSubmitted(bytes32,address)": TypedContractEvent<
+      SaleSubmittedEvent.InputTuple,
+      SaleSubmittedEvent.OutputTuple,
+      SaleSubmittedEvent.OutputObject
+    >;
+    SaleSubmitted: TypedContractEvent<
+      SaleSubmittedEvent.InputTuple,
+      SaleSubmittedEvent.OutputTuple,
+      SaleSubmittedEvent.OutputObject
     >;
   };
 }

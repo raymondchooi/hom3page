@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as factory from "./factory";
 export type { factory };
+import type * as helpers from "./helpers";
+export type { helpers };
 import type * as interfaces from "./interfaces";
 export type { interfaces };
 import type * as security from "./security";

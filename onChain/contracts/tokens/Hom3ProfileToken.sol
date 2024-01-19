@@ -236,8 +236,7 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3ProfileToken {
             interfaceId == type(IVotes).interfaceId ||
             interfaceId == type(ERC721).interfaceId ||
             interfaceId == type(CCIPReceiver).interfaceId ||
-            interfaceId == type(Hom3Vault).interfaceId ||
-            super.supportsInterface(interfaceId);
+            interfaceId == type(Hom3Vault).interfaceId;
     }
 
     /**         @dev DEV FUNCTIONS */

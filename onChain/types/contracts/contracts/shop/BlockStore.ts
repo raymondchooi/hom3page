@@ -140,6 +140,7 @@ export interface BlockStoreInterface extends Interface {
       | "OwnershipTransferred"
       | "SaleFailed"
       | "SaleMade"
+      | "SaleSubmitted"
   ): EventFragment;
 
   encodeFunctionData(
@@ -402,6 +403,19 @@ export namespace SaleMadeEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace SaleSubmittedEvent {
+  export type InputTuple = [messageId_: BytesLike, buyer_: AddressLike];
+  export type OutputTuple = [messageId_: string, buyer_: string];
+  export interface OutputObject {
+    messageId_: string;
+    buyer_: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface BlockStore extends BaseContract {
   connect(runner?: ContractRunner | null): BlockStore;
   waitForDeployment(): Promise<this>;
@@ -632,6 +646,13 @@ export interface BlockStore extends BaseContract {
     SaleMadeEvent.OutputTuple,
     SaleMadeEvent.OutputObject
   >;
+  getEvent(
+    key: "SaleSubmitted"
+  ): TypedContractEvent<
+    SaleSubmittedEvent.InputTuple,
+    SaleSubmittedEvent.OutputTuple,
+    SaleSubmittedEvent.OutputObject
+  >;
 
   filters: {
     "ContractActiveStateChange(bool)": TypedContractEvent<
@@ -698,6 +719,17 @@ export interface BlockStore extends BaseContract {
       SaleMadeEvent.InputTuple,
       SaleMadeEvent.OutputTuple,
       SaleMadeEvent.OutputObject
+    >;
+
+    "SaleSubmitted(bytes32,address)": TypedContractEvent<
+      SaleSubmittedEvent.InputTuple,
+      SaleSubmittedEvent.OutputTuple,
+      SaleSubmittedEvent.OutputObject
+    >;
+    SaleSubmitted: TypedContractEvent<
+      SaleSubmittedEvent.InputTuple,
+      SaleSubmittedEvent.OutputTuple,
+      SaleSubmittedEvent.OutputObject
     >;
   };
 }

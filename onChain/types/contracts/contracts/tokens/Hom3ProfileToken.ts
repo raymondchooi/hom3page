@@ -23,17 +23,60 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
+export declare namespace Client {
+  export type EVMTokenAmountStruct = {
+    token: AddressLike;
+    amount: BigNumberish;
+  };
+
+  export type EVMTokenAmountStructOutput = [token: string, amount: bigint] & {
+    token: string;
+    amount: bigint;
+  };
+
+  export type Any2EVMMessageStruct = {
+    messageId: BytesLike;
+    sourceChainSelector: BigNumberish;
+    sender: BytesLike;
+    data: BytesLike;
+    destTokenAmounts: Client.EVMTokenAmountStruct[];
+  };
+
+  export type Any2EVMMessageStructOutput = [
+    messageId: string,
+    sourceChainSelector: bigint,
+    sender: string,
+    data: string,
+    destTokenAmounts: Client.EVMTokenAmountStructOutput[]
+  ] & {
+    messageId: string;
+    sourceChainSelector: bigint;
+    sender: string;
+    data: string;
+    destTokenAmounts: Client.EVMTokenAmountStructOutput[];
+  };
+}
+
 export interface Hom3ProfileTokenInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "BLOCK_CONTRACT"
       | "BUY_CAP"
       | "CLOCK_MODE"
       | "COST_PER_PROFILE"
+      | "DEPOSIT_CONTRACT_CHAIN"
+      | "ETH_CHAIN_SELECTOR"
+      | "HOM3_PROFILE"
       | "LENS_PROTOCOL"
+      | "MATIC_CHAIN_SELECTOR"
+      | "OP_CHAIN_SELECTOR"
       | "PAYMENT_TOKEN"
+      | "SALES_CONTRACT_CHAIN"
+      | "_setLensProfile"
       | "approve"
-      | "assignLensProfile"
       | "balanceOf"
+      | "blockPurchaseMint"
+      | "ccipReceive"
       | "clock"
       | "delegate"
       | "delegateBySig"
@@ -42,26 +85,35 @@ export interface Hom3ProfileTokenInterface extends Interface {
       | "getApproved"
       | "getPastTotalSupply"
       | "getPastVotes"
+      | "getProfilesBalance"
+      | "getRouter"
+      | "getSpendBalanceOfProfile"
       | "getTotalProfilesCreated"
       | "getVotes"
       | "isActive"
       | "isApprovedForAll"
-      | "mintProfile"
       | "name"
       | "nonces"
       | "owner"
       | "ownerOf"
+      | "removeSpend"
+      | "removeSpender"
       | "renounceOwnership"
       | "safeTransferFrom(address,address,uint256)"
       | "safeTransferFrom(address,address,uint256,bytes)"
       | "setActiveState"
       | "setApprovalForAll"
+      | "setSpend"
+      | "setSpender"
+      | "signUpAndCreateLens"
       | "signUpWithLens"
+      | "spend"
       | "supportsInterface"
       | "symbol"
       | "tokenURI"
       | "transferFrom"
       | "transferOwnership"
+      | "withdrawAllToDev"
   ): FunctionFragment;
 
   getEvent(
@@ -71,12 +123,25 @@ export interface Hom3ProfileTokenInterface extends Interface {
       | "ContractActiveStateChange"
       | "DelegateChanged"
       | "DelegateVotesChanged"
+      | "DepositedFunds"
+      | "DepositedFundsRequested"
       | "EIP712DomainChanged"
+      | "MessageReceived"
+      | "MessageSent"
       | "OwnershipTransferred"
       | "ProfileCreated"
+      | "SetSpendAllowance"
+      | "SetSpender"
+      | "SpendTriggered"
       | "Transfer"
+      | "WithdrewFunds"
+      | "WithdrewFundsRequested"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "BLOCK_CONTRACT",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "BUY_CAP", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "CLOCK_MODE",
@@ -87,7 +152,27 @@ export interface Hom3ProfileTokenInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "DEPOSIT_CONTRACT_CHAIN",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "HOM3_PROFILE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "LENS_PROTOCOL",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "OP_CHAIN_SELECTOR",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -95,16 +180,28 @@ export interface Hom3ProfileTokenInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "SALES_CONTRACT_CHAIN",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "_setLensProfile",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "approve",
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "assignLensProfile",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "balanceOf",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "blockPurchaseMint",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "ccipReceive",
+    values: [Client.Any2EVMMessageStruct]
   ): string;
   encodeFunctionData(functionFragment: "clock", values?: undefined): string;
   encodeFunctionData(
@@ -143,6 +240,15 @@ export interface Hom3ProfileTokenInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getProfilesBalance",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "getRouter", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getSpendBalanceOfProfile",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getTotalProfilesCreated",
     values?: undefined
   ): string;
@@ -155,15 +261,19 @@ export interface Hom3ProfileTokenInterface extends Interface {
     functionFragment: "isApprovedForAll",
     values: [AddressLike, AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "mintProfile",
-    values: [AddressLike]
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeSpend",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeSpender",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -187,8 +297,24 @@ export interface Hom3ProfileTokenInterface extends Interface {
     values: [AddressLike, boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "setSpend",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSpender",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signUpAndCreateLens",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "signUpWithLens",
     values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "spend",
+    values: [BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -207,7 +333,15 @@ export interface Hom3ProfileTokenInterface extends Interface {
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawAllToDev",
+    values?: undefined
+  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "BLOCK_CONTRACT",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "BUY_CAP", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "CLOCK_MODE", data: BytesLike): Result;
   decodeFunctionResult(
@@ -215,19 +349,51 @@ export interface Hom3ProfileTokenInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "DEPOSIT_CONTRACT_CHAIN",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "HOM3_PROFILE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "LENS_PROTOCOL",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "OP_CHAIN_SELECTOR",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "PAYMENT_TOKEN",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "assignLensProfile",
+    functionFragment: "SALES_CONTRACT_CHAIN",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "_setLensProfile",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "blockPurchaseMint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "ccipReceive",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "clock", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "delegate", data: BytesLike): Result;
   decodeFunctionResult(
@@ -252,6 +418,15 @@ export interface Hom3ProfileTokenInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getProfilesBalance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getRouter", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getSpendBalanceOfProfile",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getTotalProfilesCreated",
     data: BytesLike
   ): Result;
@@ -261,14 +436,18 @@ export interface Hom3ProfileTokenInterface extends Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintProfile",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeSpend",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeSpender",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -289,10 +468,17 @@ export interface Hom3ProfileTokenInterface extends Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setSpend", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setSpender", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "signUpAndCreateLens",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "signUpWithLens",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "spend", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -305,6 +491,10 @@ export interface Hom3ProfileTokenInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawAllToDev",
     data: BytesLike
   ): Result;
 }
@@ -405,10 +595,77 @@ export namespace DelegateVotesChangedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace DepositedFundsEvent {
+  export type InputTuple = [profileId_: BigNumberish, amount_: BigNumberish];
+  export type OutputTuple = [profileId_: bigint, amount_: bigint];
+  export interface OutputObject {
+    profileId_: bigint;
+    amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DepositedFundsRequestedEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    profileId_: BigNumberish,
+    amount_: BigNumberish
+  ];
+  export type OutputTuple = [
+    messageId_: string,
+    profileId_: bigint,
+    amount_: bigint
+  ];
+  export interface OutputObject {
+    messageId_: string;
+    profileId_: bigint;
+    amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace EIP712DomainChangedEvent {
   export type InputTuple = [];
   export type OutputTuple = [];
   export interface OutputObject {}
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace MessageReceivedEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    sourceChainId_: BigNumberish
+  ];
+  export type OutputTuple = [messageId_: string, sourceChainId_: bigint];
+  export interface OutputObject {
+    messageId_: string;
+    sourceChainId_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace MessageSentEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    destinationChain_: BigNumberish
+  ];
+  export type OutputTuple = [messageId_: string, destinationChain_: bigint];
+  export interface OutputObject {
+    messageId_: string;
+    destinationChain_: bigint;
+  }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
   export type Log = TypedEventLog<Event>;
@@ -441,6 +698,54 @@ export namespace ProfileCreatedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace SetSpendAllowanceEvent {
+  export type InputTuple = [profileId_: BigNumberish, amount_: BigNumberish];
+  export type OutputTuple = [profileId_: bigint, amount_: bigint];
+  export interface OutputObject {
+    profileId_: bigint;
+    amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SetSpenderEvent {
+  export type InputTuple = [profileId_: BigNumberish, spender_: BigNumberish];
+  export type OutputTuple = [profileId_: bigint, spender_: bigint];
+  export interface OutputObject {
+    profileId_: bigint;
+    spender_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SpendTriggeredEvent {
+  export type InputTuple = [
+    profileId_: BigNumberish,
+    spender_: BigNumberish,
+    amount_: BigNumberish
+  ];
+  export type OutputTuple = [
+    profileId_: bigint,
+    spender_: bigint,
+    amount_: bigint
+  ];
+  export interface OutputObject {
+    profileId_: bigint;
+    spender_: bigint;
+    amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace TransferEvent {
   export type InputTuple = [
     from: AddressLike,
@@ -452,6 +757,41 @@ export namespace TransferEvent {
     from: string;
     to: string;
     tokenId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace WithdrewFundsEvent {
+  export type InputTuple = [profileId_: BigNumberish, amount_: BigNumberish];
+  export type OutputTuple = [profileId_: bigint, amount_: bigint];
+  export interface OutputObject {
+    profileId_: bigint;
+    amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace WithdrewFundsRequestedEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    profileId_: BigNumberish,
+    amount_: BigNumberish
+  ];
+  export type OutputTuple = [
+    messageId_: string,
+    profileId_: bigint,
+    amount_: bigint
+  ];
+  export interface OutputObject {
+    messageId_: string;
+    profileId_: bigint;
+    amount_: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -502,15 +842,35 @@ export interface Hom3ProfileToken extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  BLOCK_CONTRACT: TypedContractMethod<[], [string], "view">;
+
   BUY_CAP: TypedContractMethod<[], [bigint], "view">;
 
   CLOCK_MODE: TypedContractMethod<[], [string], "view">;
 
   COST_PER_PROFILE: TypedContractMethod<[], [bigint], "view">;
 
+  DEPOSIT_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
+
+  ETH_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  HOM3_PROFILE: TypedContractMethod<[], [string], "view">;
+
   LENS_PROTOCOL: TypedContractMethod<[], [string], "view">;
 
+  MATIC_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  OP_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
   PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
+
+  SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
+
+  _setLensProfile: TypedContractMethod<
+    [profileId_: BigNumberish, lensProfileId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   approve: TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
@@ -518,13 +878,19 @@ export interface Hom3ProfileToken extends BaseContract {
     "nonpayable"
   >;
 
-  assignLensProfile: TypedContractMethod<
-    [profileId_: BigNumberish, lensProfileId_: BigNumberish],
+  balanceOf: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+
+  blockPurchaseMint: TypedContractMethod<
+    [owner_: AddressLike],
     [void],
     "nonpayable"
   >;
 
-  balanceOf: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+  ccipReceive: TypedContractMethod<
+    [message: Client.Any2EVMMessageStruct],
+    [void],
+    "nonpayable"
+  >;
 
   clock: TypedContractMethod<[], [bigint], "view">;
 
@@ -575,6 +941,20 @@ export interface Hom3ProfileToken extends BaseContract {
     "view"
   >;
 
+  getProfilesBalance: TypedContractMethod<
+    [profileId_: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
+  getRouter: TypedContractMethod<[], [string], "view">;
+
+  getSpendBalanceOfProfile: TypedContractMethod<
+    [profileId_: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
   getTotalProfilesCreated: TypedContractMethod<[], [bigint], "view">;
 
   getVotes: TypedContractMethod<[account: AddressLike], [bigint], "view">;
@@ -587,8 +967,6 @@ export interface Hom3ProfileToken extends BaseContract {
     "view"
   >;
 
-  mintProfile: TypedContractMethod<[owner_: AddressLike], [void], "nonpayable">;
-
   name: TypedContractMethod<[], [string], "view">;
 
   nonces: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
@@ -596,6 +974,18 @@ export interface Hom3ProfileToken extends BaseContract {
   owner: TypedContractMethod<[], [string], "view">;
 
   ownerOf: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+
+  removeSpend: TypedContractMethod<
+    [profileId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  removeSpender: TypedContractMethod<
+    [profileId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
@@ -628,8 +1018,37 @@ export interface Hom3ProfileToken extends BaseContract {
     "nonpayable"
   >;
 
+  setSpend: TypedContractMethod<
+    [profileId_: BigNumberish, amount_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  setSpender: TypedContractMethod<
+    [profileId_: BigNumberish, spender_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  signUpAndCreateLens: TypedContractMethod<
+    [owner_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   signUpWithLens: TypedContractMethod<
     [owner_: AddressLike, lensProfileId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  spend: TypedContractMethod<
+    [
+      profileId_: BigNumberish,
+      spender_: BigNumberish,
+      amount_: BigNumberish,
+      calldata_: BytesLike
+    ],
     [void],
     "nonpayable"
   >;
@@ -656,10 +1075,15 @@ export interface Hom3ProfileToken extends BaseContract {
     "nonpayable"
   >;
 
+  withdrawAllToDev: TypedContractMethod<[], [void], "nonpayable">;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "BLOCK_CONTRACT"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "BUY_CAP"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -670,11 +1094,36 @@ export interface Hom3ProfileToken extends BaseContract {
     nameOrSignature: "COST_PER_PROFILE"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "DEPOSIT_CONTRACT_CHAIN"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "ETH_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "HOM3_PROFILE"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "LENS_PROTOCOL"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "MATIC_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "OP_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "PAYMENT_TOKEN"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "SALES_CONTRACT_CHAIN"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "_setLensProfile"
+  ): TypedContractMethod<
+    [profileId_: BigNumberish, lensProfileId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "approve"
   ): TypedContractMethod<
@@ -683,15 +1132,18 @@ export interface Hom3ProfileToken extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "assignLensProfile"
+    nameOrSignature: "balanceOf"
+  ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "blockPurchaseMint"
+  ): TypedContractMethod<[owner_: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "ccipReceive"
   ): TypedContractMethod<
-    [profileId_: BigNumberish, lensProfileId_: BigNumberish],
+    [message: Client.Any2EVMMessageStruct],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "balanceOf"
-  ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "clock"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -746,6 +1198,15 @@ export interface Hom3ProfileToken extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "getProfilesBalance"
+  ): TypedContractMethod<[profileId_: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getRouter"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "getSpendBalanceOfProfile"
+  ): TypedContractMethod<[profileId_: BigNumberish], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getTotalProfilesCreated"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -762,9 +1223,6 @@ export interface Hom3ProfileToken extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "mintProfile"
-  ): TypedContractMethod<[owner_: AddressLike], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
@@ -776,6 +1234,12 @@ export interface Hom3ProfileToken extends BaseContract {
   getFunction(
     nameOrSignature: "ownerOf"
   ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "removeSpend"
+  ): TypedContractMethod<[profileId_: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeSpender"
+  ): TypedContractMethod<[profileId_: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
@@ -809,9 +1273,38 @@ export interface Hom3ProfileToken extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "setSpend"
+  ): TypedContractMethod<
+    [profileId_: BigNumberish, amount_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setSpender"
+  ): TypedContractMethod<
+    [profileId_: BigNumberish, spender_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "signUpAndCreateLens"
+  ): TypedContractMethod<[owner_: AddressLike], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "signUpWithLens"
   ): TypedContractMethod<
     [owner_: AddressLike, lensProfileId_: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "spend"
+  ): TypedContractMethod<
+    [
+      profileId_: BigNumberish,
+      spender_: BigNumberish,
+      amount_: BigNumberish,
+      calldata_: BytesLike
+    ],
     [void],
     "nonpayable"
   >;
@@ -834,6 +1327,9 @@ export interface Hom3ProfileToken extends BaseContract {
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawAllToDev"
+  ): TypedContractMethod<[], [void], "nonpayable">;
 
   getEvent(
     key: "Approval"
@@ -871,11 +1367,39 @@ export interface Hom3ProfileToken extends BaseContract {
     DelegateVotesChangedEvent.OutputObject
   >;
   getEvent(
+    key: "DepositedFunds"
+  ): TypedContractEvent<
+    DepositedFundsEvent.InputTuple,
+    DepositedFundsEvent.OutputTuple,
+    DepositedFundsEvent.OutputObject
+  >;
+  getEvent(
+    key: "DepositedFundsRequested"
+  ): TypedContractEvent<
+    DepositedFundsRequestedEvent.InputTuple,
+    DepositedFundsRequestedEvent.OutputTuple,
+    DepositedFundsRequestedEvent.OutputObject
+  >;
+  getEvent(
     key: "EIP712DomainChanged"
   ): TypedContractEvent<
     EIP712DomainChangedEvent.InputTuple,
     EIP712DomainChangedEvent.OutputTuple,
     EIP712DomainChangedEvent.OutputObject
+  >;
+  getEvent(
+    key: "MessageReceived"
+  ): TypedContractEvent<
+    MessageReceivedEvent.InputTuple,
+    MessageReceivedEvent.OutputTuple,
+    MessageReceivedEvent.OutputObject
+  >;
+  getEvent(
+    key: "MessageSent"
+  ): TypedContractEvent<
+    MessageSentEvent.InputTuple,
+    MessageSentEvent.OutputTuple,
+    MessageSentEvent.OutputObject
   >;
   getEvent(
     key: "OwnershipTransferred"
@@ -892,11 +1416,46 @@ export interface Hom3ProfileToken extends BaseContract {
     ProfileCreatedEvent.OutputObject
   >;
   getEvent(
+    key: "SetSpendAllowance"
+  ): TypedContractEvent<
+    SetSpendAllowanceEvent.InputTuple,
+    SetSpendAllowanceEvent.OutputTuple,
+    SetSpendAllowanceEvent.OutputObject
+  >;
+  getEvent(
+    key: "SetSpender"
+  ): TypedContractEvent<
+    SetSpenderEvent.InputTuple,
+    SetSpenderEvent.OutputTuple,
+    SetSpenderEvent.OutputObject
+  >;
+  getEvent(
+    key: "SpendTriggered"
+  ): TypedContractEvent<
+    SpendTriggeredEvent.InputTuple,
+    SpendTriggeredEvent.OutputTuple,
+    SpendTriggeredEvent.OutputObject
+  >;
+  getEvent(
     key: "Transfer"
   ): TypedContractEvent<
     TransferEvent.InputTuple,
     TransferEvent.OutputTuple,
     TransferEvent.OutputObject
+  >;
+  getEvent(
+    key: "WithdrewFunds"
+  ): TypedContractEvent<
+    WithdrewFundsEvent.InputTuple,
+    WithdrewFundsEvent.OutputTuple,
+    WithdrewFundsEvent.OutputObject
+  >;
+  getEvent(
+    key: "WithdrewFundsRequested"
+  ): TypedContractEvent<
+    WithdrewFundsRequestedEvent.InputTuple,
+    WithdrewFundsRequestedEvent.OutputTuple,
+    WithdrewFundsRequestedEvent.OutputObject
   >;
 
   filters: {
@@ -955,6 +1514,28 @@ export interface Hom3ProfileToken extends BaseContract {
       DelegateVotesChangedEvent.OutputObject
     >;
 
+    "DepositedFunds(uint256,uint256)": TypedContractEvent<
+      DepositedFundsEvent.InputTuple,
+      DepositedFundsEvent.OutputTuple,
+      DepositedFundsEvent.OutputObject
+    >;
+    DepositedFunds: TypedContractEvent<
+      DepositedFundsEvent.InputTuple,
+      DepositedFundsEvent.OutputTuple,
+      DepositedFundsEvent.OutputObject
+    >;
+
+    "DepositedFundsRequested(bytes32,uint256,uint256)": TypedContractEvent<
+      DepositedFundsRequestedEvent.InputTuple,
+      DepositedFundsRequestedEvent.OutputTuple,
+      DepositedFundsRequestedEvent.OutputObject
+    >;
+    DepositedFundsRequested: TypedContractEvent<
+      DepositedFundsRequestedEvent.InputTuple,
+      DepositedFundsRequestedEvent.OutputTuple,
+      DepositedFundsRequestedEvent.OutputObject
+    >;
+
     "EIP712DomainChanged()": TypedContractEvent<
       EIP712DomainChangedEvent.InputTuple,
       EIP712DomainChangedEvent.OutputTuple,
@@ -964,6 +1545,28 @@ export interface Hom3ProfileToken extends BaseContract {
       EIP712DomainChangedEvent.InputTuple,
       EIP712DomainChangedEvent.OutputTuple,
       EIP712DomainChangedEvent.OutputObject
+    >;
+
+    "MessageReceived(bytes32,uint64)": TypedContractEvent<
+      MessageReceivedEvent.InputTuple,
+      MessageReceivedEvent.OutputTuple,
+      MessageReceivedEvent.OutputObject
+    >;
+    MessageReceived: TypedContractEvent<
+      MessageReceivedEvent.InputTuple,
+      MessageReceivedEvent.OutputTuple,
+      MessageReceivedEvent.OutputObject
+    >;
+
+    "MessageSent(bytes32,uint64)": TypedContractEvent<
+      MessageSentEvent.InputTuple,
+      MessageSentEvent.OutputTuple,
+      MessageSentEvent.OutputObject
+    >;
+    MessageSent: TypedContractEvent<
+      MessageSentEvent.InputTuple,
+      MessageSentEvent.OutputTuple,
+      MessageSentEvent.OutputObject
     >;
 
     "OwnershipTransferred(address,address)": TypedContractEvent<
@@ -988,6 +1591,39 @@ export interface Hom3ProfileToken extends BaseContract {
       ProfileCreatedEvent.OutputObject
     >;
 
+    "SetSpendAllowance(uint256,uint256)": TypedContractEvent<
+      SetSpendAllowanceEvent.InputTuple,
+      SetSpendAllowanceEvent.OutputTuple,
+      SetSpendAllowanceEvent.OutputObject
+    >;
+    SetSpendAllowance: TypedContractEvent<
+      SetSpendAllowanceEvent.InputTuple,
+      SetSpendAllowanceEvent.OutputTuple,
+      SetSpendAllowanceEvent.OutputObject
+    >;
+
+    "SetSpender(uint256,uint256)": TypedContractEvent<
+      SetSpenderEvent.InputTuple,
+      SetSpenderEvent.OutputTuple,
+      SetSpenderEvent.OutputObject
+    >;
+    SetSpender: TypedContractEvent<
+      SetSpenderEvent.InputTuple,
+      SetSpenderEvent.OutputTuple,
+      SetSpenderEvent.OutputObject
+    >;
+
+    "SpendTriggered(uint256,uint256,uint256)": TypedContractEvent<
+      SpendTriggeredEvent.InputTuple,
+      SpendTriggeredEvent.OutputTuple,
+      SpendTriggeredEvent.OutputObject
+    >;
+    SpendTriggered: TypedContractEvent<
+      SpendTriggeredEvent.InputTuple,
+      SpendTriggeredEvent.OutputTuple,
+      SpendTriggeredEvent.OutputObject
+    >;
+
     "Transfer(address,address,uint256)": TypedContractEvent<
       TransferEvent.InputTuple,
       TransferEvent.OutputTuple,
@@ -997,6 +1633,28 @@ export interface Hom3ProfileToken extends BaseContract {
       TransferEvent.InputTuple,
       TransferEvent.OutputTuple,
       TransferEvent.OutputObject
+    >;
+
+    "WithdrewFunds(uint256,uint256)": TypedContractEvent<
+      WithdrewFundsEvent.InputTuple,
+      WithdrewFundsEvent.OutputTuple,
+      WithdrewFundsEvent.OutputObject
+    >;
+    WithdrewFunds: TypedContractEvent<
+      WithdrewFundsEvent.InputTuple,
+      WithdrewFundsEvent.OutputTuple,
+      WithdrewFundsEvent.OutputObject
+    >;
+
+    "WithdrewFundsRequested(bytes32,uint256,uint256)": TypedContractEvent<
+      WithdrewFundsRequestedEvent.InputTuple,
+      WithdrewFundsRequestedEvent.OutputTuple,
+      WithdrewFundsRequestedEvent.OutputObject
+    >;
+    WithdrewFundsRequested: TypedContractEvent<
+      WithdrewFundsRequestedEvent.InputTuple,
+      WithdrewFundsRequestedEvent.OutputTuple,
+      WithdrewFundsRequestedEvent.OutputObject
     >;
   };
 }

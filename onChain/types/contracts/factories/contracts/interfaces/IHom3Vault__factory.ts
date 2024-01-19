@@ -58,6 +58,31 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: "bytes32",
+        name: "messageId_",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "profileId_",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount_",
+        type: "uint256",
+      },
+    ],
+    name: "DepositedFundsRequested",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: "uint256",
         name: "profileId_",
         type: "uint256",
@@ -83,12 +108,37 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "address",
+        internalType: "uint256",
         name: "spender_",
-        type: "address",
+        type: "uint256",
       },
     ],
     name: "SetSpender",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "profileId_",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "spender_",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount_",
+        type: "uint256",
+      },
+    ],
+    name: "SpendTriggered",
     type: "event",
   },
   {
@@ -134,24 +184,6 @@ const _abi = [
     ],
     name: "WithdrewFundsRequested",
     type: "event",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "profileId_",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "amount_",
-        type: "uint256",
-      },
-    ],
-    name: "depositFunds",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
   },
   {
     inputs: [
@@ -243,9 +275,9 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "address",
+        internalType: "uint256",
         name: "spender_",
-        type: "address",
+        type: "uint256",
       },
     ],
     name: "setSpender",
@@ -262,6 +294,11 @@ const _abi = [
       },
       {
         internalType: "uint256",
+        name: "spender_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
         name: "amount_",
         type: "uint256",
       },
@@ -272,24 +309,6 @@ const _abi = [
       },
     ],
     name: "spend",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "profileId_",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "amount_",
-        type: "uint256",
-      },
-    ],
-    name: "withdrawFunds",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

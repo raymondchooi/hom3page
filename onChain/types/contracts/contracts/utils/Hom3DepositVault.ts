@@ -58,26 +58,41 @@ export declare namespace Client {
 }
 
 export declare namespace IVaultData {
-  export type MessageStruct = {
-    returnMessageId_: BytesLike;
+  export type UpdateMessageStruct = {
     profileId_: BigNumberish;
-    value_: BigNumberish;
+    owner_: AddressLike;
+    balance_: BigNumberish;
+  };
+
+  export type UpdateMessageStructOutput = [
+    profileId_: bigint,
+    owner_: string,
+    balance_: bigint
+  ] & { profileId_: bigint; owner_: string; balance_: bigint };
+
+  export type MessageStruct = {
     action_: BigNumberish;
     errors_: BigNumberish;
+    message_: string;
+    update_: IVaultData.UpdateMessageStruct;
+    returnMessageId_: BytesLike;
+    value_: BigNumberish;
   };
 
   export type MessageStructOutput = [
-    returnMessageId_: string,
-    profileId_: bigint,
-    value_: bigint,
     action_: bigint,
-    errors_: bigint
+    errors_: bigint,
+    message_: string,
+    update_: IVaultData.UpdateMessageStructOutput,
+    returnMessageId_: string,
+    value_: bigint
   ] & {
-    returnMessageId_: string;
-    profileId_: bigint;
-    value_: bigint;
     action_: bigint;
     errors_: bigint;
+    message_: string;
+    update_: IVaultData.UpdateMessageStructOutput;
+    returnMessageId_: string;
+    value_: bigint;
   };
 
   export type PastMessageStruct = {
@@ -104,7 +119,7 @@ export interface Hom3DepositVaultInterface extends Interface {
       | "ccipReceive"
       | "depositFunds"
       | "getMessage"
-      | "getProfileDespoited"
+      | "getProfileDeposits"
       | "getProfilesEscrowedBalance"
       | "getRouter"
       | "isActive"
@@ -121,6 +136,8 @@ export interface Hom3DepositVaultInterface extends Interface {
     nameOrSignatureOrTopic:
       | "ContractActiveStateChange"
       | "DepositedFunds"
+      | "DepositedFundsRequested"
+      | "EscrowBalanceToLow"
       | "MessageReceived"
       | "MessageSent"
       | "OwnershipTransferred"
@@ -169,7 +186,7 @@ export interface Hom3DepositVaultInterface extends Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "getProfileDespoited",
+    functionFragment: "getProfileDeposits",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -242,7 +259,7 @@ export interface Hom3DepositVaultInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "getMessage", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getProfileDespoited",
+    functionFragment: "getProfileDeposits",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -296,6 +313,41 @@ export namespace DepositedFundsEvent {
   export interface OutputObject {
     profileId_: bigint;
     amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DepositedFundsRequestedEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    profileId_: BigNumberish,
+    amount_: BigNumberish
+  ];
+  export type OutputTuple = [
+    messageId_: string,
+    profileId_: bigint,
+    amount_: bigint
+  ];
+  export interface OutputObject {
+    messageId_: string;
+    profileId_: bigint;
+    amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace EscrowBalanceToLowEvent {
+  export type InputTuple = [userProfile_: BigNumberish, messageId_: BytesLike];
+  export type OutputTuple = [userProfile_: bigint, messageId_: string];
+  export interface OutputObject {
+    userProfile_: bigint;
+    messageId_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -458,7 +510,7 @@ export interface Hom3DepositVault extends BaseContract {
     "view"
   >;
 
-  getProfileDespoited: TypedContractMethod<
+  getProfileDeposits: TypedContractMethod<
     [profileId_: BigNumberish],
     [bigint],
     "view"
@@ -551,7 +603,7 @@ export interface Hom3DepositVault extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "getProfileDespoited"
+    nameOrSignature: "getProfileDeposits"
   ): TypedContractMethod<[profileId_: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "getProfilesEscrowedBalance"
@@ -601,6 +653,20 @@ export interface Hom3DepositVault extends BaseContract {
     DepositedFundsEvent.InputTuple,
     DepositedFundsEvent.OutputTuple,
     DepositedFundsEvent.OutputObject
+  >;
+  getEvent(
+    key: "DepositedFundsRequested"
+  ): TypedContractEvent<
+    DepositedFundsRequestedEvent.InputTuple,
+    DepositedFundsRequestedEvent.OutputTuple,
+    DepositedFundsRequestedEvent.OutputObject
+  >;
+  getEvent(
+    key: "EscrowBalanceToLow"
+  ): TypedContractEvent<
+    EscrowBalanceToLowEvent.InputTuple,
+    EscrowBalanceToLowEvent.OutputTuple,
+    EscrowBalanceToLowEvent.OutputObject
   >;
   getEvent(
     key: "MessageReceived"
@@ -659,6 +725,28 @@ export interface Hom3DepositVault extends BaseContract {
       DepositedFundsEvent.InputTuple,
       DepositedFundsEvent.OutputTuple,
       DepositedFundsEvent.OutputObject
+    >;
+
+    "DepositedFundsRequested(bytes32,uint256,uint256)": TypedContractEvent<
+      DepositedFundsRequestedEvent.InputTuple,
+      DepositedFundsRequestedEvent.OutputTuple,
+      DepositedFundsRequestedEvent.OutputObject
+    >;
+    DepositedFundsRequested: TypedContractEvent<
+      DepositedFundsRequestedEvent.InputTuple,
+      DepositedFundsRequestedEvent.OutputTuple,
+      DepositedFundsRequestedEvent.OutputObject
+    >;
+
+    "EscrowBalanceToLow(uint256,bytes32)": TypedContractEvent<
+      EscrowBalanceToLowEvent.InputTuple,
+      EscrowBalanceToLowEvent.OutputTuple,
+      EscrowBalanceToLowEvent.OutputObject
+    >;
+    EscrowBalanceToLow: TypedContractEvent<
+      EscrowBalanceToLowEvent.InputTuple,
+      EscrowBalanceToLowEvent.OutputTuple,
+      EscrowBalanceToLowEvent.OutputObject
     >;
 
     "MessageReceived(bytes32,uint64)": TypedContractEvent<

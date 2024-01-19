@@ -18,9 +18,9 @@ import type {
   TypedEventLog,
   TypedLogDescription,
   TypedListener,
-} from "../../common";
+} from "../../../common";
 
-export interface IVaultDataInterface extends Interface {
+export interface Hom3PageMessagingInterface extends Interface {
   getEvent(
     nameOrSignatureOrTopic:
       | "DepositedFunds"
@@ -100,11 +100,11 @@ export namespace WithdrewFundsRequestedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface IVaultData extends BaseContract {
-  connect(runner?: ContractRunner | null): IVaultData;
+export interface Hom3PageMessaging extends BaseContract {
+  connect(runner?: ContractRunner | null): Hom3PageMessaging;
   waitForDeployment(): Promise<this>;
 
-  interface: IVaultDataInterface;
+  interface: Hom3PageMessagingInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,

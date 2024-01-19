@@ -60,11 +60,12 @@ export declare namespace Client {
 export interface Hom3VaultInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "ETH_CHAIN_SELECTOR"
       | "HOM3_PROFILE"
-      | "LINK_TOKEN"
-      | "PAYMENT_TOKEN"
+      | "MATIC_CHAIN_SELECTOR"
+      | "OP_CHAIN_SELECTOR"
+      | "SALES_CONTRACT_CHAIN"
       | "ccipReceive"
-      | "depositFunds"
       | "getProfilesBalance"
       | "getRouter"
       | "getSpendBalanceOfProfile"
@@ -79,40 +80,46 @@ export interface Hom3VaultInterface extends Interface {
       | "spend"
       | "supportsInterface"
       | "transferOwnership"
-      | "withdrawAllToDev"
-      | "withdrawFunds"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
       | "ContractActiveStateChange"
       | "DepositedFunds"
+      | "DepositedFundsRequested"
+      | "MessageReceived"
+      | "MessageSent"
       | "OwnershipTransferred"
       | "SetSpendAllowance"
       | "SetSpender"
+      | "SpendTriggered"
       | "WithdrewFunds"
       | "WithdrewFundsRequested"
   ): EventFragment;
 
   encodeFunctionData(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "HOM3_PROFILE",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "LINK_TOKEN",
+    functionFragment: "MATIC_CHAIN_SELECTOR",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "PAYMENT_TOKEN",
+    functionFragment: "OP_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SALES_CONTRACT_CHAIN",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "ccipReceive",
     values: [Client.Any2EVMMessageStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "depositFunds",
-    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getProfilesBalance",
@@ -147,11 +154,11 @@ export interface Hom3VaultInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setSpender",
-    values: [BigNumberish, AddressLike]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "spend",
-    values: [BigNumberish, BigNumberish, BytesLike]
+    values: [BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -161,30 +168,29 @@ export interface Hom3VaultInterface extends Interface {
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawAllToDev",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawFunds",
-    values: [BigNumberish, BigNumberish]
-  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "HOM3_PROFILE",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "LINK_TOKEN", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "PAYMENT_TOKEN",
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "OP_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SALES_CONTRACT_CHAIN",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "ccipReceive",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "depositFunds",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -225,14 +231,6 @@ export interface Hom3VaultInterface extends Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawAllToDev",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawFunds",
-    data: BytesLike
-  ): Result;
 }
 
 export namespace ContractActiveStateChangeEvent {
@@ -253,6 +251,60 @@ export namespace DepositedFundsEvent {
   export interface OutputObject {
     profileId_: bigint;
     amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DepositedFundsRequestedEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    profileId_: BigNumberish,
+    amount_: BigNumberish
+  ];
+  export type OutputTuple = [
+    messageId_: string,
+    profileId_: bigint,
+    amount_: bigint
+  ];
+  export interface OutputObject {
+    messageId_: string;
+    profileId_: bigint;
+    amount_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace MessageReceivedEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    sourceChainId_: BigNumberish
+  ];
+  export type OutputTuple = [messageId_: string, sourceChainId_: bigint];
+  export interface OutputObject {
+    messageId_: string;
+    sourceChainId_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace MessageSentEvent {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    destinationChain_: BigNumberish
+  ];
+  export type OutputTuple = [messageId_: string, destinationChain_: bigint];
+  export interface OutputObject {
+    messageId_: string;
+    destinationChain_: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -287,11 +339,33 @@ export namespace SetSpendAllowanceEvent {
 }
 
 export namespace SetSpenderEvent {
-  export type InputTuple = [profileId_: BigNumberish, spender_: AddressLike];
-  export type OutputTuple = [profileId_: bigint, spender_: string];
+  export type InputTuple = [profileId_: BigNumberish, spender_: BigNumberish];
+  export type OutputTuple = [profileId_: bigint, spender_: bigint];
   export interface OutputObject {
     profileId_: bigint;
-    spender_: string;
+    spender_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SpendTriggeredEvent {
+  export type InputTuple = [
+    profileId_: BigNumberish,
+    spender_: BigNumberish,
+    amount_: BigNumberish
+  ];
+  export type OutputTuple = [
+    profileId_: bigint,
+    spender_: bigint,
+    amount_: bigint
+  ];
+  export interface OutputObject {
+    profileId_: bigint;
+    spender_: bigint;
+    amount_: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -377,20 +451,18 @@ export interface Hom3Vault extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  ETH_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
   HOM3_PROFILE: TypedContractMethod<[], [string], "view">;
 
-  LINK_TOKEN: TypedContractMethod<[], [string], "view">;
+  MATIC_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
 
-  PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
+  OP_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
 
   ccipReceive: TypedContractMethod<
     [message: Client.Any2EVMMessageStruct],
-    [void],
-    "nonpayable"
-  >;
-
-  depositFunds: TypedContractMethod<
-    [profileId_: BigNumberish, amount_: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -440,13 +512,18 @@ export interface Hom3Vault extends BaseContract {
   >;
 
   setSpender: TypedContractMethod<
-    [profileId_: BigNumberish, spender_: AddressLike],
+    [profileId_: BigNumberish, spender_: BigNumberish],
     [void],
     "nonpayable"
   >;
 
   spend: TypedContractMethod<
-    [profileId_: BigNumberish, amount_: BigNumberish, calldata_: BytesLike],
+    [
+      profileId_: BigNumberish,
+      spender_: BigNumberish,
+      amount_: BigNumberish,
+      calldata_: BytesLike
+    ],
     [void],
     "nonpayable"
   >;
@@ -463,38 +540,29 @@ export interface Hom3Vault extends BaseContract {
     "nonpayable"
   >;
 
-  withdrawAllToDev: TypedContractMethod<[], [void], "nonpayable">;
-
-  withdrawFunds: TypedContractMethod<
-    [profileId_: BigNumberish, amount_: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
+    nameOrSignature: "ETH_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "HOM3_PROFILE"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "LINK_TOKEN"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "MATIC_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "PAYMENT_TOKEN"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "OP_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "SALES_CONTRACT_CHAIN"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "ccipReceive"
   ): TypedContractMethod<
     [message: Client.Any2EVMMessageStruct],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "depositFunds"
-  ): TypedContractMethod<
-    [profileId_: BigNumberish, amount_: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -535,14 +603,19 @@ export interface Hom3Vault extends BaseContract {
   getFunction(
     nameOrSignature: "setSpender"
   ): TypedContractMethod<
-    [profileId_: BigNumberish, spender_: AddressLike],
+    [profileId_: BigNumberish, spender_: BigNumberish],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "spend"
   ): TypedContractMethod<
-    [profileId_: BigNumberish, amount_: BigNumberish, calldata_: BytesLike],
+    [
+      profileId_: BigNumberish,
+      spender_: BigNumberish,
+      amount_: BigNumberish,
+      calldata_: BytesLike
+    ],
     [void],
     "nonpayable"
   >;
@@ -552,16 +625,6 @@ export interface Hom3Vault extends BaseContract {
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "withdrawAllToDev"
-  ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "withdrawFunds"
-  ): TypedContractMethod<
-    [profileId_: BigNumberish, amount_: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
 
   getEvent(
     key: "ContractActiveStateChange"
@@ -576,6 +639,27 @@ export interface Hom3Vault extends BaseContract {
     DepositedFundsEvent.InputTuple,
     DepositedFundsEvent.OutputTuple,
     DepositedFundsEvent.OutputObject
+  >;
+  getEvent(
+    key: "DepositedFundsRequested"
+  ): TypedContractEvent<
+    DepositedFundsRequestedEvent.InputTuple,
+    DepositedFundsRequestedEvent.OutputTuple,
+    DepositedFundsRequestedEvent.OutputObject
+  >;
+  getEvent(
+    key: "MessageReceived"
+  ): TypedContractEvent<
+    MessageReceivedEvent.InputTuple,
+    MessageReceivedEvent.OutputTuple,
+    MessageReceivedEvent.OutputObject
+  >;
+  getEvent(
+    key: "MessageSent"
+  ): TypedContractEvent<
+    MessageSentEvent.InputTuple,
+    MessageSentEvent.OutputTuple,
+    MessageSentEvent.OutputObject
   >;
   getEvent(
     key: "OwnershipTransferred"
@@ -597,6 +681,13 @@ export interface Hom3Vault extends BaseContract {
     SetSpenderEvent.InputTuple,
     SetSpenderEvent.OutputTuple,
     SetSpenderEvent.OutputObject
+  >;
+  getEvent(
+    key: "SpendTriggered"
+  ): TypedContractEvent<
+    SpendTriggeredEvent.InputTuple,
+    SpendTriggeredEvent.OutputTuple,
+    SpendTriggeredEvent.OutputObject
   >;
   getEvent(
     key: "WithdrewFunds"
@@ -636,6 +727,39 @@ export interface Hom3Vault extends BaseContract {
       DepositedFundsEvent.OutputObject
     >;
 
+    "DepositedFundsRequested(bytes32,uint256,uint256)": TypedContractEvent<
+      DepositedFundsRequestedEvent.InputTuple,
+      DepositedFundsRequestedEvent.OutputTuple,
+      DepositedFundsRequestedEvent.OutputObject
+    >;
+    DepositedFundsRequested: TypedContractEvent<
+      DepositedFundsRequestedEvent.InputTuple,
+      DepositedFundsRequestedEvent.OutputTuple,
+      DepositedFundsRequestedEvent.OutputObject
+    >;
+
+    "MessageReceived(bytes32,uint64)": TypedContractEvent<
+      MessageReceivedEvent.InputTuple,
+      MessageReceivedEvent.OutputTuple,
+      MessageReceivedEvent.OutputObject
+    >;
+    MessageReceived: TypedContractEvent<
+      MessageReceivedEvent.InputTuple,
+      MessageReceivedEvent.OutputTuple,
+      MessageReceivedEvent.OutputObject
+    >;
+
+    "MessageSent(bytes32,uint64)": TypedContractEvent<
+      MessageSentEvent.InputTuple,
+      MessageSentEvent.OutputTuple,
+      MessageSentEvent.OutputObject
+    >;
+    MessageSent: TypedContractEvent<
+      MessageSentEvent.InputTuple,
+      MessageSentEvent.OutputTuple,
+      MessageSentEvent.OutputObject
+    >;
+
     "OwnershipTransferred(address,address)": TypedContractEvent<
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
@@ -658,7 +782,7 @@ export interface Hom3Vault extends BaseContract {
       SetSpendAllowanceEvent.OutputObject
     >;
 
-    "SetSpender(uint256,address)": TypedContractEvent<
+    "SetSpender(uint256,uint256)": TypedContractEvent<
       SetSpenderEvent.InputTuple,
       SetSpenderEvent.OutputTuple,
       SetSpenderEvent.OutputObject
@@ -667,6 +791,17 @@ export interface Hom3Vault extends BaseContract {
       SetSpenderEvent.InputTuple,
       SetSpenderEvent.OutputTuple,
       SetSpenderEvent.OutputObject
+    >;
+
+    "SpendTriggered(uint256,uint256,uint256)": TypedContractEvent<
+      SpendTriggeredEvent.InputTuple,
+      SpendTriggeredEvent.OutputTuple,
+      SpendTriggeredEvent.OutputObject
+    >;
+    SpendTriggered: TypedContractEvent<
+      SpendTriggeredEvent.InputTuple,
+      SpendTriggeredEvent.OutputTuple,
+      SpendTriggeredEvent.OutputObject
     >;
 
     "WithdrewFunds(uint256,uint256)": TypedContractEvent<

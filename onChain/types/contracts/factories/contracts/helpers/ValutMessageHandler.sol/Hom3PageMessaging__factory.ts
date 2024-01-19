@@ -4,9 +4,9 @@
 
 import { Contract, Interface, type ContractRunner } from "ethers";
 import type {
-  IHom3DepositVault,
-  IHom3DepositVaultInterface,
-} from "../../../contracts/interfaces/IHom3DepositVault";
+  Hom3PageMessaging,
+  Hom3PageMessagingInterface,
+} from "../../../../contracts/helpers/ValutMessageHandler.sol/Hom3PageMessaging";
 
 const _abi = [
   {
@@ -74,25 +74,6 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "userProfile_",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "bytes32",
-        name: "messageId_",
-        type: "bytes32",
-      },
-    ],
-    name: "EscrowBalanceToLow",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint256",
         name: "profileId_",
         type: "uint256",
       },
@@ -131,72 +112,17 @@ const _abi = [
     name: "WithdrewFundsRequested",
     type: "event",
   },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "profileId_",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "amount_",
-        type: "uint256",
-      },
-    ],
-    name: "depositFunds",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "profileId_",
-        type: "uint256",
-      },
-    ],
-    name: "getProfileDeposits",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "profileId_",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "amount_",
-        type: "uint256",
-      },
-    ],
-    name: "withdrawFunds",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
 ] as const;
 
-export class IHom3DepositVault__factory {
+export class Hom3PageMessaging__factory {
   static readonly abi = _abi;
-  static createInterface(): IHom3DepositVaultInterface {
-    return new Interface(_abi) as IHom3DepositVaultInterface;
+  static createInterface(): Hom3PageMessagingInterface {
+    return new Interface(_abi) as Hom3PageMessagingInterface;
   }
   static connect(
     address: string,
     runner?: ContractRunner | null
-  ): IHom3DepositVault {
-    return new Contract(address, _abi, runner) as unknown as IHom3DepositVault;
+  ): Hom3PageMessaging {
+    return new Contract(address, _abi, runner) as unknown as Hom3PageMessaging;
   }
 }

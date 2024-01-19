@@ -182,6 +182,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.WallGenerator__factory>;
     getContractFactory(
+      name: "CCIPInterface",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.CCIPInterface__factory>;
+    getContractFactory(
+      name: "Hom3PageMessaging",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Hom3PageMessaging__factory>;
+    getContractFactory(
       name: "IBlockSales",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IBlockSales__factory>;
@@ -489,6 +497,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.WallGenerator>;
     getContractAt(
+      name: "CCIPInterface",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CCIPInterface>;
+    getContractAt(
+      name: "Hom3PageMessaging",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Hom3PageMessaging>;
+    getContractAt(
       name: "IBlockSales",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -778,6 +796,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.WallGenerator>;
     deployContract(
+      name: "CCIPInterface",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.CCIPInterface>;
+    deployContract(
+      name: "Hom3PageMessaging",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Hom3PageMessaging>;
+    deployContract(
       name: "IBlockSales",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IBlockSales>;
@@ -1084,6 +1110,16 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.WallGenerator>;
+    deployContract(
+      name: "CCIPInterface",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.CCIPInterface>;
+    deployContract(
+      name: "Hom3PageMessaging",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Hom3PageMessaging>;
     deployContract(
       name: "IBlockSales",
       args: any[],

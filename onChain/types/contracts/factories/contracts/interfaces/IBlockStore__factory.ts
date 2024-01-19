@@ -183,6 +183,25 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "messageId_",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "buyer_",
+        type: "address",
+      },
+    ],
+    name: "SaleSubmitted",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "uint256[][]",
