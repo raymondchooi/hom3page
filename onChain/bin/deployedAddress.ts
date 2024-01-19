@@ -14,7 +14,7 @@ const deployedContracts: {
   },
   ethSepolia: {
     BlockToken: "",
-    BlockStore: "0xe16C5C0f5E2A80727Ad9149E148653c1b9bbF92E",
+    BlockStore: "0x94dEa8d83c4a1aFF7cc37E9E45A627C41C0b8d88",
     Hom3ProfileToken: "",
     Hom3DepositVault: "",
   },
@@ -24,8 +24,8 @@ const deployedContracts: {
     Hom3ProfileToken: "",
   },
   maticMumbai: {
-    BlockToken: "0x08a41fe84A22bf962559886A0c0957fc7E84af4D",
-    BlockSales: "0xd569f2D569C7439c869208B533436c1F6474c397",
+    BlockToken: "0xfc2897eaFDD649441c5061EBb80FB9a771C9b5Fa",
+    BlockSales: "0xD6aE33cb1Bd308b7b56A9Dc52B457F69D3d1aaa4",
     BlockStore: "",
     Hom3ProfileToken: "",
     Hom3Vault: "",

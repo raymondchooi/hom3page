@@ -55,7 +55,7 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         address ghoTokenAddress_,
         address blockSalesContract_,
         address linkToken_
-    ) CCIPInterface(router_, linkToken_) Ownable(msg.sender) {
+    ) CCIPInterface(linkToken_, router_) Ownable(msg.sender) {
         PAYMENT_TOKEN = IGhoToken(ghoTokenAddress_);
         _salesContractAddress = blockSalesContract_;
     }
@@ -137,11 +137,6 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         _saleRecipes[messageId] = SaleStore(saleData_, messageId, false, false);
     }
 
-    /// @notice Sends data to receiver on the destination chain.
-    /// @dev Assumes your contract has sufficient Native Token.
-    /// @param destinationChainSelector_ The identifier (aka selector) for the destination blockchain.
-    /// @param evm2AnyMessage The string text to be sent.
-    /// @return messageId The ID of the message that was sent.
     function _sendMessage(
         uint64 destinationChainSelector_,
         Client.EVM2AnyMessage memory evm2AnyMessage

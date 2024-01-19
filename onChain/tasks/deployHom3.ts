@@ -17,7 +17,8 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
 
   const delayTime = 30000;
   const network = await hre.ethers.provider.getNetwork();
-  const [notThisDeployer, noreThisDeployer, deployer] = await hre.ethers.getSigners();
+  const [deployer, notThisDeployer, noreThisDeployer] =
+    await hre.ethers.getSigners();
 
   console.log(`🟠 [TASK] ${taskId} : Connected as ${deployer.address}`);
 

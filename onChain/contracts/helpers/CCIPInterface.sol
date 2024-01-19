@@ -35,7 +35,7 @@ abstract contract CCIPInterface is CCIPReceiver {
     uint256 constant SALES_RECIPE_GAS = 500_000;
     uint256 constant SALES_ORDER_GAS = 2_000_000;
 
-    IRouterClient private _router;
+    IRouterClient internal _router;
     LinkTokenInterface internal _linkToken;
 
     bool private _useLinkAsPayment = false;
@@ -69,7 +69,6 @@ abstract contract CCIPInterface is CCIPReceiver {
         bytes memory payload_,
         uint256 gasFee_
     ) internal view returns (Client.EVM2AnyMessage memory) {
-        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         return
             Client.EVM2AnyMessage({
                 receiver: abi.encode(receiver_), // ABI-encoded receiver address
