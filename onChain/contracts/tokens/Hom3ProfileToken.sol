@@ -3,12 +3,15 @@ pragma solidity ^0.8.20;
 
 import "../interfaces/IHom3Profile.sol";
 import {OnlyActive, Ownable, Context} from "../security/onlyActive.sol";
-import {ERC721, ERC721Votes} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Votes.sol";
+import {ERC721Votes, ERC721} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Votes.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IVotes} from "@openzeppelin/contracts/governance/utils/IVotes.sol";
 
 import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
-contract Hom3ProfileToken is ERC721Votes, OnlyActive, IHom3ProfileToken {
+import {Hom3Vault, CCIPReceiver} from "../utils/Hom3Vault.sol";
+
+contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3ProfileToken {
     IERC20 public immutable PAYMENT_TOKEN;
     address public immutable LENS_PROTOCOL;
     uint256 public constant COST_PER_PROFILE = 100 * 10 ** 6; // USD
@@ -22,13 +25,21 @@ contract Hom3ProfileToken is ERC721Votes, OnlyActive, IHom3ProfileToken {
         string memory symbol_,
         string memory version_,
         address paymentToken_,
-        address lensProtocol_
-    ) ERC721(name_, symbol_) EIP712(name_, version_) Ownable(msg.sender) {
+        address lensProtocol_,
+        address ccipRouter_,
+        address linkToken_,
+        address lensProtocolContract_
+    )
+        Hom3Vault(address(this), ccipRouter_, linkToken_)
+        ERC721(name_, symbol_)
+        EIP712(name_, version_)
+        Ownable(msg.sender)
+    {
         PAYMENT_TOKEN = IERC20(paymentToken_);
-        LENS_PROTOCOL = 0x4fbffF20302F3326B20052ab9C217C44F6480900;
+        LENS_PROTOCOL = lensProtocolContract_;
     }
 
-    modifier onlyProfileOwner(uint256 profileId_) {
+    modifier onlyProfileOwner(uint256 profileId_) override {
         if (_ownerOf(profileId_) != _msgSender()) revert NotOwnerOfProfile();
         _;
     }
@@ -58,7 +69,7 @@ contract Hom3ProfileToken is ERC721Votes, OnlyActive, IHom3ProfileToken {
         super.safeTransferFrom(from_, to_, tokenId_, data_);
     }
 
-    function mintProfile(
+    function signUpAndCreateLens(
         address owner_
     ) external override is_active onlyOnePerWallet(owner_) {
         require(
@@ -136,5 +147,13 @@ contract Hom3ProfileToken is ERC721Votes, OnlyActive, IHom3ProfileToken {
 
     function getTotalProfilesCreated() external view returns (uint256) {
         return _profilesMinted;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public pure virtual override(ERC721, CCIPReceiver) returns (bool) {
+        return
+            interfaceId == type(IVotes).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 }
