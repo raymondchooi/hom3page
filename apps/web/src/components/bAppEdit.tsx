@@ -24,7 +24,7 @@ function BappEdit({ onSave, bAppId, onChange }: BappEdit) {
       return <EditText onSave={handleSave} onChange={handleValueChange} />;
     if (bAppId === "image")
       return <EditImage onSave={handleSave} onChange={handleValueChange} />;
-    return <></>;
+    return <EditText onSave={handleSave} onChange={handleValueChange} />;
   }
   return (
     <div className="flex w-full flex-col justify-center">

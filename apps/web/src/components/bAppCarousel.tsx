@@ -17,63 +17,53 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
       opts={{
         align: "start",
       }}
-      className="mt-2 w-full"
+      className="relative mt-3 w-full max-w-3xl"
     >
-      <CarouselContent>
+      <CarouselContent className="-ml-4">
         <CarouselItem className="basis-1/3">
-          <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-            <BappSummary
-              id="text"
-              title="Text"
-              description="Add text to your block"
-              image="/logo_plain.jpg"
-              onClick={onBappClick}
-            />
-          </div>
+          <BappSummary
+            id="text"
+            title="Text"
+            description="Add text to your block"
+            image="/blocks/text.svg"
+            onClick={onBappClick}
+          />
         </CarouselItem>
         <CarouselItem className="basis-1/3">
-          <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-            <BappSummary
-              id="image"
-              title="Image"
-              description="Add an image to your block"
-              image="/logo_plain.jpg"
-              onClick={onBappClick}
-            />
-          </div>
+          <BappSummary
+            id="image"
+            title="Image"
+            description="Add an image to your block"
+            image="/blocks/image.svg"
+            onClick={onBappClick}
+          />
         </CarouselItem>
         <CarouselItem className="basis-1/3">
-          <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-            <BappSummary
-              id="3"
-              title="Text2"
-              description="Add text2 to your block"
-              image="/logo_plain.jpg"
-              onClick={onBappClick}
-            />
-          </div>
+          <BappSummary
+            id="aave-faucet"
+            title="Aave faucet"
+            description="Get free assets to test Aave"
+            image="/faucet.svg"
+            onClick={onBappClick}
+          />
         </CarouselItem>
         <CarouselItem className="basis-1/3">
-          <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-            <BappSummary
-              id="4"
-              title="Text3"
-              description="Add text3 to your block"
-              image="/logo_plain.jpg"
-              onClick={onBappClick}
-            />
-          </div>
+          <BappSummary
+            id="gho"
+            title="GHO"
+            description="Deposit and borrow GHO"
+            image="/aave.svg"
+            onClick={onBappClick}
+          />
         </CarouselItem>
         <CarouselItem className="basis-1/3">
-          <div className="flex cursor-pointer items-start justify-start rounded-lg border border-gray-200 p-2">
-            <BappSummary
-              id="5"
-              title="Text4"
-              description="Add text4 to your block"
-              image="/logo_plain.jpg"
-              onClick={onBappClick}
-            />
-          </div>
+          <BappSummary
+            id="nft-slider"
+            title="NFT Slider"
+            description="Display your NFTs on a slider"
+            image="/slider.svg"
+            onClick={onBappClick}
+          />
         </CarouselItem>
       </CarouselContent>
     </Carousel>
