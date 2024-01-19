@@ -8,41 +8,13 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "../security/onlyActive.sol";
 import "../interfaces/IBlockSales.sol";
 import {IGhoToken} from "../interfaces/IGhoToken.sol";
+import "../helpers/CCIPInterface.sol";
 
-import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
-import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
-
-contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
+contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
     IERC721 public immutable NFT;
     IERC20 public immutable PAYMENT_TOKEN;
-    IRouterClient private s_router;
-    LinkTokenInterface private s_linkToken;
-
-    //  Cross Chain endpoints
-    uint64 constant OP_CHAIN_SELECTOR = 2664363617261496610;
-    uint64 constant ETH_CHAIN_SELECTOR = 16015286601757825753;
-    uint64 constant MATIC_CHAIN_SELECTOR = 12532609583862916517;
 
     mapping(uint64 => address) private _saleStores;
-    mapping(uint64 => bool) private _chainAllowed;
-
-    //  Errors
-    error MessageNotFromBlockSales(address contractTringToMessage_);
-    error MessageNotFromSalesChain(uint64 chainMessageOriginated);
-    error NotBlockSalesContract();
-    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to m
-    error DEVELOPMENT_ERROR(string note_);
-
-    modifier onlyAllowlisted(uint64 _sourceChainSelector, address _sender) {
-        if (!_chainAllowed[_sourceChainSelector])
-            revert MessageNotFromSalesChain(_sourceChainSelector);
-        if (_saleStores[_sourceChainSelector] != _sender)
-            revert MessageNotFromBlockSales(_sender);
-        _;
-    }
 
     //  Sales
     uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 6; // USD
@@ -55,11 +27,9 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         address paymentToken_,
         address ccipRouter_,
         address linkToken_
-    ) CCIPReceiver(ccipRouter_) Ownable(msg.sender) {
-        s_router = IRouterClient(ccipRouter_);
+    ) CCIPInterface(linkToken_, ccipRouter_) Ownable(msg.sender) {
         NFT = IERC721(NFTAddress_);
         PAYMENT_TOKEN = IERC20(paymentToken_);
-        s_linkToken = LinkTokenInterface(linkToken_);
     }
 
     fallback() external payable {}
@@ -194,7 +164,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     function testSendMessage() external onlyOwner {
         bytes32 message_ = 0x0;
         SaleRecipe memory recipe_ = SaleRecipe(message_, true);
-        _returnSalesError(recipe_, MATIC_CHAIN_SELECTOR, address(0));
+        _returnSalesError(recipe_, SALES_CONTRACT_CHAIN, address(0));
     }
 
     function _returnSalesError(
@@ -203,23 +173,13 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         address buyer_
     ) internal returns (bytes32 messageId) {
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(
+        Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
             _saleStores[chainId_],
-            recipe_,
-            address(0)
+            abi.encode(recipe_),
+            SALES_RECIPE_GAS
         );
-
-        // Initialize a router client instance to interact with cross-chain router
-        IRouterClient router = IRouterClient(this.getRouter());
-
-        // Get the fee required to send the CCIP message
-        uint256 fees = router.getFee(chainId_, evm2AnyMessage);
-
-        if (fees > address(this).balance)
-            revert NotEnoughBalance(address(this).balance, fees);
-
         // Send the CCIP message through the router and store the returned CCIP message ID
-        messageId = router.ccipSend{value: fees}(chainId_, evm2AnyMessage);
+        messageId = _sendMessage(chainId_, evm2AnyMessage);
 
         // Emit an event saying message failed
         emit SaleFailed(chainId_, recipe_.salesMessageId_);
@@ -229,29 +189,16 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     }
 
     /// @notice Construct a CCIP message.
-    /// @dev This function will create an EVM2AnyMessage struct with all the necessary information for sending a text.
-    /// @param receiver_ The address of the receiver.
-    /// @param payload_ The string data to be sent.
-    /// @param feeTokenAddress_ The address of the token used for fees. Set address(0) for native gas.
-    /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
-    function _buildCCIPMessage(
-        address receiver_,
-        SaleRecipe memory payload_,
-        address feeTokenAddress_
-    ) internal pure returns (Client.EVM2AnyMessage memory) {
-        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        return
-            Client.EVM2AnyMessage({
-                receiver: abi.encode(receiver_), // ABI-encoded receiver address
-                data: abi.encode(payload_),
-                tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
-                extraArgs: Client._argsToBytes(
-                    // Additional arguments, setting gas limit
-                    Client.EVMExtraArgsV1({gasLimit: 200_000})
-                ),
-                // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
-                feeToken: feeTokenAddress_
-            });
+    function _sendMessage(
+        uint64 destinationChainSelector_,
+        Client.EVM2AnyMessage memory evm2AnyMessage
+    ) internal returns (bytes32) {
+        // Get the fee required to send the CCIP message
+        (bytes32 messageId, uint256 fees) = _sendTX(
+            destinationChainSelector_,
+            evm2AnyMessage
+        );
+        return messageId;
     }
 
     /** @notice WITHDRAWING MECHANICS */
@@ -273,9 +220,8 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     }
 
     function withdrawLink() external onlyOwner {
-        IERC20 token = IERC20(address(s_linkToken));
-        uint balance = token.balanceOf(address(this));
-        token.transfer(_msgSender(), balance);
+        uint linkBalance = _linkToken.balanceOf(address(this));
+        _linkToken.transfer(_msgSender(), linkBalance);
     }
 
     function _checkOwnershipOfBatch(
@@ -310,7 +256,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
         uint64 chainId_,
         address contractAddress_
     ) public onlyOwner {
-        _saleStores[chainId_] = contractAddress_;
+        _setAllowedAddress(chainId_, contractAddress_);
     }
 
     /**
@@ -319,7 +265,7 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
      * @param flag_ wether to be active or not
      */
     function setBlockStoreActive(uint64 chainId_, bool flag_) public onlyOwner {
-        _chainAllowed[chainId_] = flag_;
+        _setChainsActivity(chainId_, flag_);
     }
 
     function getChainBlockStore(uint64 chainId_) public view returns (address) {
@@ -327,9 +273,9 @@ contract BlockSales is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockSales {
     }
 
     function withdrawAllToDev() external {
-        IERC20 link = IERC20(address(s_linkToken));
-        uint linkBalance = link.balanceOf(address(this));
-        link.transfer(_msgSender(), linkBalance);
+        uint linkBalance = _linkToken.balanceOf(address(this));
+        _linkToken.transfer(_msgSender(), linkBalance);
+
         uint256 ethBalance = address(this).balance;
         (bool sent, bytes memory data) = _msgSender().call{value: ethBalance}(
             ""

@@ -30,22 +30,6 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
 
     mapping(bytes32 => SaleStore) _saleRecipes;
 
-    modifier onlySalesContract(address sender_, uint64 chain_) {
-        if (sender_ != _salesContractAddress)
-            revert MessageNotFromBlockSales(sender_);
-        if (chain_ != SALES_CONTRACT_CHAIN)
-            revert MessageNotFromSalesChain(chain_);
-        _;
-    }
-
-    /*    
-    error DEVELOPMENT_ERROR(string note_);
-    //  Errors
-    error MessageNotFromBlockSales(address contractTringToMessage_);
-    error MessageNotFromSalesChain(uint64 chainMessageOriginated);
-    error NotBlockSalesContract();
-    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees);
- */
     fallback() external payable {}
 
     receive() external payable {}
@@ -58,6 +42,8 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
     ) CCIPInterface(linkToken_, router_) Ownable(msg.sender) {
         PAYMENT_TOKEN = IGhoToken(ghoTokenAddress_);
         _salesContractAddress = blockSalesContract_;
+        _setChainsActivity(SALES_CONTRACT_CHAIN, true);
+        _setAllowedAddress(SALES_CONTRACT_CHAIN, blockSalesContract_);
     }
 
     function buyBlock(
@@ -137,6 +123,8 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         _saleRecipes[messageId] = SaleStore(saleData_, messageId, false, false);
     }
 
+    /**   @notice CCIP  */
+
     function _sendMessage(
         uint64 destinationChainSelector_,
         Client.EVM2AnyMessage memory evm2AnyMessage
@@ -155,9 +143,9 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
     )
         internal
         override
-        onlySalesContract(
-            abi.decode(any2EvmMessage.sender, (address)),
-            any2EvmMessage.sourceChainSelector
+        onlyAllowlisted(
+            any2EvmMessage.sourceChainSelector,
+            abi.decode(any2EvmMessage.sender, (address))
         )
     {
         bytes32 messageId = any2EvmMessage.messageId; // fetch the messageId
@@ -184,6 +172,8 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         }
     }
 
+    /**   @notice GETTERS  */
+
     function getBlockCost() public pure returns (uint256) {
         return COST_PER_BLOCK;
     }
@@ -195,6 +185,40 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
     function getSalesContractAddress() external view returns (address) {
         return _salesContractAddress;
     }
+
+    function getSaleStatus(
+        bytes32 saleId_
+    ) external view override returns (SaleStore memory) {
+        return _saleRecipes[saleId_];
+    }
+
+    /**   @notice SETTERS  */
+    /**
+     * @notice Adds a BlockStore contract to the allow message
+     * @param chainId_ ccip chain id
+     * @param contractAddress_ address of the BlockStore contracts
+     */
+    function setBlockStore(
+        uint64 chainId_,
+        address contractAddress_
+    ) public onlyOwner {
+        _setAllowedAddress(chainId_, contractAddress_);
+    }
+
+    /**
+     * @notice switch the allow of a ccip chain
+     * @param chainId_ chain id to effect
+     * @param flag_ wether to be active or not
+     */
+    function setBlockStoreActive(uint64 chainId_, bool flag_) public onlyOwner {
+        _setChainsActivity(chainId_, flag_);
+    }
+
+    function setSalesContract(address newAddress_) external onlyOwner {
+        _salesContractAddress = newAddress_;
+    }
+
+    /**   @notice WITHDRAWING  */
 
     function withdrawTokens(address tokenAddress_) external override onlyOwner {
         IERC20 token = IERC20(tokenAddress_);
@@ -208,17 +232,7 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         require(sent, "Failed to send Ether");
     }
 
-    function getSaleStatus(
-        bytes32 saleId_
-    ) external view override returns (SaleStore memory) {
-        return _saleRecipes[saleId_];
-    }
-
-    function setSalesContract(address newAddress_) external onlyOwner {
-        _salesContractAddress = newAddress_;
-    }
-
-    function removeLink() external onlyOwner {
+    function withdrawLink() external onlyOwner {
         uint linkBalance = _linkToken.balanceOf(address(this));
         _linkToken.transfer(_msgSender(), linkBalance);
     }
