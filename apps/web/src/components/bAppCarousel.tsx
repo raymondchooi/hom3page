@@ -43,7 +43,7 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
             id="aave-faucet"
             title="Aave faucet"
             description="Get free assets to test Aave"
-            image="/faucet.svg"
+            image="/blocks/faucet.svg"
             onClick={onBappClick}
           />
         </CarouselItem>
@@ -52,7 +52,7 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
             id="gho"
             title="GHO"
             description="Deposit and borrow GHO"
-            image="/aave.svg"
+            image="/blocks/aave.svg"
             onClick={onBappClick}
           />
         </CarouselItem>
@@ -61,7 +61,7 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
             id="nft-slider"
             title="NFT Slider"
             description="Display your NFTs on a slider"
-            image="/slider.svg"
+            image="/blocks/slider.svg"
             onClick={onBappClick}
           />
         </CarouselItem>

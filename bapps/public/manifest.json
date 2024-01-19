@@ -1,6 +1,11 @@
 {
   "name": "Hom3page",
   "short_name": "Hom3page",
+  "theme_color": "#4ade80",
+  "background_color": "#09090b",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -12,8 +17,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  ]
 }
