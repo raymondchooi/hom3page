@@ -131,6 +131,7 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
                     payload.tokens_[0][0]
                 );
                 _totalSold++;
+                _doProfileThing(payload.buyer_);
                 emit SaleMade(payload.buyer_, 1, chainId);
             }
         } else {
@@ -157,6 +158,7 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
                             );
                         }
                 }
+                _doProfileThing(payload.buyer_);
                 _totalSold += totalOrder;
                 emit SaleMade(payload.buyer_, totalOrder, chainId);
             }
