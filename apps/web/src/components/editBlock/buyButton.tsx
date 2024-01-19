@@ -9,9 +9,11 @@ import { useModal } from "connectkit";
 import { Button, Loader } from "components";
 import { ErrorMessage } from "components/fieldset";
 import {
+  AddressAndAbi,
   CONTRACTS,
   COST_PER_BLOCK,
   ChainName,
+  ContractStore,
   DEFAULT_PAYMENT_TOKEN,
   GENERIC_ABI,
 } from "constants/ABIs/contracts";
@@ -54,51 +56,57 @@ function BuyButton({
     if (network !== "maticMumbai" && network !== "ethSepolia") {
       openSwitchNetworks();
     }
-      const cost = purchasableBlocks.size * COST_PER_BLOCK;
-    const saleContract =
-      CONTRACTS?[network]?[network == "maticMumbai" ? "BlockSales" : "BlockStore"];
-      
+    const cost = purchasableBlocks.size * COST_PER_BLOCK;
+    const saleContract: AddressAndAbi = CONTRACTS?.[network]?.[
+      network === "maticMumbai" ? "BlockSales" : "BlockStore"
+    ] as AddressAndAbi;
 
     if (
       CONTRACTS?.maticMumbai?.BlockSales &&
       CONTRACTS?.ethSepolia?.BlockStore
     ) {
+      // get the allowance of teh contract of the payment token
       const allowance = await readContract(
         {
           address: DEFAULT_PAYMENT_TOKEN[network],
           abi: GENERIC_ABI.ERC20,
           functionName: "allowance",
-          args: [address, saleContract.address],
+          args: [address, saleContract?.address],
         },
         null,
       );
       if (optimisedBlockIds?.[0]?.[0]) {
-        let purchaseReturn = {};
+        // Check allowance covers payment
         if (cost > allowance) {
-          // They need to add allowance
+          // They need to add allowanceaaaaaa
+          // Approve the send to the sales contracts
           const addAllowance = await writeContract({
-          address: DEFAULT_PAYMENT_TOKEN[network],
-          abi: GENERIC_ABI.ERC20,
-          functionName: "approve",
-          args: [ saleContract.address,cost],
+            address: DEFAULT_PAYMENT_TOKEN[network],
+            abi: GENERIC_ABI.ERC20,
+            functionName: "approve",
+            args: [saleContract.address, cost],
           });
-          
         }
 
-             //@ts-ignore
-          purchaseReturn = await writeContract(
-            {
-              address:saleContract.address,
-              abi: saleContract.abi,
-              functionName: "buyBlock",
-              args: [
+        //  Send the purchase
+        const purchaseReturn = await writeContract(
+          {
+            address: saleContract.address,
+            abi: saleContract.abi,
+            functionName: "buyBlock",
+            args: [
               optimisedBlockIds[0][0],
               purchasableBlocks.size === 1 ? true : false,
-              ],
-            },
-            null,
-          );
-    
+            ],
+          },
+          null,
+        );
+
+        // Verify transactions
+        // if connected to mumbai - display minted block tx
+
+        // if on Sepplia wait for message sent,
+        //  get messageId and wait listen to Mumbai Sales contract for compleaion event
       }
     }
   }

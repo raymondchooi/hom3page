@@ -29,8 +29,10 @@ export type ContractNames =
   | "Hom3DepositVault";
 
 export type ContractStore = {
-  [contract in ContractNames]?: { address: string; abi: any };
+  [contract in ContractNames]?: AddressAndAbi;
 };
+
+export type AddressAndAbi = { address: string; abi: any };
 export type NetworkContracts = { [ChainName in string]: ContractStore };
 export type DefaultPaymentContracts = { [chain in ChainName]?: string };
 
