@@ -11,7 +11,7 @@ import {
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useAccount } from "wagmi";
 
-import { Block, Button, EditBlockDialog } from "components";
+import { Block, Button, EditBlockDialog, WelcomeDialog } from "components";
 import { WALL_TOTAL_BLOCKS } from "constants/wall";
 import { BLOCK_WIDTH, BLOCK_HEIGHT } from "constants/block";
 import type { BlockData } from "models/BlockData";
@@ -28,6 +28,7 @@ export default function Wall() {
     searchParams.get("selectMultipleBlocks") === "true";
   const editBlockParam = searchParams.get("editBlock");
 
+  const [welcomeDialogOpen, setWelcomeDialogOpen] = useState<boolean>(false);
   const [editBlockDialogOpen, setEditBlockDialogOpen] =
     useState<boolean>(false);
   const [selectedBlocks, setSelectedBlocks] = useState<Map<string, object>>(
@@ -293,9 +294,14 @@ export default function Wall() {
                     </Button>
                   </div>
                 </div>
-                <h2 className="mt-6 rounded-lg bg-zinc-950/80 px-4 py-1 tracking-wider text-gray-700 hover:animate-pulse">
-                  Explore web3
-                </h2>
+                <button
+                  className="pointer-cursor"
+                  onClick={() => setWelcomeDialogOpen(true)}
+                >
+                  <h2 className="mt-6 rounded-lg bg-zinc-950/80 px-4 py-1 tracking-wider text-gray-700 hover:animate-pulse">
+                    Explore web3
+                  </h2>
+                </button>
               </div>
             </>
           )}
@@ -308,6 +314,7 @@ export default function Wall() {
           wallData={generateRandomWallData}
         />
       )}
+      <WelcomeDialog open={welcomeDialogOpen} setOpen={setWelcomeDialogOpen} />
     </>
   );
 }
