@@ -20,7 +20,7 @@ const config = createConfig(
     chains,
     appDescription: "Home of web3",
     appUrl: "https://www.hom3page.com", // your app's url
-    appIcon: "https://www.hom3page.com/logo_plain.jpg", // your app's icon, no bigger than 1024x1024px (max. 1MB)
+    appIcon: "https://www.hom3page.com/logo.png", // your app's icon, no bigger than 1024x1024px (max. 1MB)
   }),
 );
 
