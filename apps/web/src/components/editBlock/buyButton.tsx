@@ -5,7 +5,7 @@ import { Button } from "components";
 interface BuyButtonProps {
   purchasableBlocks: Map<string, object>;
   balance: any;
-  optimisedBlockIds?: (string | (string | undefined)[] | undefined)[];
+  optimisedBlockIds?: ((string | undefined)[] | undefined)[];
   setBought: (bought: boolean) => void;
   bought: boolean;
 }
