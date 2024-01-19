@@ -9,7 +9,6 @@ import {IERC721A} from "./ERC721AVotes.sol";
 import "../helpers/CCIPInterface.sol";
 
 abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
-    IGhoToken public immutable PAYMENT_TOKEN;
     IERC721A public immutable HOM3_PROFILE;
 
     mapping(uint256 => uint256) private _escrow; //Profile No. to amount
@@ -30,12 +29,10 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
     }
 
     constructor(
-        address ghoToken_,
         address profileContract_,
         address ccipRouter_,
         address linkToken_
-    ) CCIPInterface(linkToken_, ccipRouter_) Ownable(msg.sender) {
-        PAYMENT_TOKEN = IGhoToken(ghoToken_);
+    ) CCIPInterface(linkToken_, ccipRouter_) {
         HOM3_PROFILE = IERC721A(profileContract_);
     }
 
@@ -149,12 +146,6 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
         return _deposit[profileId_] >= amount_;
     }
 
-    function _checkTokenBalance(
-        address account_
-    ) internal view returns (uint256) {
-        return PAYMENT_TOKEN.balanceOf(account_);
-    }
-
     /**  @dev   GETTERS         */
     function getProfilesBalance(
         uint256 profileId_
@@ -182,10 +173,5 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
             ""
         );
         require(sent, "Failed to send Ether");
-
-        //      GET PAYMENT TOKEN
-        IERC20 token = IERC20(PAYMENT_TOKEN);
-        uint balance = token.balanceOf(address(this));
-        token.transfer(_msgSender(), balance);
     }
 }
