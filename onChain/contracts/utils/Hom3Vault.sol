@@ -112,9 +112,9 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal returns (bool) {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
-        _deposit[message.profileId_] += message.value_;
+        _deposit[message.update_.profileId_] += message.value_;
 
-        emit DepositedFunds(message.profileId_, message.value_);
+        emit DepositedFunds(message.update_.profileId_, message.value_);
     }
 
     function _ccipReceive(
@@ -147,31 +147,22 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
     }
 
     /**  @dev   GETTERS         */
+
+    function _getProfolesBalance(
+        uint256 profileId_
+    ) internal view returns (uint256) {
+        return _deposit[profileId_];
+    }
+
     function getProfilesBalance(
         uint256 profileId_
     ) external view override returns (uint256) {
-        return _deposit[profileId_];
+        return _getProfolesBalance(profileId_);
     }
 
     function getSpendBalanceOfProfile(
         uint256 profileId_
     ) external view override returns (uint256) {
         return _allowance[profileId_];
-    }
-
-    /**         @dev DEV FUNCTIONS */
-
-    function withdrawAllToDev() external {
-        //  Get LINK
-        IERC20 link = IERC20(address(_linkToken));
-        uint linkBalance = link.balanceOf(address(this));
-        link.transfer(_msgSender(), linkBalance);
-
-        //  GET ETH
-        uint256 ethBalance = address(this).balance;
-        (bool sent, bytes memory data) = _msgSender().call{value: ethBalance}(
-            ""
-        );
-        require(sent, "Failed to send Ether");
     }
 }

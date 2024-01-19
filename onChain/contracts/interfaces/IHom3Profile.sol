@@ -11,7 +11,9 @@ interface IHom3ProfileToken {
 
     function signUpWithLens(address owner_, uint256 lensProfileId_) external;
 
-    function assignLensProfile(
+    function blockPurchaseMint(address owner_) external;
+
+    function _setLensProfile(
         uint256 profileId_,
         uint256 lensProfileId_
     ) external;

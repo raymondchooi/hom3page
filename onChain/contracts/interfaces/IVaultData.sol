@@ -22,6 +22,7 @@ interface IVaultData {
     enum MessageActions {
         DEPOSIT,
         WITHDRAW,
+        TRANSFER,
         ERROR,
         COMPLETE
     }
@@ -38,12 +39,19 @@ interface IVaultData {
         bool fullFilled_;
     }
 
-    struct Message {
-        bytes32 returnMessageId_;
+    struct UpdateMessage {
         uint256 profileId_;
-        uint256 value_;
+        address owner_;
+        uint256 balance_;
+    }
+
+    struct Message {
         MessageActions action_;
         Errors errors_;
+        string message_;
+        UpdateMessage update_;
+        bytes32 returnMessageId_;
+        uint256 value_;
     }
 
     struct ActionStore {
