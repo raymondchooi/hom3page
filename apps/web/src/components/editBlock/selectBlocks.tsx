@@ -290,6 +290,12 @@ function SelectBlocks({
                         ))}
                         <div className="group relative">
                           <div
+                            style={{
+                              width: BLOCK_WIDTH,
+                              height: BLOCK_HEIGHT,
+                            }}
+                          ></div>
+                          <div
                             className={cn(
                               "absolute left-0 top-0 border-2 border-gray-800 bg-gray-900",
                               isBlockSelected
@@ -323,10 +329,13 @@ function SelectBlocks({
                           ></div>
                           <button
                             className={cn(
-                              "relative z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-emerald-400",
+                              "absolute left-0 top-0 z-20 box-border flex cursor-pointer items-center justify-center truncate border-2 border-transparent hover:border-emerald-400",
                               purchasableBlocks.get(blockId) && !bought
                                 ? "cursor-not-allowed border-dashed border-gray-600 hover:border-gray-800"
                                 : "border-transparent ",
+                              isFirstBlockFromSelected
+                                ? "z-10 overflow-visible"
+                                : "z-0",
                             )}
                             onClick={() =>
                               handleBlockSelect(
@@ -335,8 +344,22 @@ function SelectBlocks({
                               )
                             }
                             style={{
-                              width: BLOCK_WIDTH,
-                              height: BLOCK_HEIGHT,
+                              width: isFirstBlockFromSelected
+                                ? BLOCK_WIDTH *
+                                  (
+                                    selectedBlocksForEditing?.get(
+                                      blockId.toString(),
+                                    ) as { width: number; height: number }
+                                  )?.width
+                                : BLOCK_WIDTH,
+                              height: isFirstBlockFromSelected
+                                ? BLOCK_HEIGHT *
+                                  (
+                                    selectedBlocksForEditing?.get(
+                                      blockId.toString(),
+                                    ) as { width: number; height: number }
+                                  )?.height
+                                : BLOCK_HEIGHT,
                             }}
                             title={`${purchasableBlocks.get(blockId) && !bought ? "Not owned: #" : "#"}${blockId.toString()}`}
                           >
