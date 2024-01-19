@@ -23,7 +23,7 @@ function BAppSummary({
 
   return (
     <button
-      className="group flex cursor-pointer flex-col rounded-lg border border-zinc-800 p-3 text-gray-400"
+      className="group flex h-full cursor-pointer flex-col justify-between rounded-lg border border-zinc-800 p-3 text-gray-400"
       onClick={handleClick}
     >
       <div className="flex items-center">
