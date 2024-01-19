@@ -33,7 +33,6 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
         string memory name_,
         string memory symbol_,
         string memory version_,
-        address salesContract_,
         address paymentToken_,
         address ccipRouter_,
         address linkToken_,
@@ -46,7 +45,6 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     {
         PAYMENT_TOKEN = IERC20(paymentToken_);
         LENS_PROTOCOL = ILensHub(lensProtocolContract_);
-        BLOCK_SALES_CONTRACT = salesContract_;
     }
 
     modifier onlyProfileOwner(uint256 profileId_) override {

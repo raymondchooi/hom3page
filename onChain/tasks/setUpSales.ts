@@ -22,23 +22,50 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   const chainId = hre.ethers.toBigInt("16015286601757825753");
 
   //    Set BlockStore data
+  // Connect to Sale contract
   const salesContract = await hre.ethers.getContractAt(
     contractname,
     deployedContracts[name]?.BlockSales!,
     deployer
   );
-  console.log(`🟠 [TASK] ${taskId} : Connected to contract`);
+  console.log(`🟠 [TASK] ${taskId} : Connected to Sales contract`);
 
+  const profileContract = await hre.ethers.getContractAt(
+    "Hom3Profile",
+    deployedContracts[name]?.Hom3Profile!,
+    deployer
+  );
+  console.log(`🟠 [TASK] ${taskId} : Connected to Profile Contract`);
+
+  const setSalesOnProfile = await profileContract.setSalesContract(
+    deployedContracts[name]?.BlockSales!
+  );
+  await setSalesOnProfile.wait();
+  console.log(`🟠 [TASK] ${taskId} : Set Sales address on Profile`);
+
+  // Set the chain to accept messages
   const chainStateTx = await salesContract.setBlockStoreActive(chainId, true);
   await chainStateTx.wait();
   console.log(`🟠 [TASK] ${taskId} : Allowed Eth Sepolia Chain`);
 
+  // Set the store address as allow
   const chainSaleAddressTx = await salesContract.setBlockStore(
     chainId,
     deployedContracts.ethSepolia?.BlockStore!
   );
   await chainSaleAddressTx.wait();
   console.log(`🟠 [TASK] ${taskId} : Added Store to Chain allow`);
+
+  // Set the profile contract address
+  const tx1 = await salesContract.setProfileAddress(deployedContract.target);
+  await tx1.wait();
+  console.log(
+    `🟠 [TASK] ${taskId} : Set profile contract on Sales : ${deployedContract.target} to ${tx1.hash}`
+  );
+  // Buy a single Block
+  const buySingleTx = await salesContract.buyBlock(1);
+  await buySingleTx.wait();
+  console.log(`🟢 Bought Block No.1 : ${buySingleTx.hash}`);
 
   console.log(`🟢 [TASK] ${taskId} : Finished`);
 });

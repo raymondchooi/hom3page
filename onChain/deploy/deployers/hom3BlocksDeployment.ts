@@ -150,22 +150,6 @@ export default async function deploy({
       console.log(`🟢 Supplied with Matic : ${nativeTx.hash}`);
     }
     if (contractName == "Hom3Profile") {
-      const salesContract = (await hre.ethers.getContractFactory("BlockSales"))
-        .attach(prevDeployments[1].deployment!)
-        .connect(deployer);
-
-      const tx1 = await salesContract.setProfileAddress(
-        deployedContract.target
-      );
-      await tx1.wait();
-      console.log(
-        `🟢  Set profile on Sales : ${deployedContract.target} to ${tx1.hash}`
-      );
-
-      const buySingleTx = await salesContract.buyBlock(1);
-      await buySingleTx.wait();
-      console.log(`🟢 Bought Block No.1 : ${buySingleTx.hash}`);
-
       const maticTx = await deployer.sendTransaction({
         to: deployedContract.target,
         value: hre.ethers.parseUnits("0.5", "ether"),
