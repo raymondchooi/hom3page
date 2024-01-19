@@ -89,10 +89,6 @@ export default async function deploy({
       await approvalTx.wait();
       console.log(`🟢 Approved USDC Spend : ${approvalTx.hash}`);
 
-      const buySingleTx = await deployedContract.buyBlock(1);
-      await buySingleTx.wait();
-      console.log(`🟢 Bought Block No.1 : ${buySingleTx.hash}`);
-
       const maticTx = await deployer.sendTransaction({
         to: deployedContract.target,
         value: hre.ethers.parseUnits("0.5", "ether"),
@@ -153,7 +149,45 @@ export default async function deploy({
       await nativeTx.wait();
       console.log(`🟢 Supplied with Matic : ${nativeTx.hash}`);
     }
+    if (contractName == "Hom3Profile") {
+      const salesContract = (await hre.ethers.getContractFactory("BlockSales"))
+        .attach(prevDeployments[1].deployment!)
+        .connect(deployer);
 
+      const tx1 = await salesContract.setProfileAddress(
+        deployedContract.target
+      );
+      await tx1.wait();
+      console.log(
+        `🟢  Set profile on Sales : ${deployedContract.target} to ${tx1.hash}`
+      );
+
+      const buySingleTx = await salesContract.buyBlock(1);
+      await buySingleTx.wait();
+      console.log(`🟢 Bought Block No.1 : ${buySingleTx.hash}`);
+
+      const maticTx = await deployer.sendTransaction({
+        to: deployedContract.target,
+        value: hre.ethers.parseUnits("0.5", "ether"),
+      });
+
+      await maticTx.wait();
+      console.log(`🟢 Supplied with ETH : ${maticTx.hash}`);
+
+      const linkToken = await hre.ethers.getContractAt(
+        "ERC20",
+        tokenAddress?.link[hre.network.name as ChainName]!,
+        deployer
+      );
+
+      const linkTX = await linkToken.transfer(
+        deployedContract.target,
+        hre.ethers.parseUnits("5", "ether")
+      );
+
+      await linkTX.wait();
+      console.log(`🟢 Sent link to contract : ${linkTX.hash}`);
+    }
     return deployedContract.target;
   } catch (error) {
     console.error(error);

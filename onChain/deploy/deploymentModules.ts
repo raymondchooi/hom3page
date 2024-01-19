@@ -12,6 +12,7 @@ import {
   Hom3PageDepositVaultArguments,
   Hom3PageVaultArguments,
 } from "./deploymentArguments/vaults.arguments";
+import { ProfileTokenArguments } from "./deploymentArguments/tokens.arguments";
 
 const deploymentFiles: Deployment = {
   BlockToken: GenericDeployer,
@@ -26,6 +27,7 @@ export const deploymentArgumentStore: ArgumentStore = {
   BlockStore: BlockStoreArguments,
   Hom3Vault: Hom3PageVaultArguments,
   Hom3DepositVault: Hom3PageDepositVaultArguments,
+  Hom3Profile: ProfileTokenArguments,
 };
 
 export default deploymentFiles;

@@ -17,7 +17,14 @@ interface IHom3Profile {
 
     function blockPurchaseMint(address owner_) external;
 
-    function _setLensProfile(
+    function balanceOf(address user_) external view returns (uint256);
+
+    function setLensProfile(
+        uint256 profileId_,
+        uint256 lensProfileId_
+    ) external;
+
+    function removeLensProfile(
         uint256 profileId_,
         uint256 lensProfileId_
     ) external;
