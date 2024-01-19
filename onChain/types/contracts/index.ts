@@ -92,8 +92,6 @@ export type { WallGenerator } from "./contracts/factory/WallGenerator";
 export { WallGenerator__factory } from "./factories/contracts/factory/WallGenerator__factory";
 export type { CCIPInterface } from "./contracts/helpers/CCIPInterface";
 export { CCIPInterface__factory } from "./factories/contracts/helpers/CCIPInterface__factory";
-export type { Hom3PageMessaging } from "./contracts/helpers/ValutMessageHandler.sol/Hom3PageMessaging";
-export { Hom3PageMessaging__factory } from "./factories/contracts/helpers/ValutMessageHandler.sol/Hom3PageMessaging__factory";
 export type { IBlockSales } from "./contracts/interfaces/IBlockSales";
 export { IBlockSales__factory } from "./factories/contracts/interfaces/IBlockSales__factory";
 export type { IBlockStore } from "./contracts/interfaces/IBlockStore";

@@ -18,7 +18,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   console.log(
     `🟠 [TASK] ${taskId} : Connecting to ${contractname} at ${deployedContracts[name]?.BlockSales}`
   );
-  const chainId = hre.ethers.toBigInt(16015286601757825753);
+  const chainId = hre.ethers.toBigInt("16015286601757825753");
 
   //    Set BlockStore data
   const salesContract = await hre.ethers.getContractAt(

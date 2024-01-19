@@ -32,8 +32,8 @@ abstract contract CCIPInterface is CCIPReceiver {
         MATIC
     }
 
-    uint constant SALES_RECIPE_GAS = 500_000;
-    uint constant SALES_ORDER_GAS = 2_000_000;
+    uint256 constant SALES_RECIPE_GAS = 500_000;
+    uint256 constant SALES_ORDER_GAS = 2_000_000;
 
     IRouterClient private _router;
     LinkTokenInterface internal _linkToken;

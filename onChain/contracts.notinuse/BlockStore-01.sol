@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "../utils/CCIPInterface.sol";
+import "../helpers/CCIPInterface.sol";
 import {OnlyActive, Ownable} from "../security/onlyActive.sol";
 
 contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
@@ -119,7 +119,6 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
         Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
             receiver_,
             abi.encode(payload_),
-            _getPaymentAddress(),
             SALES_ORDER_GAS
         );
 
