@@ -23,5 +23,20 @@ export const ProfileTokenArguments = (
   const symbol_: string = "HOM3";
   const version_: string = "1";
 
-  return [name_, symbol_, version_];
+  const salesContract_ = deployedContracts[networkName]?.BlockSales;
+  const paymentToken_ = tokenAddress.usdc[networkName];
+  const ccipRouter_ = tokenAddress.ccipRouter[networkName];
+  const linkToken_ = tokenAddress.link[networkName];
+  const lensProtocolContract_ = "0x4fbffF20302F3326B20052ab9C217C44F6480900";
+
+  return [
+    name_,
+    symbol_,
+    version_,
+    salesContract_,
+    paymentToken_,
+    ccipRouter_,
+    linkToken_,
+    lensProtocolContract_,
+  ];
 };

@@ -214,13 +214,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IHom3Profile__factory>;
     getContractFactory(
-      name: "IHom3ProfileToken",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IHom3ProfileToken__factory>;
-    getContractFactory(
       name: "IHom3Vault",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IHom3Vault__factory>;
+    getContractFactory(
+      name: "ILensHub",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ILensHub__factory>;
     getContractFactory(
       name: "IVaultData",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -246,9 +246,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BlockToken__factory>;
     getContractFactory(
-      name: "Hom3ProfileToken",
+      name: "Hom3Profile",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Hom3ProfileToken__factory>;
+    ): Promise<Contracts.Hom3Profile__factory>;
     getContractFactory(
       name: "InnerBlockToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -533,15 +533,15 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IHom3Profile>;
     getContractAt(
-      name: "IHom3ProfileToken",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IHom3ProfileToken>;
-    getContractAt(
       name: "IHom3Vault",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.IHom3Vault>;
+    getContractAt(
+      name: "ILensHub",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ILensHub>;
     getContractAt(
       name: "IVaultData",
       address: string | ethers.Addressable,
@@ -573,10 +573,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.BlockToken>;
     getContractAt(
-      name: "Hom3ProfileToken",
+      name: "Hom3Profile",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.Hom3ProfileToken>;
+    ): Promise<Contracts.Hom3Profile>;
     getContractAt(
       name: "InnerBlockToken",
       address: string | ethers.Addressable,
@@ -819,13 +819,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IHom3Profile>;
     deployContract(
-      name: "IHom3ProfileToken",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.IHom3ProfileToken>;
-    deployContract(
       name: "IHom3Vault",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IHom3Vault>;
+    deployContract(
+      name: "ILensHub",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ILensHub>;
     deployContract(
       name: "IVaultData",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -851,9 +851,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.BlockToken>;
     deployContract(
-      name: "Hom3ProfileToken",
+      name: "Hom3Profile",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Hom3ProfileToken>;
+    ): Promise<Contracts.Hom3Profile>;
     deployContract(
       name: "InnerBlockToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -1138,15 +1138,15 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IHom3Profile>;
     deployContract(
-      name: "IHom3ProfileToken",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.IHom3ProfileToken>;
-    deployContract(
       name: "IHom3Vault",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IHom3Vault>;
+    deployContract(
+      name: "ILensHub",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ILensHub>;
     deployContract(
       name: "IVaultData",
       args: any[],
@@ -1178,10 +1178,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.BlockToken>;
     deployContract(
-      name: "Hom3ProfileToken",
+      name: "Hom3Profile",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Hom3ProfileToken>;
+    ): Promise<Contracts.Hom3Profile>;
     deployContract(
       name: "InnerBlockToken",
       args: any[],

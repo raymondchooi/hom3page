@@ -12,12 +12,15 @@ import {ILensHub, Types} from "../interfaces/ILensHub.sol";
 
 import {Hom3Vault, CCIPReceiver, Client} from "../utils/Hom3Vault.sol";
 
-contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
+contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     IERC20 public immutable PAYMENT_TOKEN;
+    uint256 public constant PAYMENT_TOKEN_DECIMALS = 6;
+
     ILensHub public immutable LENS_PROTOCOL;
-    address public immutable BLOCK_SALES_CONTRACT;
+    address internal BLOCK_SALES_CONTRACT;
     uint64 public constant DEPOSIT_CONTRACT_CHAIN = ETH_CHAIN_SELECTOR;
-    uint256 public constant COST_PER_PROFILE = 100 * 10 ** 6; // USD
+    uint256 public constant COST_PER_PROFILE =
+        100 * 10 ** PAYMENT_TOKEN_DECIMALS; // USD
     uint8 public constant BUY_CAP = 1;
 
     address internal _depositContractAddress;
@@ -107,7 +110,7 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
         if (succsess) {
             uint256 tokenId = _profilesMinted + 1;
             _mint(owner_, tokenId);
-            if (LENS_PROTOCOL.balanceOf(owner_) < 1) {
+            if (!checkIfHasLensProfile(owner_)) {
                 // send message to vaults
                 // Create Lens profile
                 Types.CreateProfileParams memory createProfileParams = Types
@@ -117,11 +120,9 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
                     createProfileParams
                 );
 
-                setLensProfile(tokenId, lensProfileId);
-
-                _lensProfileMatcher[tokenId] = lensProfileId;
-                _lensProfileLinked[lensProfileId] = true;
+                _setLensProfile(tokenId, lensProfileId, true);
             }
+            _profilesMinted++;
             emit ProfileCreated(owner_, tokenId);
         } else revert("Payment Failed");
     }
@@ -144,7 +145,8 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
         if (succsess) {
             uint256 tokenId = _profilesMinted + 1;
             _mint(owner_, tokenId);
-            setLensProfile(tokenId, lensProfileId_);
+            _setLensProfile(tokenId, lensProfileId_, false);
+            _profilesMinted++;
             emit ProfileCreated(owner_, tokenId);
         } else revert("Payment or Profile Failed");
     }
@@ -154,6 +156,17 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
     ) external override onlyBlockSales {
         uint256 tokenId = _profilesMinted + 1;
         _mint(owner_, tokenId);
+        if (!checkIfHasLensProfile(owner_)) {
+            Types.CreateProfileParams memory createProfileParams = Types
+                .CreateProfileParams(owner_, address(0), abi.encode(0));
+
+            uint256 lensProfileId = LENS_PROTOCOL.createProfile(
+                createProfileParams
+            );
+
+            _setLensProfile(tokenId, lensProfileId, true);
+        }
+        _profilesMinted++;
         emit ProfileCreated(owner_, tokenId);
     }
 
@@ -206,15 +219,29 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
 
     /**  @dev Lens Interaction     */
 
+    function setSalesContract(address newContract_) external onlyOwner {
+        BLOCK_SALES_CONTRACT = newContract_;
+    }
+
     function setLensProfile(
         uint256 profileId_,
         uint256 lensProfileId_
-    ) public onlyProfileOwner(profileId_) {
-        if (LENS_PROTOCOL.ownerOf(profileId_) != _msgSender())
-            revert AddressDoesNotOwnLensProfile();
+    ) external onlyProfileOwner(profileId_) {
+        _setLensProfile(profileId_, lensProfileId_, false);
+    }
 
-        if (_lensProfileLinked[lensProfileId_])
-            revert LensProfileAlreadyActive();
+    function _setLensProfile(
+        uint256 profileId_,
+        uint256 lensProfileId_,
+        bool beenChecked
+    ) internal onlyProfileOwner(profileId_) {
+        if (!beenChecked) {
+            if (LENS_PROTOCOL.ownerOf(profileId_) != _msgSender())
+                revert AddressDoesNotOwnLensProfile();
+
+            if (_lensProfileLinked[lensProfileId_])
+                revert LensProfileAlreadyActive();
+        }
 
         _lensProfileMatcher[profileId_] = lensProfileId_;
         _lensProfileLinked[lensProfileId_] = true;
@@ -223,7 +250,14 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
     function removeLensProfile(
         uint256 profileId_,
         uint256 lensProfileId_
-    ) public onlyProfileOwner(profileId_) {
+    ) external onlyProfileOwner(profileId_) {
+        _removeLensProfile(profileId_, lensProfileId_);
+    }
+
+    function _removeLensProfile(
+        uint256 profileId_,
+        uint256 lensProfileId_
+    ) internal onlyProfileOwner(profileId_) {
         if (_lensProfileMatcher[profileId_] != lensProfileId_)
             revert AddressDoesNotOwnLensProfile();
 
@@ -244,6 +278,10 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
         return _lensProfileMatcher[profileId_] != 0;
     }
 
+    function checkIfHasLensProfile(address user_) internal returns (bool) {
+        return LENS_PROTOCOL.balanceOf(user_) > 0;
+    }
+
     /**  @dev   GETTERS         */
     function getTotalProfilesCreated() external view returns (uint256) {
         return _profilesMinted;
@@ -262,6 +300,16 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
     }
 
     /**         @dev INTERFACE FUNCTIONS */
+
+    fallback() external payable {}
+
+    receive() external payable {}
+
+    function balanceOf(
+        address user_
+    ) public view override(ERC721, IHom3Profile) returns (uint256) {
+        return super.balanceOf(user_);
+    }
 
     /**
      * @dev this is only for inital testing phases

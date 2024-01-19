@@ -114,6 +114,7 @@ export interface BlockStoreInterface extends Interface {
       | "MATIC_CHAIN_SELECTOR"
       | "OP_CHAIN_SELECTOR"
       | "PAYMENT_TOKEN"
+      | "PAYMENT_TOKEN_DECIMALS"
       | "SALES_CONTRACT_CHAIN"
       | "buyBatchBlock"
       | "buyBlock"
@@ -165,6 +166,10 @@ export interface BlockStoreInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "PAYMENT_TOKEN",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PAYMENT_TOKEN_DECIMALS",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -261,6 +266,10 @@ export interface BlockStoreInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "PAYMENT_TOKEN",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PAYMENT_TOKEN_DECIMALS",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -558,6 +567,8 @@ export interface BlockStore extends BaseContract {
 
   PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
 
+  PAYMENT_TOKEN_DECIMALS: TypedContractMethod<[], [bigint], "view">;
+
   SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
 
   buyBatchBlock: TypedContractMethod<
@@ -658,6 +669,9 @@ export interface BlockStore extends BaseContract {
   getFunction(
     nameOrSignature: "PAYMENT_TOKEN"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "PAYMENT_TOKEN_DECIMALS"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "SALES_CONTRACT_CHAIN"
   ): TypedContractMethod<[], [bigint], "view">;

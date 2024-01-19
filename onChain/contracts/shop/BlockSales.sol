@@ -14,13 +14,15 @@ import {IHom3Profile} from "../interfaces/IHom3Profile.sol";
 contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
     IERC721 public immutable NFT;
     IERC20 public immutable PAYMENT_TOKEN;
+    uint256 public constant PAYMENT_TOKEN_DECIMALS = 6;
 
     IHom3Profile private _Hom3ProfileContract;
 
     mapping(uint64 => address) private _saleStores;
 
     //  Sales
-    uint256 internal constant COST_PER_BLOCK = 100 * 10 ** 6; // USD
+    uint256 internal constant COST_PER_BLOCK =
+        100 * 10 ** PAYMENT_TOKEN_DECIMALS; // USD
     uint8 internal constant BUY_CAP = 10;
 
     uint256 internal _totalSold;
@@ -43,30 +45,33 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
     function buyBlock(
         uint256 tokenId
     ) external override nonReentrant is_active {
+        address owner = _msgSender();
         require(NFT.ownerOf(tokenId) == address(this), "Token not available");
         require(
-            PAYMENT_TOKEN.balanceOf(_msgSender()) > COST_PER_BLOCK,
+            PAYMENT_TOKEN.balanceOf(owner) > COST_PER_BLOCK,
             "Incorrect payment"
         );
         bool succsess = PAYMENT_TOKEN.transferFrom(
-            _msgSender(),
+            owner,
             address(this),
             COST_PER_BLOCK
         );
         if (succsess) {
-            NFT.transferFrom(address(this), _msgSender(), tokenId);
+            NFT.transferFrom(address(this), owner, tokenId);
             _totalSold++;
-            emit SaleMade(_msgSender(), 1, OP_CHAIN_SELECTOR);
+            _doProfileThing(owner);
+            emit SaleMade(owner, 1, OP_CHAIN_SELECTOR);
         }
     }
 
     function buyBatchBlock(
         uint256[][] calldata tokenIds_
     ) external override nonReentrant is_active {
-        (uint totalOrder, uint index, uint numElements) = (
+        (uint totalOrder, uint index, uint numElements, address owner) = (
             0,
             0,
-            tokenIds_.length
+            tokenIds_.length,
+            _msgSender()
         );
 
         if (numElements > 5) revert ToManyElementsInBuyArray();
@@ -80,16 +85,9 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         }
 
         uint256 cost = COST_PER_BLOCK * (totalOrder);
-        require(
-            PAYMENT_TOKEN.balanceOf(_msgSender()) >= cost,
-            "Insufficient Funds"
-        );
+        require(PAYMENT_TOKEN.balanceOf(owner) >= cost, "Insufficient Funds");
 
-        bool succsess = PAYMENT_TOKEN.transferFrom(
-            _msgSender(),
-            address(this),
-            cost
-        );
+        bool succsess = PAYMENT_TOKEN.transferFrom(owner, address(this), cost);
         if (succsess) {
             for (uint i = 0; i < numElements; i++) {
                 for (uint x = 0; x < tokenIds_[i].length; x++)
@@ -100,7 +98,8 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
                     );
             }
             _totalSold += totalOrder;
-            emit SaleMade(_msgSender(), totalOrder, OP_CHAIN_SELECTOR);
+            _doProfileThing(owner);
+            emit SaleMade(owner, totalOrder, OP_CHAIN_SELECTOR);
         }
     }
 
@@ -198,6 +197,12 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
     }
 
     /**   @notice HOM£PROFILE  */
+
+    function _doProfileThing(address owner_) internal {
+        if (_needsProfile(owner_)) {
+            _Hom3ProfileContract.blockPurchaseMint(owner_);
+        }
+    }
 
     function _needsProfile(address buyer_) internal view returns (bool) {
         return _Hom3ProfileContract.balanceOf(buyer_) < 1;

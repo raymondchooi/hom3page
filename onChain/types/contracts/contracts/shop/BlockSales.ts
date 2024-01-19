@@ -86,6 +86,7 @@ export interface BlockSalesInterface extends Interface {
       | "NFT"
       | "OP_CHAIN_SELECTOR"
       | "PAYMENT_TOKEN"
+      | "PAYMENT_TOKEN_DECIMALS"
       | "SALES_CONTRACT_CHAIN"
       | "buyBatchBlock"
       | "buyBlock"
@@ -138,6 +139,10 @@ export interface BlockSalesInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "PAYMENT_TOKEN",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PAYMENT_TOKEN_DECIMALS",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -239,6 +244,10 @@ export interface BlockSalesInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "PAYMENT_TOKEN",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PAYMENT_TOKEN_DECIMALS",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -511,6 +520,8 @@ export interface BlockSales extends BaseContract {
 
   PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
 
+  PAYMENT_TOKEN_DECIMALS: TypedContractMethod<[], [bigint], "view">;
+
   SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
 
   buyBatchBlock: TypedContractMethod<
@@ -620,6 +631,9 @@ export interface BlockSales extends BaseContract {
   getFunction(
     nameOrSignature: "PAYMENT_TOKEN"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "PAYMENT_TOKEN_DECIMALS"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "SALES_CONTRACT_CHAIN"
   ): TypedContractMethod<[], [bigint], "view">;

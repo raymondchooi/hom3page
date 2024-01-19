@@ -2,6 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export { BlockToken__factory } from "./BlockToken__factory";
-export { Hom3ProfileToken__factory } from "./Hom3ProfileToken__factory";
+export { Hom3Profile__factory } from "./Hom3Profile__factory";
 export { InnerBlockToken__factory } from "./InnerBlockToken__factory";
 export { StINRWLToken__factory } from "./StINRWLToken__factory";
