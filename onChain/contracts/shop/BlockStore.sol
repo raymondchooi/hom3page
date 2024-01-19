@@ -132,6 +132,7 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
             _salesContractAddress,
             saleData_
         );
+        emit SaleSubmitted(messageId, saleData_.buyer_);
         _saleRecipes[messageId] = SaleStore(saleData_, messageId, false, false);
     }
 
@@ -168,17 +169,6 @@ contract BlockStore is CCIPReceiver, ReentrancyGuard, OnlyActive, IBlockStore {
             evm2AnyMessage
         );
 
-        // Emit an event with message details
-        emit MessageSent(
-            messageId,
-            destinationChainSelector_,
-            receiver_,
-            payload_,
-            address(0),
-            fees
-        );
-
-        // Return the CCIP message ID
         return messageId;
     }
 

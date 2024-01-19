@@ -8,7 +8,7 @@ import {OnlyActive, Ownable, Context} from "../security/onlyActive.sol";
 import {IERC721A} from "./ERC721AVotes.sol";
 import "../helpers/CCIPInterface.sol";
 
-contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
+abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
     IGhoToken public immutable PAYMENT_TOKEN;
     IERC721A public immutable HOM3_PROFILE;
 

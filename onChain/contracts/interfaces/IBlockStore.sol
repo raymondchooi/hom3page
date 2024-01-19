@@ -13,6 +13,8 @@ interface IBlockStore {
         uint256 fees // The fees paid for sending the CCIP message.
     );
 
+    event SaleSubmitted(bytes32 indexed messageId_, address buyer_);
+
     // Event emitted when a message is received from another chain.
     event MessageReceived(
         bytes32 indexed messageId, // The unique ID of the CCIP message.
