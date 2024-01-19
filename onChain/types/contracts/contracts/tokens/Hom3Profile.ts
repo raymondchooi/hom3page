@@ -117,6 +117,7 @@ export interface Hom3ProfileInterface extends Interface {
       | "getPastVotes"
       | "getProfile"
       | "getProfileLensId"
+      | "getProfileOfAddress"
       | "getProfilesBalance"
       | "getRouter"
       | "getSpendBalanceOfProfile"
@@ -165,6 +166,7 @@ export interface Hom3ProfileInterface extends Interface {
       | "EIP712DomainChanged"
       | "MessageReceived"
       | "MessageSent"
+      | "NewMessageSent"
       | "OwnershipTransferred"
       | "ProfileCreated"
       | "SetSpendAllowance"
@@ -283,6 +285,10 @@ export interface Hom3ProfileInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getProfileLensId",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getProfileOfAddress",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getProfilesBalance",
@@ -485,6 +491,10 @@ export interface Hom3ProfileInterface extends Interface {
   decodeFunctionResult(functionFragment: "getProfile", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getProfileLensId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getProfileOfAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -755,6 +765,19 @@ export namespace MessageSentEvent {
   export interface OutputObject {
     messageId_: string;
     destinationChain_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace NewMessageSentEvent {
+  export type InputTuple = [recipient_: AddressLike, messageId_: BytesLike];
+  export type OutputTuple = [recipient_: string, messageId_: string];
+  export interface OutputObject {
+    recipient_: string;
+    messageId_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -1039,6 +1062,12 @@ export interface Hom3Profile extends BaseContract {
 
   getProfileLensId: TypedContractMethod<
     [hom3ProfileId_: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
+  getProfileOfAddress: TypedContractMethod<
+    [wallet_: AddressLike],
     [bigint],
     "view"
   >;
@@ -1336,6 +1365,9 @@ export interface Hom3Profile extends BaseContract {
     nameOrSignature: "getProfileLensId"
   ): TypedContractMethod<[hom3ProfileId_: BigNumberish], [bigint], "view">;
   getFunction(
+    nameOrSignature: "getProfileOfAddress"
+  ): TypedContractMethod<[wallet_: AddressLike], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getProfilesBalance"
   ): TypedContractMethod<[profileId_: BigNumberish], [bigint], "view">;
   getFunction(
@@ -1563,6 +1595,13 @@ export interface Hom3Profile extends BaseContract {
     MessageSentEvent.OutputObject
   >;
   getEvent(
+    key: "NewMessageSent"
+  ): TypedContractEvent<
+    NewMessageSentEvent.InputTuple,
+    NewMessageSentEvent.OutputTuple,
+    NewMessageSentEvent.OutputObject
+  >;
+  getEvent(
     key: "OwnershipTransferred"
   ): TypedContractEvent<
     OwnershipTransferredEvent.InputTuple,
@@ -1728,6 +1767,17 @@ export interface Hom3Profile extends BaseContract {
       MessageSentEvent.InputTuple,
       MessageSentEvent.OutputTuple,
       MessageSentEvent.OutputObject
+    >;
+
+    "NewMessageSent(address,bytes32)": TypedContractEvent<
+      NewMessageSentEvent.InputTuple,
+      NewMessageSentEvent.OutputTuple,
+      NewMessageSentEvent.OutputObject
+    >;
+    NewMessageSent: TypedContractEvent<
+      NewMessageSentEvent.InputTuple,
+      NewMessageSentEvent.OutputTuple,
+      NewMessageSentEvent.OutputObject
     >;
 
     "OwnershipTransferred(address,address)": TypedContractEvent<

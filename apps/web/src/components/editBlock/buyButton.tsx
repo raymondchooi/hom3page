@@ -23,6 +23,7 @@ interface BuyButtonProps {
   optimisedBlockIds?: ((string | undefined)[][] | undefined)[];
   setBought: (bought: boolean) => void;
   bought: boolean;
+  callback: (state: number) => void;
 }
 
 function BuyButton({
@@ -30,6 +31,7 @@ function BuyButton({
   optimisedBlockIds,
   setBought,
   bought,
+  callback,
 }: BuyButtonProps) {
   const { address } = useAccount();
   const balance = useBalance({ address, chainId: sepolia.id });

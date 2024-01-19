@@ -140,6 +140,7 @@ export interface Hom3DepositVaultInterface extends Interface {
       | "EscrowBalanceToLow"
       | "MessageReceived"
       | "MessageSent"
+      | "NewMessageSent"
       | "OwnershipTransferred"
       | "WithdrewFunds"
       | "WithdrewFundsRequested"
@@ -380,6 +381,19 @@ export namespace MessageSentEvent {
   export interface OutputObject {
     messageId_: string;
     destinationChain_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace NewMessageSentEvent {
+  export type InputTuple = [recipient_: AddressLike, messageId_: BytesLike];
+  export type OutputTuple = [recipient_: string, messageId_: string];
+  export interface OutputObject {
+    recipient_: string;
+    messageId_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -683,6 +697,13 @@ export interface Hom3DepositVault extends BaseContract {
     MessageSentEvent.OutputObject
   >;
   getEvent(
+    key: "NewMessageSent"
+  ): TypedContractEvent<
+    NewMessageSentEvent.InputTuple,
+    NewMessageSentEvent.OutputTuple,
+    NewMessageSentEvent.OutputObject
+  >;
+  getEvent(
     key: "OwnershipTransferred"
   ): TypedContractEvent<
     OwnershipTransferredEvent.InputTuple,
@@ -769,6 +790,17 @@ export interface Hom3DepositVault extends BaseContract {
       MessageSentEvent.InputTuple,
       MessageSentEvent.OutputTuple,
       MessageSentEvent.OutputObject
+    >;
+
+    "NewMessageSent(address,bytes32)": TypedContractEvent<
+      NewMessageSentEvent.InputTuple,
+      NewMessageSentEvent.OutputTuple,
+      NewMessageSentEvent.OutputObject
+    >;
+    NewMessageSent: TypedContractEvent<
+      NewMessageSentEvent.InputTuple,
+      NewMessageSentEvent.OutputTuple,
+      NewMessageSentEvent.OutputObject
     >;
 
     "OwnershipTransferred(address,address)": TypedContractEvent<

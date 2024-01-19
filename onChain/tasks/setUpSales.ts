@@ -13,7 +13,7 @@ const taskDescription = "Setup the sales contract";
 task(taskId, taskDescription).setAction(async (_args, hre) => {
   console.log(`🟠 [TASK] ${taskId} : Mounted`);
   const contractname = "BlockSales";
-  const [notThisDeployer, noreThisDeployer, deployer] =
+  const [deployer, notThisDeployer, noreThisDeployer] =
     await hre.ethers.getSigners();
   const name = (await hre.ethers.provider
     .getNetwork()

@@ -205,21 +205,13 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256[][]",
-        name: "tokenIds_",
+        name: "tokenId_",
         type: "uint256[][]",
       },
-    ],
-    name: "buyBatchBlock",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
       {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
+        internalType: "bool",
+        name: "multiBuy_",
+        type: "bool",
       },
     ],
     name: "buyBlock",

@@ -76,7 +76,6 @@ export declare namespace IBlockStore {
 export interface IBlockStoreInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "buyBatchBlock"
       | "buyBlock"
       | "getSaleStatus"
       | "withdrawFunds"
@@ -93,12 +92,8 @@ export interface IBlockStoreInterface extends Interface {
   ): EventFragment;
 
   encodeFunctionData(
-    functionFragment: "buyBatchBlock",
-    values: [BigNumberish[][]]
-  ): string;
-  encodeFunctionData(
     functionFragment: "buyBlock",
-    values: [BigNumberish]
+    values: [BigNumberish[][], boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "getSaleStatus",
@@ -113,10 +108,6 @@ export interface IBlockStoreInterface extends Interface {
     values: [AddressLike]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "buyBatchBlock",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "buyBlock", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getSaleStatus",
@@ -284,13 +275,11 @@ export interface IBlockStore extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  buyBatchBlock: TypedContractMethod<
-    [tokenIds_: BigNumberish[][]],
+  buyBlock: TypedContractMethod<
+    [tokenId_: BigNumberish[][], multiBuy_: boolean],
     [void],
     "nonpayable"
   >;
-
-  buyBlock: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
 
   getSaleStatus: TypedContractMethod<
     [saleId_: BytesLike],
@@ -311,11 +300,12 @@ export interface IBlockStore extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "buyBatchBlock"
-  ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "buyBlock"
-  ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [tokenId_: BigNumberish[][], multiBuy_: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "getSaleStatus"
   ): TypedContractMethod<

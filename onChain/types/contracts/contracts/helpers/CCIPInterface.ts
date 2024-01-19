@@ -70,7 +70,7 @@ export interface CCIPInterfaceInterface extends Interface {
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic: "MessageReceived" | "MessageSent"
+    nameOrSignatureOrTopic: "MessageReceived" | "MessageSent" | "NewMessageSent"
   ): EventFragment;
 
   encodeFunctionData(
@@ -151,6 +151,19 @@ export namespace MessageSentEvent {
   export interface OutputObject {
     messageId_: string;
     destinationChain_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace NewMessageSentEvent {
+  export type InputTuple = [recipient_: AddressLike, messageId_: BytesLike];
+  export type OutputTuple = [recipient_: string, messageId_: string];
+  export interface OutputObject {
+    recipient_: string;
+    messageId_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -267,6 +280,13 @@ export interface CCIPInterface extends BaseContract {
     MessageSentEvent.OutputTuple,
     MessageSentEvent.OutputObject
   >;
+  getEvent(
+    key: "NewMessageSent"
+  ): TypedContractEvent<
+    NewMessageSentEvent.InputTuple,
+    NewMessageSentEvent.OutputTuple,
+    NewMessageSentEvent.OutputObject
+  >;
 
   filters: {
     "MessageReceived(bytes32,uint64)": TypedContractEvent<
@@ -289,6 +309,17 @@ export interface CCIPInterface extends BaseContract {
       MessageSentEvent.InputTuple,
       MessageSentEvent.OutputTuple,
       MessageSentEvent.OutputObject
+    >;
+
+    "NewMessageSent(address,bytes32)": TypedContractEvent<
+      NewMessageSentEvent.InputTuple,
+      NewMessageSentEvent.OutputTuple,
+      NewMessageSentEvent.OutputObject
+    >;
+    NewMessageSent: TypedContractEvent<
+      NewMessageSentEvent.InputTuple,
+      NewMessageSentEvent.OutputTuple,
+      NewMessageSentEvent.OutputObject
     >;
   };
 }

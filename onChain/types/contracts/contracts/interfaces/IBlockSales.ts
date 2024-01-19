@@ -47,7 +47,6 @@ export declare namespace IBlockSales {
 export interface IBlockSalesInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "buyBatchBlock"
       | "buyBlock"
       | "withdrawBlock"
       | "withdrawFunds"
@@ -63,12 +62,8 @@ export interface IBlockSalesInterface extends Interface {
   ): EventFragment;
 
   encodeFunctionData(
-    functionFragment: "buyBatchBlock",
-    values: [BigNumberish[][]]
-  ): string;
-  encodeFunctionData(
     functionFragment: "buyBlock",
-    values: [BigNumberish]
+    values: [BigNumberish[][], boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawBlock",
@@ -83,10 +78,6 @@ export interface IBlockSalesInterface extends Interface {
     values: [AddressLike]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "buyBatchBlock",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "buyBlock", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawBlock",
@@ -223,13 +214,11 @@ export interface IBlockSales extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  buyBatchBlock: TypedContractMethod<
-    [tokenIds_: BigNumberish[][]],
+  buyBlock: TypedContractMethod<
+    [tokenId_: BigNumberish[][], multiBuy_: boolean],
     [void],
     "nonpayable"
   >;
-
-  buyBlock: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
 
   withdrawBlock: TypedContractMethod<
     [tokenId_: BigNumberish],
@@ -250,11 +239,12 @@ export interface IBlockSales extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "buyBatchBlock"
-  ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "buyBlock"
-  ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [tokenId_: BigNumberish[][], multiBuy_: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "withdrawBlock"
   ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;

@@ -113,6 +113,25 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "recipient_",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "messageId_",
+        type: "bytes32",
+      },
+    ],
+    name: "NewMessageSent",
+    type: "event",
+  },
+  {
     inputs: [],
     name: "ETH_CHAIN_SELECTOR",
     outputs: [

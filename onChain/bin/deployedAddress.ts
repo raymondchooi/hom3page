@@ -14,7 +14,7 @@ const deployedContracts: {
   },
   ethSepolia: {
     BlockToken: "",
-    BlockStore: "0x5474EC7dfad8cB8c9F311023f39069DBe9406a3E",
+    BlockStore: "0x56ba4D9bBF5f09c6A26058Df860c827aA6BbBb87",
     Hom3Profile: "",
     Hom3DepositVault: "",
   },
@@ -24,10 +24,10 @@ const deployedContracts: {
     Hom3Profile: "",
   },
   maticMumbai: {
-    BlockToken: "0x7f695dA9438304cab1Cf7586ae84e6d450B9364b",
-    BlockSales: "0x6859b8eFB04Ef1AB3197795D17cBA84C91166eE3",
+    BlockToken: "0x75BDd507A8ad2C8AE2bA502C85D96c1674a89730",
+    BlockSales: "0xC4A39bAe63852a613eFf1a53d8d3C28fbbaDE6A6",
     BlockStore: "",
-    Hom3Profile: "0x1aC6B6B30F4B5e074caBf8Ddc4F902992C57c3eA",
+    Hom3Profile: "0xDF89c68491B07E221Ffb7334b5FD0a617Da8aA01",
     Hom3Vault: "",
   },
 };

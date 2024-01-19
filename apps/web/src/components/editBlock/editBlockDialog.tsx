@@ -43,6 +43,8 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   const [bAppStoredValues, setBAppStoredValues] =
     useState<Record<string, string>>();
 
+    const [buyState. setBuyState] = useState<number>(0)
+
   const blockIds = useMemo(() => {
     return editBlockParam
       ? editBlockParam.split(",").sort((a, b) => parseInt(a) - parseInt(b))
@@ -167,6 +169,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                   optimisedBlockIds={optimisedBlockIds}
                   setBought={setBought}
                   bought={bought}
+                  callback={setBuyState}
                 />
 
                 <button

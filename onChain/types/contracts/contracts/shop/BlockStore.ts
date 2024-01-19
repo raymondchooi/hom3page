@@ -116,7 +116,6 @@ export interface BlockStoreInterface extends Interface {
       | "PAYMENT_TOKEN"
       | "PAYMENT_TOKEN_DECIMALS"
       | "SALES_CONTRACT_CHAIN"
-      | "buyBatchBlock"
       | "buyBlock"
       | "ccipReceive"
       | "getBlockCost"
@@ -146,6 +145,7 @@ export interface BlockStoreInterface extends Interface {
       | "MessageReceived(bytes32,uint64,address,tuple)"
       | "MessageSent(bytes32,uint64)"
       | "MessageSent(bytes32,uint64,address,tuple,address,uint256)"
+      | "NewMessageSent"
       | "OwnershipTransferred"
       | "SaleFailed"
       | "SaleMade"
@@ -177,12 +177,8 @@ export interface BlockStoreInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "buyBatchBlock",
-    values: [BigNumberish[][]]
-  ): string;
-  encodeFunctionData(
     functionFragment: "buyBlock",
-    values: [BigNumberish]
+    values: [BigNumberish[][], boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "ccipReceive",
@@ -274,10 +270,6 @@ export interface BlockStoreInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "SALES_CONTRACT_CHAIN",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "buyBatchBlock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "buyBlock", data: BytesLike): Result;
@@ -450,6 +442,19 @@ export namespace MessageSent_bytes32_uint64_address_tuple_address_uint256_Event 
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace NewMessageSentEvent {
+  export type InputTuple = [recipient_: AddressLike, messageId_: BytesLike];
+  export type OutputTuple = [recipient_: string, messageId_: string];
+  export interface OutputObject {
+    recipient_: string;
+    messageId_: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace OwnershipTransferredEvent {
   export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
   export type OutputTuple = [previousOwner: string, newOwner: string];
@@ -571,13 +576,11 @@ export interface BlockStore extends BaseContract {
 
   SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
 
-  buyBatchBlock: TypedContractMethod<
-    [tokenIds_: BigNumberish[][]],
+  buyBlock: TypedContractMethod<
+    [tokenIds_: BigNumberish[][], multiBuy_: boolean],
     [void],
     "nonpayable"
   >;
-
-  buyBlock: TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
 
   ccipReceive: TypedContractMethod<
     [message: Client.Any2EVMMessageStruct],
@@ -676,11 +679,12 @@ export interface BlockStore extends BaseContract {
     nameOrSignature: "SALES_CONTRACT_CHAIN"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "buyBatchBlock"
-  ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "buyBlock"
-  ): TypedContractMethod<[tokenId_: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [tokenIds_: BigNumberish[][], multiBuy_: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "ccipReceive"
   ): TypedContractMethod<
@@ -791,6 +795,13 @@ export interface BlockStore extends BaseContract {
     MessageSent_bytes32_uint64_address_tuple_address_uint256_Event.OutputObject
   >;
   getEvent(
+    key: "NewMessageSent"
+  ): TypedContractEvent<
+    NewMessageSentEvent.InputTuple,
+    NewMessageSentEvent.OutputTuple,
+    NewMessageSentEvent.OutputObject
+  >;
+  getEvent(
     key: "OwnershipTransferred"
   ): TypedContractEvent<
     OwnershipTransferredEvent.InputTuple,
@@ -850,6 +861,17 @@ export interface BlockStore extends BaseContract {
       MessageSent_bytes32_uint64_address_tuple_address_uint256_Event.InputTuple,
       MessageSent_bytes32_uint64_address_tuple_address_uint256_Event.OutputTuple,
       MessageSent_bytes32_uint64_address_tuple_address_uint256_Event.OutputObject
+    >;
+
+    "NewMessageSent(address,bytes32)": TypedContractEvent<
+      NewMessageSentEvent.InputTuple,
+      NewMessageSentEvent.OutputTuple,
+      NewMessageSentEvent.OutputObject
+    >;
+    NewMessageSent: TypedContractEvent<
+      NewMessageSentEvent.InputTuple,
+      NewMessageSentEvent.OutputTuple,
+      NewMessageSentEvent.OutputObject
     >;
 
     "OwnershipTransferred(address,address)": TypedContractEvent<
