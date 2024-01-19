@@ -324,7 +324,7 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
 
     function getProfileOfAddress(
         address wallet_
-    ) external view returns (uint256) {
+    ) external view override returns(uint256) {
         return _walletToProfileId[wallet_];
     }
 

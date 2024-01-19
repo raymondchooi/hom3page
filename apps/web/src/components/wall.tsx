@@ -10,6 +10,16 @@ import {
 } from "next/navigation";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useAccount } from "wagmi";
+import { db } from "utils/firebase";
+import {
+  collection,
+  query,
+  startAt,
+  endAt,
+  orderBy,
+  onSnapshot,
+} from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 import { Block, Button, EditBlockDialog, WelcomeDialog } from "components";
 import { WALL_TOTAL_BLOCKS } from "constants/wall";
@@ -27,6 +37,10 @@ export default function Wall() {
   const selectMultipleBlocksOn =
     searchParams.get("selectMultipleBlocks") === "true";
   const editBlockParam = searchParams.get("editBlock");
+  const wallId = decodeURIComponent(params?.id?.toString() ?? "0")
+    .toString()
+    .toLowerCase();
+  const wallIdInt = parseInt(wallId);
 
   const [welcomeDialogOpen, setWelcomeDialogOpen] = useState<boolean>(false);
   const [editBlockDialogOpen, setEditBlockDialogOpen] =
@@ -34,10 +48,18 @@ export default function Wall() {
   const [selectedBlocks, setSelectedBlocks] = useState<Map<string, object>>(
     new Map(),
   );
-
-  const wallId = decodeURIComponent(params?.id?.toString() ?? "0")
-    .toString()
-    .toLowerCase();
+  const [wallCollection] = useCollection(
+    query(
+      collection(db, "blocks"),
+      orderBy("id", "asc"),
+      startAt(`${wallIdInt === 0 ? 1 : wallIdInt * WALL_TOTAL_BLOCKS + 1}`),
+      endAt(
+        `${wallIdInt === 0 ? 288 : wallIdInt * WALL_TOTAL_BLOCKS + WALL_TOTAL_BLOCKS}`,
+      ),
+    ),
+  );
+  const wallData = wallCollection?.docs || [];
+  console.log("wallData", wallData?.[0]?.data());
 
   useEffect(() => {
     if (editBlockParam && !selectMultipleBlocksOn) {
@@ -121,9 +143,15 @@ export default function Wall() {
   }, [wallId]);
 
   const renderBlocks = useMemo(() => {
+    const populatedWallData = Array.from({ length: 288 }, (_, i) => {
+      const index = i + 1;
+      const existingBlock = wallData.find((block) =>block?.data()?.id === index.toString());
+      return existingBlock?.data() || { id: index.toString() };
+    });
+
     return (
       <>
-        {generateRandomWallData.map((blockData, i) => {
+        {populatedWallData.map((blockData, i) => {
           const blockId = blockData.id;
 
           if (i === 212) {
@@ -221,7 +249,7 @@ export default function Wall() {
         })}
       </>
     );
-  }, [address, generateRandomWallData, selectMultipleBlocksOn, selectedBlocks]);
+  }, [address, wallData, selectMultipleBlocksOn, selectedBlocks]);
 
   function handleConfirmSelection() {
     if (selectedBlocks) {

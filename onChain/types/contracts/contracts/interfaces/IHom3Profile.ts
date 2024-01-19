@@ -28,6 +28,7 @@ export interface IHom3ProfileInterface extends Interface {
     nameOrSignature:
       | "balanceOf"
       | "blockPurchaseMint"
+      | "getProfileOfAddress"
       | "removeLensProfile"
       | "setLensProfile"
       | "signUpAndCreateLens"
@@ -42,6 +43,10 @@ export interface IHom3ProfileInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "blockPurchaseMint",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getProfileOfAddress",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -64,6 +69,10 @@ export interface IHom3ProfileInterface extends Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "blockPurchaseMint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getProfileOfAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -148,6 +157,12 @@ export interface IHom3Profile extends BaseContract {
     "nonpayable"
   >;
 
+  getProfileOfAddress: TypedContractMethod<
+    [wallet_: AddressLike],
+    [bigint],
+    "view"
+  >;
+
   removeLensProfile: TypedContractMethod<
     [profileId_: BigNumberish, lensProfileId_: BigNumberish],
     [void],
@@ -182,6 +197,9 @@ export interface IHom3Profile extends BaseContract {
   getFunction(
     nameOrSignature: "blockPurchaseMint"
   ): TypedContractMethod<[owner_: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "getProfileOfAddress"
+  ): TypedContractMethod<[wallet_: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "removeLensProfile"
   ): TypedContractMethod<

@@ -80,6 +80,8 @@ function BuyButton({
       if (optimisedBlockIds?.[0]?.[0]) {
         // Check allowance covers payment
         if (cost > allowance) {
+          callback(1);
+
           // They need to add allowanceaaaaaa
           // Approve the send to the sales contracts
           const addAllowance = await writeContract({
@@ -89,6 +91,7 @@ function BuyButton({
             args: [saleContract.address, cost],
           });
         }
+        callback(2);
 
         //  Send the purchase
         const purchaseReturn = await writeContract(
@@ -106,6 +109,9 @@ function BuyButton({
 
         // Verify transactions
         // if connected to mumbai - display minted block tx
+        if (network === "maticMumbai") {
+          callback(3);
+        }
 
         // if on Sepplia wait for message sent,
         //  get messageId and wait listen to Mumbai Sales contract for compleaion event

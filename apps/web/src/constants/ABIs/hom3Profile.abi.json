@@ -602,6 +602,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "messageId_",
+        "type": "bytes32"
+      }
+    ],
+    "name": "NewMessageSent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -1302,6 +1321,25 @@
       }
     ],
     "name": "getProfileLensId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "wallet_",
+        "type": "address"
+      }
+    ],
+    "name": "getProfileOfAddress",
     "outputs": [
       {
         "internalType": "uint256",

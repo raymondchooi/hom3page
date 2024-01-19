@@ -52,14 +52,16 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   await tx1.wait();
   console.log(`🟠 [TASK] ${taskId} : Set profile contract on Sales `);
 
-  // Add the deposit contract to the profile
-  const addDepositAddressTx = await profileContract.setDepositContractAddress(
-    deployedContracts[name]?.Hom3DepositVault as Addressable
-  );
-  await addDepositAddressTx.wait();
-  console.log(
-    `🟠 [TASK] ${taskId} :Added deposit contract to profile contract`
-  );
+  if (deployedContracts[name]?.Hom3DepositVault) {
+    // Add the deposit contract to the profile
+    const addDepositAddressTx = await profileContract.setDepositContractAddress(
+      deployedContracts[name]?.Hom3DepositVault as Addressable
+    );
+    await addDepositAddressTx.wait();
+    console.log(
+      `🟠 [TASK] ${taskId} :Added deposit contract to profile contract`
+    );
+  }
 
   // Set the chain to accept messages
   const chainStateTx = await salesContract.setBlockStoreActive(chainId, true);
@@ -89,7 +91,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   console.log(`🟠 [TASK] ${taskId} : Approved USDC Spend`);
 
   // Buy a single Block
-  const buySingleTx = await salesContract.buyBlock(1);
+  const buySingleTx = await salesContract.buyBlock([[1]], false);
   await buySingleTx.wait();
   console.log(`🟠 [TASK] ${taskId} : Bought Block No.1`);
 

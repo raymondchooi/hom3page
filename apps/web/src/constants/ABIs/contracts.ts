@@ -50,15 +50,15 @@ const CONTRACTS: NetworkContracts = {
 
   maticMumbai: {
     BlockSales: {
-      address: "0xC964770ff56B5F4E2F96A76A59c5a2789A243e97",
+      address: "0xC4A39bAe63852a613eFf1a53d8d3C28fbbaDE6A6",
       abi: BlockSalesABI,
     },
     BlockToken: {
-      address: "0x9C39352Cf68f13D2FF6a493B082E5f4947e6e5cC",
+      address: "0x75BDd507A8ad2C8AE2bA502C85D96c1674a89730",
       abi: BlockTokenABI,
     },
     Hom3Profile: {
-      address: "0x1c600755f35bDd47852f0B458371E4D36DcED0d6",
+      address: "0xDF89c68491B07E221Ffb7334b5FD0a617Da8aA01",
       abi: HomeProfileABI,
     },
   },

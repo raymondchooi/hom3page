@@ -43,7 +43,10 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   const [bAppStoredValues, setBAppStoredValues] =
     useState<Record<string, string>>();
 
-    const [buyState. setBuyState] = useState<number>(0)
+  const [buyState, setBuyState] = useState<number>(0);
+  const handleBuyStateChange = (state: number) => {
+    setBuyState(state);
+  };
 
   const blockIds = useMemo(() => {
     return editBlockParam
@@ -169,8 +172,13 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                   optimisedBlockIds={optimisedBlockIds}
                   setBought={setBought}
                   bought={bought}
-                  callback={setBuyState}
+                  callback={handleBuyStateChange}
                 />
+                <div>
+                  {buyState === 1 && "Please approve the sales contract"}
+                  {buyState === 2 && "Please approve purchase transaction"}
+                  {buyState === 3 && "Thank you for buying apart of Hom3"}
+                </div>
 
                 <button
                   onClick={handleSelectMultipleClick}
