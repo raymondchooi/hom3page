@@ -10,24 +10,24 @@ const deployedContracts: {
     BlockToken: "",
     BlockSales: "",
     BlockStore: "",
-    Hom3ProfileToken: "",
+    Hom3Profile: "",
   },
   ethSepolia: {
     BlockToken: "",
-    BlockStore: "0x94dEa8d83c4a1aFF7cc37E9E45A627C41C0b8d88",
-    Hom3ProfileToken: "",
+    BlockStore: "0x56ba4D9bBF5f09c6A26058Df860c827aA6BbBb87",
+    Hom3Profile: "",
     Hom3DepositVault: "",
   },
   opGoerli: {
     BlockToken: "",
     BlockSales: "",
-    Hom3ProfileToken: "",
+    Hom3Profile: "",
   },
   maticMumbai: {
-    BlockToken: "0xfc2897eaFDD649441c5061EBb80FB9a771C9b5Fa",
-    BlockSales: "0xD6aE33cb1Bd308b7b56A9Dc52B457F69D3d1aaa4",
+    BlockToken: "0xe5A3D9C58742794781F06edbFdc160Cdf134A383",
+    BlockSales: "0xA3961db3A7344eFCd19cCF527E7E011Dd206cAb2",
     BlockStore: "",
-    Hom3ProfileToken: "",
+    Hom3Profile: "",
     Hom3Vault: "",
   },
 };
@@ -36,7 +36,7 @@ export type ContractNames =
   | "BlockToken"
   | "BlockSales"
   | "BlockStore"
-  | "Hom3ProfileToken"
+  | "Hom3Profile"
   | "Hom3ProfileShadow"
   | "Hom3Vault"
   | "Hom3DepositVault";

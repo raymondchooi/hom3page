@@ -210,6 +210,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IHom3DepositVault__factory>;
     getContractFactory(
+      name: "IHom3Profile",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IHom3Profile__factory>;
+    getContractFactory(
       name: "IHom3ProfileToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IHom3ProfileToken__factory>;
@@ -524,6 +528,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IHom3DepositVault>;
     getContractAt(
+      name: "IHom3Profile",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IHom3Profile>;
+    getContractAt(
       name: "IHom3ProfileToken",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -806,6 +815,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IHom3DepositVault>;
     deployContract(
+      name: "IHom3Profile",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IHom3Profile>;
+    deployContract(
       name: "IHom3ProfileToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IHom3ProfileToken>;
@@ -1119,6 +1132,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IHom3DepositVault>;
+    deployContract(
+      name: "IHom3Profile",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IHom3Profile>;
     deployContract(
       name: "IHom3ProfileToken",
       args: any[],

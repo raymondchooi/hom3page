@@ -11,7 +11,7 @@ import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
 import {Hom3Vault, CCIPReceiver, Client} from "../utils/Hom3Vault.sol";
 
-contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3ProfileToken {
+contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3Profile {
     IERC20 public immutable PAYMENT_TOKEN;
     address public immutable LENS_PROTOCOL;
     address public immutable BLOCK_CONTRACT;
@@ -30,7 +30,6 @@ contract Hom3ProfileToken is Hom3Vault, ERC721Votes, IHom3ProfileToken {
         string memory version_,
         address salesContract_,
         address paymentToken_,
-        address lensProtocol_,
         address ccipRouter_,
         address linkToken_,
         address lensProtocolContract_

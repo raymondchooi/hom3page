@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IHom3ProfileToken {
+interface IHom3Profile {
     event ProfileCreated(address owner_, uint256 profileId_);
 
     error OneProfilePerAccount();

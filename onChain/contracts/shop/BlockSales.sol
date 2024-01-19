@@ -9,10 +9,13 @@ import "../security/onlyActive.sol";
 import "../interfaces/IBlockSales.sol";
 import {IGhoToken} from "../interfaces/IGhoToken.sol";
 import "../helpers/CCIPInterface.sol";
+import {IHom3Profile} from "../interfaces/IHom3Profile.sol";
 
 contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
     IERC721 public immutable NFT;
     IERC20 public immutable PAYMENT_TOKEN;
+
+    IHom3Profile private _Hom3ProfileContract;
 
     mapping(uint64 => address) private _saleStores;
 
@@ -161,12 +164,6 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         }
     }
 
-    function testSendMessage() external onlyOwner {
-        bytes32 message_ = 0x0;
-        SaleRecipe memory recipe_ = SaleRecipe(message_, true);
-        _returnSalesError(recipe_, SALES_CONTRACT_CHAIN, address(0));
-    }
-
     function _returnSalesError(
         SaleRecipe memory recipe_,
         uint64 chainId_,
@@ -178,7 +175,6 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
             abi.encode(recipe_),
             SALES_RECIPE_GAS
         );
-        // Send the CCIP message through the router and store the returned CCIP message ID
         messageId = _sendMessage(chainId_, evm2AnyMessage);
 
         // Emit an event saying message failed
@@ -201,7 +197,70 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         return messageId;
     }
 
-    /** @notice WITHDRAWING MECHANICS */
+    /**   @notice CHECKERS  */
+
+    function _checkOwnershipOfBatch(
+        uint256[][] memory tokenIds_
+    ) internal view returns (bool) {
+        unchecked {
+            for (uint i = 0; i < tokenIds_.length; i++)
+                for (uint x = 0; x < tokenIds_[i].length; x++)
+                    if (NFT.ownerOf(tokenIds_[i][x]) != address(this))
+                        return false;
+        }
+        return true;
+    }
+
+    function _checkIfHasProfile(address buyer_)internal returns(bool){
+        
+    }
+
+    /** @notice GETTERS */
+
+    function getBlockCost() public pure returns (uint256) {
+        return COST_PER_BLOCK;
+    }
+
+    function getTotalSold() public view returns (uint256) {
+        return _totalSold;
+    }
+
+    function getChainBlockStore(uint64 chainId_) public view returns (address) {
+        return _saleStores[chainId_];
+    }
+
+    function getProfileCOntract() external view returns (address) {
+        return address(_Hom3ProfileContract);
+    }
+
+    /**   @notice SETTERS  */
+    /**
+     * @notice Adds a BlockStore contract to the allow message
+     * @param chainId_ ccip chain id
+     * @param contractAddress_ address of the BlockStore contracts
+     */
+    function setBlockStore(
+        uint64 chainId_,
+        address contractAddress_
+    ) public onlyOwner {
+        _setAllowedAddress(chainId_, contractAddress_);
+        _saleStores[chainId_] = contractAddress_;
+    }
+
+    /**
+     * @notice switch the allow of a ccip chain
+     * @param chainId_ chain id to effect
+     * @param flag_ wether to be active or not
+     */
+    function setBlockStoreActive(uint64 chainId_, bool flag_) public onlyOwner {
+        _setChainsActivity(chainId_, flag_);
+    }
+
+    function setProfileAddress(address newAddress_) external onlyOwner {
+        _Hom3ProfileContract = IHom3Profile(newAddress_);
+    }
+
+    /** @notice WITHDRAWING */
     function withdrawTokens(address tokenAddress_) external override onlyOwner {
         IERC20 token = IERC20(tokenAddress_);
         uint balance = token.balanceOf(address(this));
@@ -222,54 +281,6 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
     function withdrawLink() external onlyOwner {
         uint linkBalance = _linkToken.balanceOf(address(this));
         _linkToken.transfer(_msgSender(), linkBalance);
-    }
-
-    function _checkOwnershipOfBatch(
-        uint256[][] memory tokenIds_
-    ) internal view returns (bool) {
-        unchecked {
-            for (uint i = 0; i < tokenIds_.length; i++)
-                for (uint x = 0; x < tokenIds_[i].length; x++)
-                    if (NFT.ownerOf(tokenIds_[i][x]) != address(this))
-                        return false;
-        }
-        return true;
-    }
-
-    /** @notice GETTERS */
-
-    function getBlockCost() public pure returns (uint256) {
-        return COST_PER_BLOCK;
-    }
-
-    function getTotalSold() public view returns (uint256) {
-        return _totalSold;
-    }
-
-    /**   @notice SETTERS  */
-    /**
-     * @notice Adds a BlockStore contract to the allow message
-     * @param chainId_ ccip chain id
-     * @param contractAddress_ address of the BlockStore contracts
-     */
-    function setBlockStore(
-        uint64 chainId_,
-        address contractAddress_
-    ) public onlyOwner {
-        _setAllowedAddress(chainId_, contractAddress_);
-    }
-
-    /**
-     * @notice switch the allow of a ccip chain
-     * @param chainId_ chain id to effect
-     * @param flag_ wether to be active or not
-     */
-    function setBlockStoreActive(uint64 chainId_, bool flag_) public onlyOwner {
-        _setChainsActivity(chainId_, flag_);
-    }
-
-    function getChainBlockStore(uint64 chainId_) public view returns (address) {
-        return _saleStores[chainId_];
     }
 
     function withdrawAllToDev() external {

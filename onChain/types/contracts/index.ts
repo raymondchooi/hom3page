@@ -102,6 +102,8 @@ export type { IGhoToken } from "./contracts/interfaces/IGhoToken";
 export { IGhoToken__factory } from "./factories/contracts/interfaces/IGhoToken__factory";
 export type { IHom3DepositVault } from "./contracts/interfaces/IHom3DepositVault";
 export { IHom3DepositVault__factory } from "./factories/contracts/interfaces/IHom3DepositVault__factory";
+export type { IHom3Profile } from "./contracts/interfaces/IHom3Profile.sol/IHom3Profile";
+export { IHom3Profile__factory } from "./factories/contracts/interfaces/IHom3Profile.sol/IHom3Profile__factory";
 export type { IHom3ProfileToken } from "./contracts/interfaces/IHom3Profile.sol/IHom3ProfileToken";
 export { IHom3ProfileToken__factory } from "./factories/contracts/interfaces/IHom3Profile.sol/IHom3ProfileToken__factory";
 export type { IHom3Vault } from "./contracts/interfaces/IHom3Vault";

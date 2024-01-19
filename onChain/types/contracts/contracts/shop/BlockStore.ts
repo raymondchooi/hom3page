@@ -125,14 +125,16 @@ export interface BlockStoreInterface extends Interface {
       | "getTotalSold"
       | "isActive"
       | "owner"
-      | "removeLink"
       | "renounceOwnership"
       | "setActiveState"
+      | "setBlockStore"
+      | "setBlockStoreActive"
       | "setSalesContract"
       | "supportsInterface"
       | "transferOwnership"
       | "withdrawAllToDev"
       | "withdrawFunds"
+      | "withdrawLink"
       | "withdrawTokens"
   ): FunctionFragment;
 
@@ -201,16 +203,20 @@ export interface BlockStoreInterface extends Interface {
   encodeFunctionData(functionFragment: "isActive", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "removeLink",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "setActiveState",
     values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBlockStore",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBlockStoreActive",
+    values: [BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "setSalesContract",
@@ -230,6 +236,10 @@ export interface BlockStoreInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawFunds",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawLink",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -285,13 +295,20 @@ export interface BlockStoreInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "isActive", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeLink", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "setActiveState",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setBlockStore",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setBlockStoreActive",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -312,6 +329,10 @@ export interface BlockStoreInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawFunds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawLink",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -571,12 +592,22 @@ export interface BlockStore extends BaseContract {
 
   owner: TypedContractMethod<[], [string], "view">;
 
-  removeLink: TypedContractMethod<[], [void], "nonpayable">;
-
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   setActiveState: TypedContractMethod<
     [newState_: boolean],
+    [void],
+    "nonpayable"
+  >;
+
+  setBlockStore: TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  setBlockStoreActive: TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
     [void],
     "nonpayable"
   >;
@@ -602,6 +633,8 @@ export interface BlockStore extends BaseContract {
   withdrawAllToDev: TypedContractMethod<[], [void], "nonpayable">;
 
   withdrawFunds: TypedContractMethod<[], [void], "nonpayable">;
+
+  withdrawLink: TypedContractMethod<[], [void], "nonpayable">;
 
   withdrawTokens: TypedContractMethod<
     [tokenAddress_: AddressLike],
@@ -667,14 +700,25 @@ export interface BlockStore extends BaseContract {
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "removeLink"
-  ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setActiveState"
   ): TypedContractMethod<[newState_: boolean], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setBlockStore"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setBlockStoreActive"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setSalesContract"
   ): TypedContractMethod<[newAddress_: AddressLike], [void], "nonpayable">;
@@ -689,6 +733,9 @@ export interface BlockStore extends BaseContract {
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawFunds"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawLink"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "withdrawTokens"

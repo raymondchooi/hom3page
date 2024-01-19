@@ -81,13 +81,18 @@ export declare namespace Client {
 export interface BlockSalesInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "ETH_CHAIN_SELECTOR"
+      | "MATIC_CHAIN_SELECTOR"
       | "NFT"
+      | "OP_CHAIN_SELECTOR"
       | "PAYMENT_TOKEN"
+      | "SALES_CONTRACT_CHAIN"
       | "buyBatchBlock"
       | "buyBlock"
       | "ccipReceive"
       | "getBlockCost"
       | "getChainBlockStore"
+      | "getProfileCOntract"
       | "getRouter"
       | "getTotalSold"
       | "isActive"
@@ -96,8 +101,8 @@ export interface BlockSalesInterface extends Interface {
       | "setActiveState"
       | "setBlockStore"
       | "setBlockStoreActive"
+      | "setProfileAddress"
       | "supportsInterface"
-      | "testSendMessage"
       | "transferOwnership"
       | "withdrawAllToDev"
       | "withdrawBlock"
@@ -109,16 +114,34 @@ export interface BlockSalesInterface extends Interface {
   getEvent(
     nameOrSignatureOrTopic:
       | "ContractActiveStateChange"
-      | "MessageReceived"
-      | "MessageSent"
+      | "MessageReceived(bytes32,uint64)"
+      | "MessageReceived(bytes32,uint64,address,tuple)"
+      | "MessageSent(bytes32,uint64)"
+      | "MessageSent(bytes32,uint64,address)"
       | "OwnershipTransferred"
       | "SaleFailed"
       | "SaleMade"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "NFT", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "OP_CHAIN_SELECTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "PAYMENT_TOKEN",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SALES_CONTRACT_CHAIN",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -140,6 +163,10 @@ export interface BlockSalesInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getChainBlockStore",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getProfileCOntract",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getRouter", values?: undefined): string;
   encodeFunctionData(
@@ -165,12 +192,12 @@ export interface BlockSalesInterface extends Interface {
     values: [BigNumberish, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [BytesLike]
+    functionFragment: "setProfileAddress",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "testSendMessage",
-    values?: undefined
+    functionFragment: "supportsInterface",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -197,9 +224,25 @@ export interface BlockSalesInterface extends Interface {
     values: [AddressLike]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "ETH_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MATIC_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "NFT", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "OP_CHAIN_SELECTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "PAYMENT_TOKEN",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SALES_CONTRACT_CHAIN",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -217,6 +260,10 @@ export interface BlockSalesInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getChainBlockStore",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getProfileCOntract",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getRouter", data: BytesLike): Result;
@@ -243,11 +290,11 @@ export interface BlockSalesInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "supportsInterface",
+    functionFragment: "setProfileAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "testSendMessage",
+    functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -288,7 +335,23 @@ export namespace ContractActiveStateChangeEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace MessageReceivedEvent {
+export namespace MessageReceived_bytes32_uint64_Event {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    sourceChainId_: BigNumberish
+  ];
+  export type OutputTuple = [messageId_: string, sourceChainId_: bigint];
+  export interface OutputObject {
+    messageId_: string;
+    sourceChainId_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace MessageReceived_bytes32_uint64_address_tuple_Event {
   export type InputTuple = [
     messageId: BytesLike,
     sourceChainSelector: BigNumberish,
@@ -313,7 +376,23 @@ export namespace MessageReceivedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace MessageSentEvent {
+export namespace MessageSent_bytes32_uint64_Event {
+  export type InputTuple = [
+    messageId_: BytesLike,
+    destinationChain_: BigNumberish
+  ];
+  export type OutputTuple = [messageId_: string, destinationChain_: bigint];
+  export interface OutputObject {
+    messageId_: string;
+    destinationChain_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace MessageSent_bytes32_uint64_address_Event {
   export type InputTuple = [
     messageId: BytesLike,
     destinationChainSelector: BigNumberish,
@@ -422,9 +501,17 @@ export interface BlockSales extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  ETH_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
+  MATIC_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
   NFT: TypedContractMethod<[], [string], "view">;
 
+  OP_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
+
   PAYMENT_TOKEN: TypedContractMethod<[], [string], "view">;
+
+  SALES_CONTRACT_CHAIN: TypedContractMethod<[], [bigint], "view">;
 
   buyBatchBlock: TypedContractMethod<
     [tokenIds_: BigNumberish[][]],
@@ -447,6 +534,8 @@ export interface BlockSales extends BaseContract {
     [string],
     "view"
   >;
+
+  getProfileCOntract: TypedContractMethod<[], [string], "view">;
 
   getRouter: TypedContractMethod<[], [string], "view">;
 
@@ -476,13 +565,17 @@ export interface BlockSales extends BaseContract {
     "nonpayable"
   >;
 
+  setProfileAddress: TypedContractMethod<
+    [newAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   supportsInterface: TypedContractMethod<
     [interfaceId: BytesLike],
     [boolean],
     "view"
   >;
-
-  testSendMessage: TypedContractMethod<[], [void], "nonpayable">;
 
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
@@ -513,11 +606,23 @@ export interface BlockSales extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "ETH_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MATIC_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "NFT"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "OP_CHAIN_SELECTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "PAYMENT_TOKEN"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "SALES_CONTRACT_CHAIN"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "buyBatchBlock"
   ): TypedContractMethod<[tokenIds_: BigNumberish[][]], [void], "nonpayable">;
@@ -537,6 +642,9 @@ export interface BlockSales extends BaseContract {
   getFunction(
     nameOrSignature: "getChainBlockStore"
   ): TypedContractMethod<[chainId_: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "getProfileCOntract"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "getRouter"
   ): TypedContractMethod<[], [string], "view">;
@@ -570,11 +678,11 @@ export interface BlockSales extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "setProfileAddress"
+  ): TypedContractMethod<[newAddress_: AddressLike], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "testSendMessage"
-  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
@@ -602,18 +710,32 @@ export interface BlockSales extends BaseContract {
     ContractActiveStateChangeEvent.OutputObject
   >;
   getEvent(
-    key: "MessageReceived"
+    key: "MessageReceived(bytes32,uint64)"
   ): TypedContractEvent<
-    MessageReceivedEvent.InputTuple,
-    MessageReceivedEvent.OutputTuple,
-    MessageReceivedEvent.OutputObject
+    MessageReceived_bytes32_uint64_Event.InputTuple,
+    MessageReceived_bytes32_uint64_Event.OutputTuple,
+    MessageReceived_bytes32_uint64_Event.OutputObject
   >;
   getEvent(
-    key: "MessageSent"
+    key: "MessageReceived(bytes32,uint64,address,tuple)"
   ): TypedContractEvent<
-    MessageSentEvent.InputTuple,
-    MessageSentEvent.OutputTuple,
-    MessageSentEvent.OutputObject
+    MessageReceived_bytes32_uint64_address_tuple_Event.InputTuple,
+    MessageReceived_bytes32_uint64_address_tuple_Event.OutputTuple,
+    MessageReceived_bytes32_uint64_address_tuple_Event.OutputObject
+  >;
+  getEvent(
+    key: "MessageSent(bytes32,uint64)"
+  ): TypedContractEvent<
+    MessageSent_bytes32_uint64_Event.InputTuple,
+    MessageSent_bytes32_uint64_Event.OutputTuple,
+    MessageSent_bytes32_uint64_Event.OutputObject
+  >;
+  getEvent(
+    key: "MessageSent(bytes32,uint64,address)"
+  ): TypedContractEvent<
+    MessageSent_bytes32_uint64_address_Event.InputTuple,
+    MessageSent_bytes32_uint64_address_Event.OutputTuple,
+    MessageSent_bytes32_uint64_address_Event.OutputObject
   >;
   getEvent(
     key: "OwnershipTransferred"
@@ -649,26 +771,25 @@ export interface BlockSales extends BaseContract {
       ContractActiveStateChangeEvent.OutputObject
     >;
 
+    "MessageReceived(bytes32,uint64)": TypedContractEvent<
+      MessageReceived_bytes32_uint64_Event.InputTuple,
+      MessageReceived_bytes32_uint64_Event.OutputTuple,
+      MessageReceived_bytes32_uint64_Event.OutputObject
+    >;
     "MessageReceived(bytes32,uint64,address,tuple)": TypedContractEvent<
-      MessageReceivedEvent.InputTuple,
-      MessageReceivedEvent.OutputTuple,
-      MessageReceivedEvent.OutputObject
+      MessageReceived_bytes32_uint64_address_tuple_Event.InputTuple,
+      MessageReceived_bytes32_uint64_address_tuple_Event.OutputTuple,
+      MessageReceived_bytes32_uint64_address_tuple_Event.OutputObject
     >;
-    MessageReceived: TypedContractEvent<
-      MessageReceivedEvent.InputTuple,
-      MessageReceivedEvent.OutputTuple,
-      MessageReceivedEvent.OutputObject
+    "MessageSent(bytes32,uint64)": TypedContractEvent<
+      MessageSent_bytes32_uint64_Event.InputTuple,
+      MessageSent_bytes32_uint64_Event.OutputTuple,
+      MessageSent_bytes32_uint64_Event.OutputObject
     >;
-
     "MessageSent(bytes32,uint64,address)": TypedContractEvent<
-      MessageSentEvent.InputTuple,
-      MessageSentEvent.OutputTuple,
-      MessageSentEvent.OutputObject
-    >;
-    MessageSent: TypedContractEvent<
-      MessageSentEvent.InputTuple,
-      MessageSentEvent.OutputTuple,
-      MessageSentEvent.OutputObject
+      MessageSent_bytes32_uint64_address_Event.InputTuple,
+      MessageSent_bytes32_uint64_address_Event.OutputTuple,
+      MessageSent_bytes32_uint64_address_Event.OutputObject
     >;
 
     "OwnershipTransferred(address,address)": TypedContractEvent<
