@@ -1,0 +1,3 @@
+service : {
+  createNFT: (principal, text, text, nat16, text, text) -> (text);
+}
