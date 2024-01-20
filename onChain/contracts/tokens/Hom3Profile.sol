@@ -74,8 +74,10 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     ) public virtual override(ERC721) onlyOnePerWallet(to_) {
         super.transferFrom(from_, to_, tokenId_);
         // send message to deposit vault
+        /*  
         if (_depositContractAddress != address(0))
-            _emitProfileTransferred(tokenId_, to_);
+            _emitProfileTransferred(tokenId_, to_); 
+            */
         _walletToProfileId[to_] = tokenId_;
     }
 
@@ -91,8 +93,10 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     ) public virtual override(ERC721) onlyOnePerWallet(to_) {
         super.safeTransferFrom(from_, to_, tokenId_, data_);
         // send message to deposit vault
+        /*  
         if (_depositContractAddress != address(0))
-            _emitProfileTransferred(tokenId_, to_);
+            _emitProfileTransferred(tokenId_, to_); 
+            */
         _walletToProfileId[to_] = tokenId_;
     }
 
@@ -109,28 +113,29 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
             address(this),
             COST_PER_PROFILE
         );
+        require(succsess, "Payment failed");
 
-        if (succsess) {
-            uint256 tokenId = _profilesMinted + 1;
-            _mint(owner_, tokenId);
-            if (!checkIfHasLensProfile(owner_)) {
-                // send message to vaults
-                // Create Lens profile
-                Types.CreateProfileParams memory createProfileParams = Types
-                    .CreateProfileParams(owner_, address(0), abi.encode(0));
+        uint256 tokenId = _profilesMinted + 1;
+        _mint(owner_, tokenId);
+        if (!checkIfHasLensProfile(owner_)) {
+            // send message to vaults
+            // Create Lens profile
+            Types.CreateProfileParams memory createProfileParams = Types
+                .CreateProfileParams(owner_, address(0), abi.encode(0));
 
-                uint256 lensProfileId = LENS_PROTOCOL.createProfile(
-                    createProfileParams
-                );
+            uint256 lensProfileId = LENS_PROTOCOL.createProfile(
+                createProfileParams
+            );
 
-                _setLensProfile(tokenId, lensProfileId, true);
-            }
-            _profilesMinted++;
-            if (_depositContractAddress != address(0))
-                _emitProfileTransferred(tokenId, owner_);
-            _walletToProfileId[owner_] = tokenId;
-            emit ProfileCreated(owner_, tokenId);
-        } else revert("Payment Failed");
+            _setLensProfile(tokenId, lensProfileId, true);
+        }
+        _profilesMinted++;
+        /*  
+        if (_depositContractAddress != address(0))
+            _emitProfileTransferred(tokenId_, to_); 
+            */
+        _walletToProfileId[owner_] = tokenId;
+        emit ProfileCreated(owner_, tokenId);
     }
 
     function signUpWithLens(
@@ -148,16 +153,18 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
             COST_PER_PROFILE
         ); // && check owns Lens
 
-        if (succsess) {
-            uint256 tokenId = _profilesMinted + 1;
-            _mint(owner_, tokenId);
-            _setLensProfile(tokenId, lensProfileId_, false);
-            _profilesMinted++;
-            if (_depositContractAddress != address(0))
-                _emitProfileTransferred(tokenId, owner_);
-            _walletToProfileId[owner_] = tokenId;
-            emit ProfileCreated(owner_, tokenId);
-        } else revert("Payment or Profile Failed");
+        require(succsess, "Payment failed");
+
+        uint256 tokenId = _profilesMinted + 1;
+        _mint(owner_, tokenId);
+        _setLensProfile(tokenId, lensProfileId_, false);
+        _profilesMinted++;
+        /*  
+                if (_depositContractAddress != address(0))
+            _emitProfileTransferred(tokenId_, to_); 
+            */
+        _walletToProfileId[owner_] = tokenId;
+        emit ProfileCreated(owner_, tokenId);
     }
 
     function blockPurchaseMint(
@@ -175,8 +182,10 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
 
             _setLensProfile(tokenId, lensProfileId, true);
         }
+        /*  
         if (_depositContractAddress != address(0))
-            _emitProfileTransferred(tokenId, owner_);
+            _emitProfileTransferred(tokenId_, to_); 
+            */
         _profilesMinted++;
         _walletToProfileId[owner_] = tokenId;
         emit ProfileCreated(owner_, tokenId);
@@ -324,7 +333,7 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
 
     function getProfileOfAddress(
         address wallet_
-    ) external view override returns(uint256) {
+    ) external view override returns (uint256) {
         return _walletToProfileId[wallet_];
     }
 

@@ -234,9 +234,9 @@ function Profile({}: ProfileProps) {
         setError(error);
         return setActionState(10);
       }
+      setActionState(4);
       setHash(addAllowance.hash);
       await waitForTransaction(addAllowance?.hash);
-      setActionState(4);
     }
     setActionState(3);
     try {

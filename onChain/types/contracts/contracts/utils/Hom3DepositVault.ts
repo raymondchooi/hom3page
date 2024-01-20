@@ -110,7 +110,6 @@ export interface Hom3DepositVaultInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "ETH_CHAIN_SELECTOR"
-      | "HOM3_PROFILE"
       | "MASTER_CHAIN"
       | "MATIC_CHAIN_SELECTOR"
       | "OP_CHAIN_SELECTOR"
@@ -148,10 +147,6 @@ export interface Hom3DepositVaultInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "ETH_CHAIN_SELECTOR",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "HOM3_PROFILE",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -224,10 +219,6 @@ export interface Hom3DepositVaultInterface extends Interface {
 
   decodeFunctionResult(
     functionFragment: "ETH_CHAIN_SELECTOR",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "HOM3_PROFILE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -494,8 +485,6 @@ export interface Hom3DepositVault extends BaseContract {
 
   ETH_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
 
-  HOM3_PROFILE: TypedContractMethod<[], [string], "view">;
-
   MASTER_CHAIN: TypedContractMethod<[], [bigint], "view">;
 
   MATIC_CHAIN_SELECTOR: TypedContractMethod<[], [bigint], "view">;
@@ -577,9 +566,6 @@ export interface Hom3DepositVault extends BaseContract {
   getFunction(
     nameOrSignature: "ETH_CHAIN_SELECTOR"
   ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "HOM3_PROFILE"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "MASTER_CHAIN"
   ): TypedContractMethod<[], [bigint], "view">;

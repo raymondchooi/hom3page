@@ -76,7 +76,7 @@ const GENERIC_ABI = {
 };
 
 const COST_PER_BLOCK = 100 * 10 ** 6;
-const COST_PER_PROFILE = 100 * 10 ** 8;
+const COST_PER_PROFILE = 100 * 10 ** 6;
 
 export {
   CONTRACTS,
