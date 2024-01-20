@@ -149,6 +149,7 @@ export interface Hom3ProfileInterface extends Interface {
       | "supportsInterface"
       | "symbol"
       | "tokenURI"
+      | "totalSupply"
       | "transferFrom"
       | "transferOwnership"
       | "withdrawAllToDev"
@@ -397,6 +398,10 @@ export interface Hom3ProfileInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "totalSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferFrom",
     values: [AddressLike, AddressLike, BigNumberish]
   ): string;
@@ -585,6 +590,10 @@ export interface Hom3ProfileInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
     data: BytesLike
@@ -1224,6 +1233,8 @@ export interface Hom3Profile extends BaseContract {
 
   tokenURI: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
 
+  totalSupply: TypedContractMethod<[], [bigint], "view">;
+
   transferFrom: TypedContractMethod<
     [from_: AddressLike, to_: AddressLike, tokenId_: BigNumberish],
     [void],
@@ -1510,6 +1521,9 @@ export interface Hom3Profile extends BaseContract {
   getFunction(
     nameOrSignature: "tokenURI"
   ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "totalSupply"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "transferFrom"
   ): TypedContractMethod<

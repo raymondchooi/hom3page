@@ -53,7 +53,7 @@ contract AaveFaucetbApp is OnlyActive {
 
     TokenAddresses private _TOKEN_ADDRESSES;
     MintAmount private _MINT_CAPS;
-    IAaveFaucet public immutable FAUCET;
+    IAaveFaucet private FAUCET;
 
     constructor(
         TokenAddresses memory addresses_,
@@ -74,5 +74,19 @@ contract AaveFaucetbApp is OnlyActive {
 
     function getAllTokenAddress() public view returns (TokenAddresses memory) {
         return _TOKEN_ADDRESSES;
+    }
+
+    function updateAddresses(
+        TokenAddresses memory newAddresses_
+    ) external onlyOwner {
+        _TOKEN_ADDRESSES = newAddresses_;
+    }
+
+    function updateLimits(MintAmount memory newAmounts_) external onlyOwner {
+        _MINT_CAPS = newAmounts_;
+    }
+
+    function updateFaucetAddress(address newAddress_) external onlyOwner {
+        FAUCET = IAaveFaucet(newAddress_);
     }
 }

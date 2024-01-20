@@ -13,12 +13,14 @@ import {
   Hom3PageVaultArguments,
 } from "./deploymentArguments/vaults.arguments";
 import { ProfileTokenArguments } from "./deploymentArguments/tokens.arguments";
+import { AaveFaucetbAppArguments } from "./deploymentArguments/bApps.arguments";
 
 const deploymentFiles: Deployment = {
   BlockToken: GenericDeployer,
   ProfileToken: GenericDeployer,
   BlockSales: GenericDeployer,
   BlockStore: GenericDeployer,
+  AaveFaucetbApp: GenericDeployer,
 };
 
 export const deploymentArgumentStore: ArgumentStore = {
@@ -28,6 +30,7 @@ export const deploymentArgumentStore: ArgumentStore = {
   Hom3Vault: Hom3PageVaultArguments,
   Hom3DepositVault: Hom3PageDepositVaultArguments,
   Hom3Profile: ProfileTokenArguments,
+  AaveFaucetbApp: AaveFaucetbAppArguments,
 };
 
 export default deploymentFiles;

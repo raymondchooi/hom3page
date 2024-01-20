@@ -14,7 +14,7 @@ const deployedContracts: {
   },
   ethSepolia: {
     BlockToken: "",
-    BlockStore: "0x2192D1F6Bf04FC9aabCdA6bB6B5F446d47Cb3A99",
+    BlockStore: "0x0F279624F44F3FaC67BA1547A165457913DeD7cf",
     Hom3Profile: "",
     Hom3DepositVault: "",
   },
@@ -24,10 +24,10 @@ const deployedContracts: {
     Hom3Profile: "",
   },
   maticMumbai: {
-    BlockToken: "0x003Da1a9fC274cD91b5CD3203771630F465D8310",
-    BlockSales: "0x0EaDb8e668783EE144A60b8D80BEBe9cD9D07681",
+    BlockToken: "0xa50A72E53175B6a1e7dE552221D960B38584713F",
+    BlockSales: "0x074Df023e2c8c72F24f1F3d7381B71824408ABE3",
     BlockStore: "",
-    Hom3Profile: "0x975771292A4e55839cd1bf68a33c2be045D173ae",
+    Hom3Profile: "0x63AF5474c1a626036352b28B33094004385F2590",
     Hom3Vault: "",
   },
 };
@@ -39,5 +39,6 @@ export type ContractNames =
   | "Hom3Profile"
   | "Hom3ProfileShadow"
   | "Hom3Vault"
-  | "Hom3DepositVault";
+  | "Hom3DepositVault"
+  | "AaveFaucetbApp";
 export default deployedContracts;

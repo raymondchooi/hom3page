@@ -84,12 +84,13 @@ function BuyButton({
           try {
             // They need to add allowanceaaaaaa
             // Approve the send to the sales contracts
-            addAllowance = await writeContract({
+            const { hash } = (addAllowance = await writeContract({
               address: DEFAULT_PAYMENT_TOKEN[network] as `0x${string}`,
               abi: GENERIC_ABI.ERC20,
               functionName: "approve",
               args: [saleContract.address, cost],
-            });
+            }));
+            await waitForTransaction({ hash, chainId: chain?.id });
           } catch (error) {
             console.log(error);
             return callback(10, "error", true);

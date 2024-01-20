@@ -96,7 +96,7 @@ export default async function deploy({
 
       const maticTx = await deployer.sendTransaction({
         to: deployedContract.target,
-        value: hre.ethers.parseUnits("0.5", "ether"),
+        value: hre.ethers.parseUnits("0.2", "ether"),
       });
 
       await maticTx.wait();
@@ -110,7 +110,7 @@ export default async function deploy({
 
       const linkTX = await linkToken.transfer(
         deployedContract.target,
-        hre.ethers.parseUnits("5", "ether")
+        hre.ethers.parseUnits("2", "ether")
       );
 
       await linkTX.wait();
@@ -140,7 +140,7 @@ export default async function deploy({
 
       const linkTX = await linkToken.transfer(
         deployedContract.target,
-        hre.ethers.parseUnits("5", "ether")
+        hre.ethers.parseUnits("3", "ether")
       );
 
       await linkTX.wait();
@@ -148,7 +148,7 @@ export default async function deploy({
 
       const nativeTx = await deployer.sendTransaction({
         to: deployedContract.target,
-        value: hre.ethers.parseUnits("0.5", "ether"),
+        value: hre.ethers.parseUnits("0.2", "ether"),
       });
 
       await nativeTx.wait();
@@ -157,7 +157,7 @@ export default async function deploy({
     if (contractName == "Hom3Profile") {
       const maticTx = await deployer.sendTransaction({
         to: deployedContract.target,
-        value: hre.ethers.parseUnits("0.5", "ether"),
+        value: hre.ethers.parseUnits("0.2", "ether"),
       });
 
       await maticTx.wait();
@@ -171,7 +171,7 @@ export default async function deploy({
 
       const linkTX = await linkToken.transfer(
         deployedContract.target,
-        hre.ethers.parseUnits("5", "ether")
+        hre.ethers.parseUnits("3", "ether")
       );
 
       await linkTX.wait();

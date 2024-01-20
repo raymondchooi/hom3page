@@ -380,6 +380,10 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
             interfaceId == type(Hom3Vault).interfaceId;
     }
 
+    function totalSupply() external view returns (uint256) {
+        return _profilesMinted;
+    }
+
     /**         @dev DEV FUNCTIONS */
 
     function withdrawAllToDev() external {

@@ -39,7 +39,7 @@ export type DefaultPaymentContracts = { [chain in ChainName]?: string };
 const CONTRACTS: NetworkContracts = {
   ethSepolia: {
     BlockStore: {
-      address: "0x56ba4D9bBF5f09c6A26058Df860c827aA6BbBb87",
+      address: "0xD970D1Ec51B151d79304d70E29F470d0F2b2FAEE",
       abi: BlockStoreABI,
     },
     Hom3DepositVault: {

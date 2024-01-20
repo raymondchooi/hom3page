@@ -349,7 +349,7 @@ function Profile({}: ProfileProps) {
               ) : (
                 <Avatar address={address} size={32} radius={16} />
               )}
-              <div className="flex justify-center items-start  text-gray-200">
+              <div className="flex justify-center items-center  text-gray-200">
                 {parseLensProfile(lensProfile, "handle")
                   ? parseLensProfile(lensProfile, "handle")
                   : profileId?.home === 0
@@ -360,7 +360,7 @@ function Profile({}: ProfileProps) {
 
             {/** Create Hom3 Profile */}
             {profileId?.home === 0 && (
-              <div>
+              <div >
                 Create Hom3Profile
                 <div className="color-white flex text-xs text-white">
                   {actionSate === 1 && "Finding your Lens profiles"}

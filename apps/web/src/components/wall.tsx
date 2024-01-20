@@ -8,6 +8,7 @@ import {
   useRouter,
   usePathname,
 } from "next/navigation";
+import { PencilIcon } from "@heroicons/react/24/outline";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useAccount } from "wagmi";
 import { db } from "utils/firebase";
@@ -209,7 +210,7 @@ export default function Wall() {
                 ></div>
                 <div
                   className={cn(
-                    "absolute left-0 top-0 z-10 box-border flex cursor-pointer border-2 border-gray-800 bg-gray-900 hover:border-emerald-400",
+                    "absolute left-0 top-0 z-10 box-border flex cursor-pointer border-2 border-transparent bg-transparent hover:border-emerald-400",
                     blockData?.isFirstBlock ? "overflow-visible" : "z-0",
                   )}
                   style={{
@@ -253,7 +254,7 @@ export default function Wall() {
               ></div>
               <div
                 className={cn(
-                  "absolute left-0 top-0 z-10 box-border flex cursor-pointer border-2 border-gray-800 bg-gray-900 hover:border-emerald-400",
+                  "absolute left-0 top-0 z-10 box-border flex cursor-pointer border-2 border-transparent bg-transparent hover:border-emerald-400",
                   blockData?.isFirstBlock ? "overflow-visible" : "z-0",
                   isOwner ? "border-indigo-700" : "border-transparent",
                 )}
@@ -287,6 +288,20 @@ export default function Wall() {
     }
   }
 
+  function handleEditClick() {
+    const currentParams = new URLSearchParams(
+      Array.from(searchParams.entries()),
+    );
+
+    if (currentParams.get("selectMultipleBlocks") === "true") {
+      currentParams.delete("selectMultipleBlocks");
+    } else {
+      currentParams.set("selectMultipleBlocks", "true");
+    }
+
+    router.push(`${pathname}?${currentParams.toString()}`);
+  }
+
   return (
     <>
       <div className="relative flex h-full w-full flex-col items-center justify-center overflow-x-auto">
@@ -299,10 +314,16 @@ export default function Wall() {
           {({ zoomIn, zoomOut, centerView }) => (
             <>
               <TransformComponent>
-                <div className="flex h-screen w-screen  items-center justify-center">
+                <div className="relative flex h-screen w-screen  items-center justify-center">
                   <div className="grid min-w-[960px] grid-cols-24 gap-0">
                     {renderBlocks}
                   </div>
+                  <button
+                    className="0 absolute -right-[55px] bottom-[97px] flex h-10 w-10 items-center justify-center hover:scale-105"
+                    onClick={handleEditClick}
+                  >
+                    <PencilIcon className="h-6 w-6 text-emerald-800" />
+                  </button>
                 </div>
               </TransformComponent>
               <div className="absolute bottom-10 left-1/2 mt-5 flex -translate-x-1/2 flex-col items-center justify-center">

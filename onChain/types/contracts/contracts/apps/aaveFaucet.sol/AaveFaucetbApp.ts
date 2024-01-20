@@ -56,7 +56,6 @@ export declare namespace AaveFaucetbApp {
 export interface AaveFaucetbAppInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "FAUCET"
       | "getAllTokenAddress"
       | "isActive"
       | "mint"
@@ -64,13 +63,15 @@ export interface AaveFaucetbAppInterface extends Interface {
       | "renounceOwnership"
       | "setActiveState"
       | "transferOwnership"
+      | "updateAddresses"
+      | "updateFaucetAddress"
+      | "updateLimits"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic: "ContractActiveStateChange" | "OwnershipTransferred"
   ): EventFragment;
 
-  encodeFunctionData(functionFragment: "FAUCET", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getAllTokenAddress",
     values?: undefined
@@ -90,8 +91,19 @@ export interface AaveFaucetbAppInterface extends Interface {
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateAddresses",
+    values: [AaveFaucetbApp.TokenAddressesStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateFaucetAddress",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateLimits",
+    values: [AaveFaucetbApp.MintAmountStruct]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "FAUCET", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getAllTokenAddress",
     data: BytesLike
@@ -109,6 +121,18 @@ export interface AaveFaucetbAppInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateAddresses",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateFaucetAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateLimits",
     data: BytesLike
   ): Result;
 }
@@ -181,8 +205,6 @@ export interface AaveFaucetbApp extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  FAUCET: TypedContractMethod<[], [string], "view">;
-
   getAllTokenAddress: TypedContractMethod<
     [],
     [AaveFaucetbApp.TokenAddressesStructOutput],
@@ -209,13 +231,28 @@ export interface AaveFaucetbApp extends BaseContract {
     "nonpayable"
   >;
 
+  updateAddresses: TypedContractMethod<
+    [newAddresses_: AaveFaucetbApp.TokenAddressesStruct],
+    [void],
+    "nonpayable"
+  >;
+
+  updateFaucetAddress: TypedContractMethod<
+    [newAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  updateLimits: TypedContractMethod<
+    [newAmounts_: AaveFaucetbApp.MintAmountStruct],
+    [void],
+    "nonpayable"
+  >;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
-  getFunction(
-    nameOrSignature: "FAUCET"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "getAllTokenAddress"
   ): TypedContractMethod<
@@ -241,6 +278,23 @@ export interface AaveFaucetbApp extends BaseContract {
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "updateAddresses"
+  ): TypedContractMethod<
+    [newAddresses_: AaveFaucetbApp.TokenAddressesStruct],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "updateFaucetAddress"
+  ): TypedContractMethod<[newAddress_: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "updateLimits"
+  ): TypedContractMethod<
+    [newAmounts_: AaveFaucetbApp.MintAmountStruct],
+    [void],
+    "nonpayable"
+  >;
 
   getEvent(
     key: "ContractActiveStateChange"

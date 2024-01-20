@@ -14,7 +14,7 @@ import {IHom3Profile} from "../interfaces/IHom3Profile.sol";
 contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
     IERC721 public immutable NFT;
     IERC20 public immutable PAYMENT_TOKEN;
-    uint256 public constant PAYMENT_TOKEN_DECIMALS = 6;
+    uint256 public constant PAYMENT_TOKEN_DECIMALS = 6; // USDC
 
     IHom3Profile private _Hom3ProfileContract;
 
@@ -22,7 +22,8 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
 
     //  Sales
     uint256 internal constant COST_PER_BLOCK =
-        100 * 10 ** PAYMENT_TOKEN_DECIMALS; // USD
+        100 * 10 ** PAYMENT_TOKEN_DECIMALS;
+
     uint8 internal constant BUY_CAP = 10;
 
     uint256 internal _totalSold;
@@ -59,9 +60,8 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         uint256[][] calldata tokenIds_,
         bool multiBuy_
     ) external override nonReentrant is_active {
-        multiBuy_
-            ? _buyBatchBlock(tokenIds_, _msgSender())
-            : _buyBlock(tokenIds_[0][0], _msgSender());
+        if (multiBuy_) _buyBatchBlock(tokenIds_, _msgSender());
+        else _buyBlock(tokenIds_[0][0], _msgSender());
     }
 
     /**
@@ -71,7 +71,7 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
     function _buyBlock(uint256 tokenId_, address buyer_) internal {
         require(NFT.ownerOf(tokenId_) == address(this), "Token not available");
         require(
-            PAYMENT_TOKEN.balanceOf(buyer_) > COST_PER_BLOCK,
+            PAYMENT_TOKEN.balanceOf(buyer_) >= COST_PER_BLOCK,
             "Incorrect payment"
         );
         bool succsess = PAYMENT_TOKEN.transferFrom(

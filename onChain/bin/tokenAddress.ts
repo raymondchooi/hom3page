@@ -171,6 +171,10 @@ export const tokenAddress: TokenAddressList = {
     arbSepolia: "0x2a9C5afB0d0e4BAb2BCdaE109EC4b0c4Be15a165",
     maticMumbai: "0x1035CabC275068e0F4b745A29CEDf38E13aF41b1",
   },
+  aaveFaucet: {
+    ethSepolia: "",
+    maticMumbai: "0x2c95d10bA4BBEc79e562e8B3f48687751808C925",
+  },
 };
 
 export interface TokenAddressList {
