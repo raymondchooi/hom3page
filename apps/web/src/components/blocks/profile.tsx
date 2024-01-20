@@ -63,12 +63,12 @@ function Profile({}: ProfileProps) {
       );
 
       const contract = new ethers.Contract(
-        CONTRACTS?.maticMumbai?.Hom3Profile.address,
-        CONTRACTS?.maticMumbai?.Hom3Profile.abi,
+        CONTRACTS?.maticMumbai?.Hom3Profile?.address || '',
+        CONTRACTS?.maticMumbai?.Hom3Profile?.abi || '',
         provider,
       );
 
-      const id = parseFloat(await contract?.getProfileOfAddress(address));
+      const id = contract?.getProfileOfAddress ? parseFloat(await contract?.getProfileOfAddress(address)) : '';
       const balance = id
         ? parseFloat(await contract?.getProfilesBalance(id))
         : 0;
