@@ -14,6 +14,10 @@ actor {
 
   stable var nftStore : Trie.Trie<Text, NFT.Dip721NFT> = Trie.empty();
 
+  public shared (message) func whoami() : async Principal {
+    return message.caller
+  };
+
   public func createNFT(principal : Principal, name : Text, symbol : Text, maxLimit : Nat16, imageType : Text, image : Text) : async Types.NFTCreationResult {
     let logo : Types.LogoResult = { logo_type = imageType; data = image };
     let nft : Types.Dip721NonFungibleToken = {
@@ -22,8 +26,12 @@ actor {
       symbol = symbol;
       maxLimit = maxLimit
     };
+    let currentPrincipal = await whoami();
     Cycles.add(200_000_000_000);
-    let nftContainer = await NFT.Dip721NFT(principal, nft);
+    let nftContainer = await NFT.Dip721NFT(currentPrincipal, nft);
+
+    //TODO: add principal to the list of custodians and manage the security concerns
+
     let cyclesAccepted = await nftContainer.wallet_receive();
     let optionalNftID = await getRandom();
     switch (optionalNftID) {
@@ -32,7 +40,7 @@ actor {
         let nftID : Text = Int.toText(nat);
         let idKey : Trie.Key<Text> = getIDKey(nftID);
         nftStore := Trie.put(nftStore, idKey, Text.equal, nftContainer).0;
-        return {id = nftID; cyclesUsed = cyclesAccepted.accepted};
+        return { id = nftID; cyclesUsed = cyclesAccepted.accepted }
       }
     };
 
@@ -50,7 +58,7 @@ actor {
     { key = nftID; hash = Text.hash(nftID) }
   };
 
-  public func getNFTData(nftID : Text) : async Types.NFTData{
+  public func getNFTData(nftID : Text) : async Types.NFTData {
     let idKey : Trie.Key<Text> = getIDKey(nftID);
     let optionalNftContainer : ?NFT.Dip721NFT = Trie.find<Text, NFT.Dip721NFT>(nftStore, idKey, Text.equal);
     switch (optionalNftContainer) {
@@ -78,8 +86,8 @@ actor {
     switch (optionalNftContainer) {
       case (null) { throw Error.reject("No NFT with given ID") };
       case (?nftContainer) {
-        return await nftContainer.mintDip721(to, []);
+        return await nftContainer.mintDip721(to, [])
       }
     }
-  };
+  }
 }

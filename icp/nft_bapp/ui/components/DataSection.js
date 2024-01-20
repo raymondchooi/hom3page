@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react"
 import { useDropzone } from "react-dropzone"
 import { resizeImage } from "../utils/image"
-import { LedgerCanister } from "@dfinity/ledger-icp"
+import { LedgerCanister, AccountIdentifier } from "@dfinity/ledger-icp"
 import { useAuth } from "../service/use-auth-client"
 import { makeTemplateBackendActor } from "../service/actor-locator"
 import { createAgent } from "@dfinity/utils"
@@ -25,11 +25,13 @@ const IMAGE_MAX_WIDTH = 2048
 const TEXT_WIDTH = "120px"
 const WIDTH = "450px"
 
-export const DataSection = async () => {
+export const DataSection = () => {
   const [name, setName] = useState("")
   const [symbol, setSymbol] = useState("")
   const [maxLimit, setMaxLimit] = useState(0)
   const [file, setFile] = useState(null)
+  const [result, setResult] = useState(null)
+  const [errorMessage, setError] = useState(null)
   const { identity, principal } = useAuth()
 
   // const [loading, setLoading] = useState("")
@@ -85,23 +87,48 @@ export const DataSection = async () => {
       file.type,
       imageData
     )
+    if (result?.id) {
+      setResult(result.id)
+      setError("")
+    } else {
+      setResult("")
+      setError("The operation was not successful")
+    }
     console.log(result)
   }
 
-  const agent = await createAgent({
-    identity,
-    host: process.env.NEXT_PUBLIC_IC_HOST
-  })
+  async function fetchMetadata() {
+    const agent = await createAgent({
+      identity,
+      host: process.env.NEXT_PUBLIC_IC_HOST
+    })
 
-  const { metadata } = LedgerCanister.create({
-    agent,
-    canisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai"
-  })
+    const ledgerCanister = LedgerCanister.create({
+      agent,
+      canisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai"
+    })
 
-  const data = await metadata()
+    console.log(ledgerCanister)
+
+    const accountIDParams = AccountIdentifier.fromPrincipal({ principal })
+
+    console.log(accountIDParams.toHex())
+
+    console.log(accountIDParams)
+
+    const balance = await ledgerCanister.accountBalance({
+      accountIdentifier: accountIDParams,
+      certified: false
+    })
+
+    console.log(balance)
+
+    return balance
+  }
 
   return (
     <Flex flexDirection="column" gap="5" mt="5">
+      {/* <Button onClick={fetchMetadata}>get balance</Button> */}
       <FormControl id="name" display="flex" alignItems="baseline" width={WIDTH}>
         <FormLabel minWidth={TEXT_WIDTH}>NFT name:</FormLabel>
         <Input
@@ -133,7 +160,9 @@ export const DataSection = async () => {
         alignItems="baseline"
         width="427px"
       >
-        <FormLabel minWidth={TEXT_WIDTH}>NFT max limit:</FormLabel>
+        <FormLabel minWidth={TEXT_WIDTH} alignSelf="end">
+          NFT max limit:
+        </FormLabel>
         <NumberInput
           step={5}
           defaultValue={0}
@@ -180,6 +209,17 @@ export const DataSection = async () => {
       >
         Submit
       </Button>
+      {errorMessage && (
+        <Text color="red" fontWeight="bold">
+          {errorMessage}
+        </Text>
+      )}
+      {result && (
+        <Text color="green" fontWeight="bold">
+          NFT collection ID: {result} 
+        </Text>
+      )}
+
       {/* <Box>
         <Text>Response: &nbsp;</Text>
         {loading && <Text>Loading...</Text>}

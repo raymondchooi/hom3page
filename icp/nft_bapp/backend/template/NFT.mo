@@ -11,6 +11,7 @@ import Principal "mo:base/Principal";
 import Types "./Types";
 
 import Cycles "mo:base/ExperimentalCycles";
+import Debug "mo:base/Debug";
 
 shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungibleToken) = Self {
   stable var transactionId : Types.TransactionId = 0;
@@ -171,6 +172,9 @@ shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungib
   };
 
   public shared ({ caller }) func mintDip721(to : Principal, metadata : Types.MetadataDesc) : async Types.MintReceipt {
+    let debug_print = "Caller: " # debug_show(caller) # "\nCustodian: " # debug_show(custodian) # "\nCustodians: " # debug_show(custodians);
+    Debug.print(debug_print); 
+    
     if (not List.some(custodians, func(custodian : Principal) : Bool { custodian == caller })) {
       return #Err(#Unauthorized)
     };
