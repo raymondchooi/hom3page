@@ -1,9 +1,9 @@
 export type parselensprofileSearch = "handle" | "image";
 
 export default function parseLensProfile(
-  profile,
-  lookingFfor: parselensprofileSearch,
+  profile: { handle: { localName: any; }; metadata: { picture: { optimized: { uri: any; }; }; }; },
+  lookingFor: parselensprofileSearch,
 ) {
-  if (lookingFfor === "handle") return profile.handle?.localName;
-  if (lookingFfor === "image") return profile.metadata.picture.optimized.uri;
+  if (lookingFor === "handle") return profile.handle?.localName;
+  if (lookingFor === "image") return profile.metadata.picture.optimized.uri;
 }
