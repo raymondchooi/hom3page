@@ -1,4 +1,5 @@
 import { LensClient } from "@lens-protocol/client";
+import { bigIntToHex } from "utils/number";
 
 const getLensProfile = async (
   client: LensClient,
@@ -21,4 +22,6 @@ const getLensProfile = async (
   return profile;
 };
 
-export { getLensProfile };
+const lensProfileIdFromNumber = (input: BigInt) => bigIntToHex(input);
+
+export { getLensProfile, lensProfileIdFromNumber };

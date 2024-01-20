@@ -237,6 +237,7 @@ contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
 
     function setSalesContract(address newAddress_) external onlyOwner {
         _salesContractAddress = newAddress_;
+        setBlockStore(SALES_CONTRACT_CHAIN, newAddress_);
     }
 
     /**   @notice WITHDRAWING  */

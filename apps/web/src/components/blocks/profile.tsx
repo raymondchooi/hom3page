@@ -1,7 +1,7 @@
 import { type ChangeEvent } from "react";
 import Image from "next/image";
 import { useModal, Avatar } from "connectkit";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 
 import { Field, Label } from "components/fieldset";
 import {
@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "components/dialog";
-import { shortenWalletAddress } from "utils/text";
+import { buildNetworkScanLink, shortenWalletAddress } from "utils/text";
 import { Button, Input } from "components";
 import { styles as ButtonStyles } from "components/button";
 import type { BlockData } from "models/BlockData";
@@ -18,12 +18,17 @@ import { cn } from "utils/tailwind";
 import { useEffect, useState } from "react";
 import { CONTRACTS } from "constants/ABIs/contracts";
 import { type WalletClient, useWalletClient } from "wagmi";
-import { BrowserProvider, JsonRpcSigner, ethers } from "ethers";
+import { BrowserProvider, JsonRpcSigner, ethers, toBigInt } from "ethers";
 import { LensClient } from "@lens-protocol/client";
 import getLensClient from "utils/lens";
 import { floatToHex, floatToHexBigInt, bigIntToHex } from "utils/number";
-import { getLensProfile } from "utils/lens/getLensProfiles";
+import {
+  getLensProfile,
+  lensProfileIdFromNumber,
+} from "utils/lens/getLensProfiles";
 import parseLensProfile from "utils/lens/parseLensProfile";
+import { polygonMumbai } from "wagmi/chains";
+import { sepolia, waitForTransaction, writeContract } from "@wagmi/core";
 
 interface LensProfile {
   metadata: {
@@ -58,17 +63,20 @@ interface ProfileProps {
 function Profile({}: ProfileProps) {
   const { isConnected, address } = useAccount();
   const [openProfileDialog, setOpenProfileDialog] = useState(false);
-  const { setOpen } = useModal();
+  const { chain, chains } = useNetwork();
+  const { setOpen, openSwitchNetworks } = useModal();
 
   const [profileId, setProfileId] = useState<{
     home?: number;
-    lens?: number;
+    lens?: BigInt;
   }>();
   const [profilesBalance, setProfilesBalance] = useState<number>(0);
   const [lensProfile, setLensProfile] = useState<any>(null);
   const [loaded, setloaded] = useState<boolean>();
   const [profileContract, setProfileContract] = useState<ethers.Contract>();
   const [lensClient, setLensClient] = useState<LensClient>();
+  const [noProfile, setNoProfile] = useState<boolean>();
+  const [hash, setHash] = useState<string>();
 
   useEffect(() => {
     const getProfile = async () => {
@@ -102,7 +110,12 @@ function Profile({}: ProfileProps) {
     if (!lensClient) {
       setLensClient(getLensClient());
       console.log("got lens client");
-    } else if (profileContract && !profileId?.lens && profileId?.home) {
+    } else if (
+      profileContract &&
+      !profileId?.lens &&
+      profileId?.home &&
+      !noProfile
+    ) {
       console.log("getting lens profile: ", profileId);
       getLensPro();
     }
@@ -111,12 +124,16 @@ function Profile({}: ProfileProps) {
       if (!profileContract?.getProfileLensId) return;
 
       const lensId = await profileContract?.getProfileLensId(profileId?.home);
-      console.log("got lens profile id", bigIntToHex(lensId));
-      setProfileId((prv) => ({ ...prv, lens: parseInt(lensId) }));
+      if (parseInt(lensId) === 0) {
+        setNoProfile(true);
+        return;
+      }
+      console.log("got lens profile id", lensProfileIdFromNumber(lensId));
+      setProfileId((prv) => ({ ...prv, lens: lensId }));
 
       const profile = await getLensProfile(
         lensClient!,
-        bigIntToHex(lensId),
+        lensProfileIdFromNumber(lensId),
         "id",
       );
 
@@ -129,18 +146,38 @@ function Profile({}: ProfileProps) {
     if (isConnected) setOpenProfileDialog(true);
     else setOpen(true);
   }
-
+  const [linkeProfileState, setLinkProfileState] = useState<number>();
   async function linkLensProfileToHom3Profile() {
     if (lensInput > 0) {
+      setLinkProfileState(1);
       const prof = await getLensProfile(
         lensClient!,
-        lensInput.toString(),
+        lensProfileIdFromNumber(toBigInt(lensInput)),
         "id",
       );
       if (prof?.handle?.ownedBy === address) {
         // makesure on mumbai
+        if (chain?.id !== polygonMumbai.id) {
+          openSwitchNetworks();
+          setLinkProfileState(6);
+        }
         // call contract function
-      }
+        setLinkProfileState(2);
+
+        const setProfileTx = await writeContract({
+          address: profileContract?.target,
+          abi: CONTRACTS.maticMumbai?.Hom3Profile?.abi,
+          functionName: "setLensProfile",
+          args: [profileId?.home, lensInput],
+        });
+
+        setHash(setProfileTx.hash);
+        setLinkProfileState(3);
+
+        await waitForTransaction({ hash: setProfileTx.hash });
+        setNoProfile(false);
+        setLinkProfileState(4);
+      } else setLinkProfileState(5);
     }
   }
   const [lensInput, setLensInput] = useState<number>(0);
@@ -228,24 +265,33 @@ function Profile({}: ProfileProps) {
             </Button>
           </DialogTitle>
           <DialogBody>
+            <div className="flex-display-row flex w-full">
+              {parseLensProfile(lensProfile, "image") ? (
+                <Image
+                  src={parseLensProfile(lensProfile, "image")}
+                  className="rounded-full "
+                  width={32}
+                  height={32}
+                  alt="Lens profile image"
+                />
+              ) : (
+                <Avatar address={address} size={32} radius={16} />
+              )}
+            </div>
             <div className="text  text-gray-200">
               {parseLensProfile(lensProfile, "handle")
                 ? parseLensProfile(lensProfile, "handle")
-                : `#${profileId?.home}`}
+                : profileId?.home === 0
+                  ? "Looks like you don't have a Hom3 Profile yet"
+                  : `Hom3 #${profileId?.home}`}
             </div>
-            {!lensProfile && (
-              <>
-                <Field className="mt-2 text-gray-400">
-                  <Label className="text-gray-400">
-                    {"You haven't linked your Lens Profile yet"}
-                  </Label>
-                  <Input
-                    onChange={handleLensLinkInputChange}
-                    name="number"
-                    type="number"
-                    aria-label="Text"
-                  />
-                </Field>
+            {/** Create Hom3 Profile */}
+
+            {/** Link Lens profile */}
+
+            {profileId?.home === 0 && (
+              <div>
+                Create Hom3Profile
                 <div className="flex">
                   <div className="z-[10] mt-6 flex w-full justify-center">
                     <Button
@@ -253,12 +299,69 @@ function Profile({}: ProfileProps) {
                       onClick={() => linkLensProfileToHom3Profile()}
                       className="w-half"
                     >
-                      Link
+                      Get Profile
                     </Button>
                   </div>
                 </div>
-              </>
+              </div>
             )}
+            {!parseLensProfile(lensProfile, "handle") &&
+              profileId?.home !== 0 && (
+                <>
+                  <Field className="mt-2 text-gray-400">
+                    <Label className="text-gray-400">
+                      {"You haven't linked your Lens Profile yet"}
+                    </Label>
+                    <Input
+                      onChange={handleLensLinkInputChange}
+                      name="number"
+                      type="number"
+                      aria-label="Text"
+                      placeholder="Lens Profile Id"
+                    />
+                    <Label className="text-gray-400">
+                      {linkeProfileState === 1 &&
+                        "Checking your own the Lens Profile"}
+                      {linkeProfileState === 2 &&
+                        "Please confirm the transaction, this will link your Hom3 & Lens profiles"}
+                      {linkeProfileState === 3 && "Waiting for confirmation..."}
+                      {linkeProfileState === 4 && "Lens profile linked!"}
+                      {linkeProfileState === 5 &&
+                        "Your address doesn't own that profile."}
+                      {linkeProfileState === 6 && "Please connect to Mumbai"}
+
+                      {hash && (
+                        <a
+                          href={buildNetworkScanLink({
+                            network:
+                              chain?.id === sepolia.id
+                                ? "ethSepolia"
+                                : chain?.id === polygonMumbai.id
+                                  ? "maticMumbai"
+                                  : "eth",
+                            txHash: hash,
+                          })}
+                          target={"_blank"}
+                        >
+                          See transaction
+                        </a>
+                      )}
+                    </Label>
+                  </Field>
+
+                  <div className="flex">
+                    <div className="z-[10] mt-6 flex w-full justify-center">
+                      <Button
+                        fancy
+                        onClick={() => linkLensProfileToHom3Profile()}
+                        className="w-half"
+                      >
+                        Link
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
           </DialogBody>
         </Dialog>
       )}

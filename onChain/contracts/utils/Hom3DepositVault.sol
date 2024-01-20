@@ -9,7 +9,6 @@ import "../helpers/CCIPInterface.sol";
 
 contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     IGhoToken public immutable PAYMENT_TOKEN;
-    IERC721A public immutable HOM3_PROFILE;
 
     address internal _masterVault;
     uint64 public immutable MASTER_CHAIN;
@@ -18,6 +17,8 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     mapping(uint256 => uint256) private _deposit; //Profile No. to amount
     mapping(uint256 => address) private _spender;
     mapping(uint256 => uint256) private _allowance; //Profile No. to amount
+
+    mapping(uint256 => address) private _owners;
 
     mapping(bytes32 => PastMessage) private _pastMessages;
 
@@ -28,14 +29,13 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
 
     constructor(
         address ghoToken_,
-        address profileContract_,
         address masterContract_,
         address ccipRouter_,
         address linkToken_,
         uint64 masterChainId_
     ) CCIPInterface(linkToken_, ccipRouter_) Ownable(msg.sender) {
         PAYMENT_TOKEN = IGhoToken(ghoToken_);
-        HOM3_PROFILE = IERC721A(profileContract_);
+
         MASTER_CHAIN = masterChainId_;
         _masterVault = masterContract_;
     }
@@ -111,12 +111,6 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
 
         _escrow[message.update_.profileId_] -= message.value_;
         _pastMessages[message.returnMessageId_].fullFilled_ = true;
-
-        _transferTokens(
-            address(this),
-            HOM3_PROFILE.ownerOf(message.update_.profileId_),
-            message.value_
-        );
 
         emit WithdrewFunds(message.update_.profileId_, message.value_);
     }
