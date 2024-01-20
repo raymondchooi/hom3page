@@ -58,7 +58,6 @@ export default function Wall() {
       ),
     ),
   );
- 
 
   useEffect(() => {
     if (editBlockParam && !selectMultipleBlocksOn) {
@@ -141,26 +140,43 @@ export default function Wall() {
     return wallData;
   }, [wallId]);
 
-  const renderBlocks = useMemo(() => {
+  const populatedWallData = useMemo(() => {
     const wallData = wallCollection?.docs || [];
-    const populatedWallData: BlockData[] = Array.from({ length: 288 }, (_, i) => {
-      const index = i + 1;
-      const existingBlock = wallData.find((block) =>block?.data()?.id === index.toString());
-      return existingBlock?.data() ? existingBlock?.data() as BlockData : { id: index.toString() };
-    });
+    const populatedWallData: BlockData[] = Array.from(
+      { length: 288 },
+      (_, i) => {
+        const index = i + 1;
 
+        if (i === 212) {
+          return {
+            id: index.toString(),
+            type: "profile",
+            isFirstBlock: true,
+            width: 4,
+            height: 4,
+          };
+        }
+
+        const existingBlock = wallData.find(
+          (block) => block?.data()?.id === index.toString(),
+        );
+
+        return existingBlock?.data()?.id
+          ? (existingBlock?.data() as BlockData)
+          : { id: index.toString() };
+      },
+    );
+
+    return populatedWallData;
+  }, [wallCollection?.docs]);
+
+  const renderBlocks = useMemo(() => {
     return (
       <>
         {populatedWallData.map((blockData, i) => {
           const blockId = blockData.id;
-          const isOwner = !!blockData?.owner && !!address && blockData?.owner === address;
-
-          if (i === 212) {
-            blockData.type = "profile";
-            blockData.isFirstBlock = true;
-            blockData.width = 4;
-            blockData.height = 4;
-          }
+          const isOwner =
+            !!blockData?.owner && !!address && blockData?.owner === address;
 
           if (selectMultipleBlocksOn) {
             function handleBlockSelect() {
@@ -207,8 +223,10 @@ export default function Wall() {
                   className={cn(
                     "absolute left-0 top-0 z-20 box-border flex cursor-pointer border-2 hover:border-emerald-400",
                     selectedBlocks?.has(blockId.toString())
-                      ? "border-emerald-400" 
-                      : isOwner ? "border-indigo-700" :"border-transparent",
+                      ? "border-emerald-400"
+                      : isOwner
+                        ? "border-indigo-700"
+                        : "border-transparent",
                     blockData?.isFirstBlock ? "overflow-visible" : "z-20",
                   )}
                   onClick={handleBlockSelect}
@@ -237,7 +255,7 @@ export default function Wall() {
                 className={cn(
                   "absolute left-0 top-0 z-10 box-border flex cursor-pointer border-2 border-gray-800 bg-gray-900 hover:border-emerald-400",
                   blockData?.isFirstBlock ? "overflow-visible" : "z-0",
-                  isOwner ? "border-indigo-700" :"border-transparent"
+                  isOwner ? "border-indigo-700" : "border-transparent",
                 )}
                 style={{
                   width: BLOCK_WIDTH * (blockData?.width ?? 1),
@@ -251,7 +269,7 @@ export default function Wall() {
         })}
       </>
     );
-  }, [address, wallCollection?.docs, selectMultipleBlocksOn, selectedBlocks]);
+  }, [address, populatedWallData, selectMultipleBlocksOn, selectedBlocks]);
 
   function handleConfirmSelection() {
     if (selectedBlocks) {
@@ -341,7 +359,7 @@ export default function Wall() {
         <EditBlockDialog
           open={editBlockDialogOpen}
           setOpen={handleEditDialogOpen}
-          wallData={generateRandomWallData}
+          wallData={populatedWallData}
         />
       )}
       <WelcomeDialog open={welcomeDialogOpen} setOpen={setWelcomeDialogOpen} />

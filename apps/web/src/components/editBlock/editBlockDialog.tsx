@@ -106,6 +106,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
 
     for (const block of wallData) {
       // TODO change to check if purchasable
+      block.id;
       if (!block?.owner && blockIds.includes(block.id)) {
         purchasableBlocks.set(block.id, block);
       }
@@ -133,8 +134,6 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
 
     return result;
   }, [blockIds]);
-
-  console.log("optimisedBlockIds", optimisedBlockIds);
 
   function handleSelectMultipleClick() {
     setOpen(false);
