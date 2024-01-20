@@ -169,7 +169,7 @@ function BuyButton({
   }
 
   //TODO remove bought placeholder
-  if (purchasableBlocks.size > 0 && !bought) {
+  if (purchasableBlocks.size > 0) {
     return (
       <div className="z-[10] flex items-center">
         <Button

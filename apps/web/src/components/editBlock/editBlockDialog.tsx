@@ -179,7 +179,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   }
 
   function handleBappSummaryClick(bappId: string) {
-    if (selectedBlocksForEditing.size > 0 && (ownedBlocks.size > 0 || bought))
+  //  if (selectedBlocksForEditing.size > 0 && (ownedBlocks.size > 0))
       setEditBappId(bappId);
   }
 

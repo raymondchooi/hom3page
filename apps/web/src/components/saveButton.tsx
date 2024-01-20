@@ -5,7 +5,7 @@ interface SaveButtonProps {
   onSaveClick: () => void;
 }
 
-function SaveButton({ disabled }: SaveButtonProps) {
+function SaveButton({ disabled, onSaveClick }: SaveButtonProps) {
   return (
     <div className="z-[10] mt-6 flex w-full">
       <Button

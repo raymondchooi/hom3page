@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useModal, Avatar } from "connectkit";
 import { useAccount } from "wagmi";
 
+import { Field, Label } from "components/fieldset";
 import {
   Dialog,
   DialogBody,
@@ -100,7 +101,6 @@ function Profile({}: ProfileProps) {
         "id",
       );
 
-      console.log("got lens profile", profile);
       setProfileId((prv) => ({ ...prv, lens: lensId }));
       setLensProfile(profile);
     }
@@ -113,7 +113,7 @@ function Profile({}: ProfileProps) {
 
   async function linkLensProfileToHom3Profile() {
     if (lensInput > 0) {
-      const prof = await getLensProfile(lensClient!, lensInput, "id");
+      const prof = await getLensProfile(lensClient!, lensInput.toString(), "id");
       if (prof?.handle?.ownedBy === address) {
         // makesure on mumbai
         // call contract function
@@ -122,7 +122,7 @@ function Profile({}: ProfileProps) {
   }
   const [lensInput, setLensInput] = useState<number>(0);
   function handleLensLinkInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setLensInput(e.target.value);
+    setLensInput(parseInt(e.target.value));
   }
 
   return (
@@ -151,18 +151,17 @@ function Profile({}: ProfileProps) {
               <div>
                 {lensProfile ? (
                   <div>
-                    <div className="text-xs">Hey,,,</div>
+                    <div className="text-xs mt-1 text-gray-400">Hey </div>
                     {lensProfile?.handle?.localName}
                   </div>
                 ) : (
                   <div>
-                    <div className="text-xs">profile</div>#{profileId?.lens}{" "}
+                    {profileId?.lens ? <div className="text-xs mt-1 text-gray-400">{profileId?.lens ? '#' : ''}</div>: ''}
                   </div>
                 )}
               </div>
-              <div className="text-xs">profile</div>#{profileId?.lens}
-              <br />
-              <div className="text-xs">{profilesBalance.toFixed(3)}</div>
+   
+              <div className="text-xs mt-1 text-gray-400">{profilesBalance.toFixed(3)}</div>
             </div>
           </div>
         ) : (
@@ -200,11 +199,12 @@ function Profile({}: ProfileProps) {
           <DialogBody>
         
             {!lensProfile && (
-              <div className="text-gray-400">
-                You haven't linked your Lens Profile yet
+              <Field className="text-gray-400">
+                <Label className="text-gray-400">You haven't linked your Lens Profile yet</Label>
                 <Input
                   onChange={handleLensLinkInputChange}
                   name="number"
+                  type="number"
                   aria-label="Text"
                 />
                 <Button
@@ -214,7 +214,7 @@ function Profile({}: ProfileProps) {
                 >
                   Link
                 </Button>
-              </div>
+              </Field>
             )}
             {}
             <div className="flex">

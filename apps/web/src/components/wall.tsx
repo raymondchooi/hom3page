@@ -40,7 +40,7 @@ export default function Wall() {
   const wallId = decodeURIComponent(params?.id?.toString() ?? "0")
     .toString()
     .toLowerCase();
-  const wallIdInt = parseInt(wallId);
+  const wallIdInt = isNaN(parseInt(wallId)) ? 0 : parseInt(wallId);
 
   const [welcomeDialogOpen, setWelcomeDialogOpen] = useState<boolean>(false);
   const [editBlockDialogOpen, setEditBlockDialogOpen] =
