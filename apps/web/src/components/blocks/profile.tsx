@@ -23,6 +23,7 @@ import { LensClient } from "@lens-protocol/client";
 import getLensClient from "utils/lens";
 import { floatToHex, floatToHexBigInt, bigIntToHex } from "utils/number";
 import { getLensProfile } from "utils/lens/getLensProfiles";
+import parseLensProfile from "utils/lens/parseLensProfile";
 
 interface LensProfile {
   metadata: {
@@ -35,7 +36,20 @@ interface LensProfile {
   handle: {
     localName: string;
   };
-  // Add other properties as needed
+}
+
+interface ProfileFragment {
+  id: string;
+  metadata: {
+    picture: {
+      optimized: {
+        uri: string;
+      };
+    };
+  };
+  handle: {
+    localName: string;
+  };
 }
 interface ProfileProps {
   blockData: BlockData;
@@ -51,7 +65,7 @@ function Profile({}: ProfileProps) {
     lens?: number;
   }>();
   const [profilesBalance, setProfilesBalance] = useState<number>(0);
-  const [lensProfile, setLensProfile] = useState<LensProfile | null>(null);
+  const [lensProfile, setLensProfile] = useState<any>(null);
   const [loaded, setloaded] = useState<boolean>();
   const [profileContract, setProfileContract] = useState<ethers.Contract>();
   const [lensClient, setLensClient] = useState<LensClient>();
@@ -63,19 +77,21 @@ function Profile({}: ProfileProps) {
       );
 
       const contract = new ethers.Contract(
-        CONTRACTS?.maticMumbai?.Hom3Profile?.address || '',
-        CONTRACTS?.maticMumbai?.Hom3Profile?.abi || '',
+        CONTRACTS?.maticMumbai?.Hom3Profile?.address || "",
+        CONTRACTS?.maticMumbai?.Hom3Profile?.abi || "",
         provider,
       );
 
-      const id = contract?.getProfileOfAddress ? parseFloat(await contract?.getProfileOfAddress(address)) : '';
-      const balance = id
-        ? parseFloat(await contract?.getProfilesBalance(id))
-        : 0;
+      if (contract?.getProfileOfAddress && contract?.getProfilesBalance) {
+        const id = parseFloat(await contract?.getProfileOfAddress(address));
+        const balance = id
+          ? parseFloat(await contract?.getProfilesBalance(id))
+          : 0;
 
-      setProfilesBalance(balance);
-      setProfileId((prv) => ({ ...prv, home: id }));
-      setProfileContract(contract);
+        setProfilesBalance(balance);
+        setProfileId((prv) => ({ ...prv, home: id }));
+        setProfileContract(contract);
+      }
 
       setloaded(true);
     };
@@ -92,8 +108,11 @@ function Profile({}: ProfileProps) {
     }
 
     async function getLensPro() {
+      if (!profileContract?.getProfileLensId) return;
+
       const lensId = await profileContract?.getProfileLensId(profileId?.home);
       console.log("got lens profile id", bigIntToHex(lensId));
+      setProfileId((prv) => ({ ...prv, lens: parseInt(lensId) }));
 
       const profile = await getLensProfile(
         lensClient!,
@@ -102,7 +121,7 @@ function Profile({}: ProfileProps) {
       );
 
       setProfileId((prv) => ({ ...prv, lens: lensId }));
-      setLensProfile(profile);
+      if (profile) setLensProfile(profile);
     }
   }, [lensClient, profileId, profileContract]);
 
@@ -113,7 +132,11 @@ function Profile({}: ProfileProps) {
 
   async function linkLensProfileToHom3Profile() {
     if (lensInput > 0) {
-      const prof = await getLensProfile(lensClient!, lensInput.toString(), "id");
+      const prof = await getLensProfile(
+        lensClient!,
+        lensInput.toString(),
+        "id",
+      );
       if (prof?.handle?.ownedBy === address) {
         // makesure on mumbai
         // call contract function
@@ -135,7 +158,7 @@ function Profile({}: ProfileProps) {
           <div className="flex flex-col items-center justify-center ">
             {lensProfile?.metadata?.picture?.optimized?.uri ? (
               <Image
-                src={lensProfile.metadata.picture.optimized.uri}
+                src={parseLensProfile(lensProfile, "image")}
                 className="rounded-full "
                 width={32}
                 height={32}
@@ -151,17 +174,25 @@ function Profile({}: ProfileProps) {
               <div>
                 {lensProfile ? (
                   <div>
-                    <div className="text-xs mt-1 text-gray-400">Hey </div>
-                    {lensProfile?.handle?.localName}
+                    <div className="mt-1 text-xs text-gray-400">Hey </div>
+                    {parseLensProfile(lensProfile, "handle")}
                   </div>
                 ) : (
                   <div>
-                    {profileId?.lens ? <div className="text-xs mt-1 text-gray-400">{profileId?.lens ? '#' : ''}</div>: ''}
+                    {profileId?.lens ? (
+                      <div className="mt-1 text-xs text-gray-400">
+                        {profileId?.lens ? "#" : ""}
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 )}
               </div>
-   
-              <div className="text-xs mt-1 text-gray-400">{profilesBalance.toFixed(3)}</div>
+
+              <div className="mt-1 text-xs text-gray-400">
+                {profilesBalance.toFixed(3)}
+              </div>
             </div>
           </div>
         ) : (
@@ -197,10 +228,16 @@ function Profile({}: ProfileProps) {
             </Button>
           </DialogTitle>
           <DialogBody>
-        
+            <div className="text  text-gray-200">
+              {lensProfile
+                ? parseLensProfile(lensProfile, "handle")
+                : `#${profileId?.home}`}
+            </div>
             {!lensProfile && (
               <Field className="text-gray-400">
-                <Label className="text-gray-400">You haven't linked your Lens Profile yet</Label>
+                <Label className="text-gray-400">
+                  {"You haven't linked your Lens Profile yet"}
+                </Label>
                 <Input
                   onChange={handleLensLinkInputChange}
                   name="number"
@@ -216,7 +253,6 @@ function Profile({}: ProfileProps) {
                 </Button>
               </Field>
             )}
-            {}
             <div className="flex">
               <div className="z-[10] mt-8 flex w-full justify-center">
                 <Button fancy onClick={() => setOpen(false)} className="w-full">
