@@ -132,6 +132,8 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
       previousBlockId = currentBlockId;
     }
 
+    console.log("optimisedBlocks", result);
+
     return result;
   }, [blockIds]);
 
