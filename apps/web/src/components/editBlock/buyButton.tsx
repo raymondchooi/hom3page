@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { writeContract, readContract } from "@wagmi/core";
+import { writeContract, readContract, waitForTransaction } from "@wagmi/core";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 import { sepolia, optimismGoerli, polygonMumbai } from "wagmi/chains";
 import { useModal } from "connectkit";
@@ -23,7 +23,7 @@ interface BuyButtonProps {
   optimisedBlockIds?: ((string | undefined)[][] | undefined)[];
   setBought: (bought: boolean) => void;
   bought: boolean;
-  callback: (state: number) => void;
+  callback: (state: number, data?: string) => void;
 }
 
 function BuyButton({
@@ -92,7 +92,12 @@ function BuyButton({
           });
         }
         callback(2);
-
+        console.log(
+          "tokens to buy",
+          optimisedBlockIds.length === 1
+            ? [optimisedBlockIds]
+            : optimisedBlockIds,
+        );
         //  Send the purchase
         const purchaseReturn = await writeContract(
           {
@@ -100,17 +105,24 @@ function BuyButton({
             abi: saleContract.abi,
             functionName: "buyBlock",
             args: [
-              optimisedBlockIds[0][0],
+              optimisedBlockIds.length === 1
+                ? [optimisedBlockIds]
+                : optimisedBlockIds,
               purchasableBlocks.size === 1 ? true : false,
             ],
           },
           null,
         );
+        callback(3);
+
+        await waitForTransaction(purchaseReturn);
 
         // Verify transactions
         // if connected to mumbai - display minted block tx
         if (network === "maticMumbai") {
-          callback(3);
+          callback(5);
+        } else {
+          callback(4);
         }
 
         // if on Sepplia wait for message sent,
@@ -139,10 +151,12 @@ function BuyButton({
           fancy
           disabled={!isBalanceSufficient || loading}
           onClick={handleBuyButtonClick}
-        >{`Buy ${purchasableBlocks.size} Block${purchasableBlocks.size > 1 ? "s" : ""}`}</Button>
+        >
+          {renderButtonContent()}
+        </Button>
         {!!balance?.data?.symbol && !!balance?.data?.formatted && (
           <div className="ml-4 text-sm text-gray-400">
-            {renderButtonContent()}
+            {`Balance: ${parseFloat(balance?.data?.formatted ?? "0").toFixed(3)} ${balance?.data?.symbol}`}
           </div>
         )}
         {!isBalanceSufficient && (

@@ -1,7 +1,7 @@
 import BlockSalesABI from "./blockSales.abi.json";
-import BlockStoreABI from "./blockSales.abi.json";
-import BlockTokenABI from "./blockSales.abi.json";
-import HomeProfileABI from "./blockSales.abi.json";
+import BlockStoreABI from "./blockStore.sbi.json";
+import BlockTokenABI from "./blockToken.abi.json";
+import HomeProfileABI from "./hom3Profile.abi.json";
 import ERC20ABI from "./erc20.abi.json";
 import ERC721Votes from "./erc721Votes.abi.json";
 

@@ -20,34 +20,29 @@ function Profile({}: ProfileProps) {
 
   const { setOpen } = useModal();
   const [profileId, setProfileId] = useState<number>();
-  const [profilesBalance, setProfilesBalance] = useState<number>();
+  const [profilesBalance, setProfilesBalance] = useState<number>(0);
   const [loaded, setloaded] = useState<boolean>();
-  const [profileContract, setProfileContract] = useState<Contract>();
+  const [profileContract, setProfileContract] = useState<ethers.Contract>();
 
   const getProfile = async () => {
-    const network = new ethers.Network("mumbai", 80001);
     const provider = new ethers.JsonRpcProvider(
       `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_MATICMUMBAI_KEY}`,
     );
-    console.log(provider);
 
     const contract = new ethers.Contract(
       CONTRACTS?.maticMumbai?.Hom3Profile.address,
       CONTRACTS?.maticMumbai?.Hom3Profile.abi,
       provider,
-    ).connect(provider);
-    console.log("Blcok ", await provider.getBlock());
+    );
 
-    const id = await contract?.getProfileOfAddress(address);
-    const balance = id ? await contract?.fragment?.getProfilesBalance(id) : 0;
+    const id = parseFloat(await contract?.getProfileOfAddress(address)!);
+    const balance = id ? parseFloat(await contract?.getProfilesBalance(id)) : 0;
 
     setProfilesBalance(balance);
     setProfileId(id);
     setProfileContract(contract);
-    console.log("Profile Id:", id);
-    console.log("balance :", balance);
+
     setloaded(true);
-    return balance;
   };
 
   useEffect(() => {
@@ -65,9 +60,12 @@ function Profile({}: ProfileProps) {
           <div className="mt-2 truncate text-xs font-bold text-gray-400">
             {shortenWalletAddress(address)}
           </div>
-          Profile #{profileId}
-          <br />
-          balance {profilesBalance}
+          <div className="text=l">
+            <div className="text-xs">profile</div>
+            #{profileId}
+            <br />
+            <div className="text-xs">{profilesBalance.toFixed(3)}</div>
+          </div>
         </div>
       ) : (
         <div className={cn(ButtonStyles.base, ButtonStyles.fancy.more)}>

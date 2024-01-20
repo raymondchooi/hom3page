@@ -44,8 +44,10 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
     useState<Record<string, string>>();
 
   const [buyState, setBuyState] = useState<number>(0);
-  const handleBuyStateChange = (state: number) => {
+  const [hash, setHash] = useState<string>();
+  const handleBuyStateChange = (state: number, data: string) => {
     setBuyState(state);
+    if (data) setHash(data);
   };
 
   const blockIds = useMemo(() => {
@@ -175,9 +177,14 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                   callback={handleBuyStateChange}
                 />
                 <div>
-                  {buyState === 1 && "Please approve the sales contract"}
-                  {buyState === 2 && "Please approve purchase transaction"}
-                  {buyState === 3 && "Thank you for buying apart of Hom3"}
+                  {buyState === 1 &&
+                    "Please approve the sales contract to spend your USDC"}
+                  {buyState === 2 && "Please approve the purchase transaction"}
+                  {buyState === 3 && "Waiting for transaction to confirm"}
+                  {buyState === 4 &&
+                    "Sent transaction to Hom3, this might take 20 mins"}
+                  {buyState === 5 && "Thank you for buying apart of Hom3"}
+                  {hash && <a href={}>See transaction</a>}
                 </div>
 
                 <button

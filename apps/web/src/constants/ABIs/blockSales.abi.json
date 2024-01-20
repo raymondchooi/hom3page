@@ -265,6 +265,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "messageId_",
+        "type": "bytes32"
+      }
+    ],
+    "name": "NewMessageSent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -425,19 +444,11 @@
         "internalType": "uint256[][]",
         "name": "tokenIds_",
         "type": "uint256[][]"
-      }
-    ],
-    "name": "buyBatchBlock",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+      },
       {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
+        "internalType": "bool",
+        "name": "multiBuy_",
+        "type": "bool"
       }
     ],
     "name": "buyBlock",
