@@ -40,7 +40,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
 
   const [bought, setBought] = useState(false);
   const [selectedBlocksForEditing, setSelectedBlocksForEditing] = useState<
-    Map<string, BlockData>
+    Map<string, Partial<BlockData>>
   >(new Map());
   const [editBappId, setEditBappId] = useState<string>("");
   const [editBappValue, setEditBappValue] = useState<string>("");
