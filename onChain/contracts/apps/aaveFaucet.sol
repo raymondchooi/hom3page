@@ -77,8 +77,10 @@ contract AaveFaucetbApp is OnlyActive {
     function mint(address to_) external is_active {
         FAUCET.mint(_TOKEN_ADDRESSES.WBTC, to_, _MINT_CAPS.WBTC);
         FAUCET.mint(_TOKEN_ADDRESSES.AAVE, to_, _MINT_CAPS.AAVE);
-        FAUCET.mint(_TOKEN_ADDRESSES.WETH, to_, _MINT_CAPS.WETH);
         FAUCET.mint(_TOKEN_ADDRESSES.USDC, to_, _MINT_CAPS.USDC);
+
+        if (DEPLOYED_NETWORK == Network.MUMBAI)
+            FAUCET.mint(_TOKEN_ADDRESSES.WETH, to_, _MINT_CAPS.WETH);
     }
 
     function getAllTokenAddress() public view returns (TokenAddresses memory) {
