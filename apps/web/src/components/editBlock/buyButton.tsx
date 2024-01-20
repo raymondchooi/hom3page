@@ -79,19 +79,20 @@ function BuyButton({
       );
       if (optimisedBlockIds?.[0]?.[0]) {
         // Check allowance covers payment
+        let addAllowance;
         if (cost > allowance) {
           callback(1);
 
           // They need to add allowanceaaaaaa
           // Approve the send to the sales contracts
-          const addAllowance = await writeContract({
+          addAllowance = await writeContract({
             address: DEFAULT_PAYMENT_TOKEN[network],
             abi: GENERIC_ABI.ERC20,
             functionName: "approve",
             args: [saleContract.address, cost],
           });
         }
-        callback(2);
+        callback(2, addAllowance?.hash);
         console.log(
           "tokens to buy",
           optimisedBlockIds.length === 1
@@ -99,7 +100,7 @@ function BuyButton({
             : optimisedBlockIds,
         );
         //  Send the purchase
-        const purchaseReturn = await writeContract(
+        const { hash } = await writeContract(
           {
             address: saleContract.address,
             abi: saleContract.abi,
@@ -113,9 +114,9 @@ function BuyButton({
           },
           null,
         );
-        callback(3);
+        callback(3, hash);
 
-        await waitForTransaction(purchaseReturn);
+        await waitForTransaction({ hash, chainId: chain?.id });
 
         // Verify transactions
         // if connected to mumbai - display minted block tx

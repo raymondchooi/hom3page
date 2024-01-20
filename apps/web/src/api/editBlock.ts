@@ -1,56 +1,57 @@
-import {collection, doc, setDoc, updateDoc, getDoc, serverTimestamp} from 'firebase/firestore';
-import { BlockData } from 'models/BlockData';
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  writeBatch,
+  serverTimestamp,
+} from "firebase/firestore";
+import { type BlockData } from "models/BlockData";
 
-import { db } from 'utils/firebase';
+import { db } from "utils/firebase";
 
 const addBlock = async (blockData: any) => {
-	try {
-		
-		const docRef = await doc(collection(db, 'blocks'));
+  try {
+    const docRef = await doc(collection(db, "blocks"));
 
-		await setDoc(docRef, {...blockData, updatedAt: serverTimestamp(),
-			createdAt: serverTimestamp(),});
-
-	} catch (error) {
-		console.error('Error adding block: ', error);
-	}
+    await setDoc(docRef, {
+      ...blockData,
+      updatedAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error("Error adding block: ", error);
+  }
 };
 
+const updateBlock = async (blocks: BlockData[]) => {
+  try {
+  const batch = writeBatch(db);
 
-const updateBlock = async (blocks:BlockData[]) => {
-	try {
-		const docRef = await doc(collection(db, 'blocks'));
-		const docSnap = await getDoc(docRef);
+    for (const block of blocks) {
+      const docRef = doc(collection(db, "blocks"), block.id);
+      const docSnap = await getDoc(docRef);
 
-		const newBlock = {
-			...blockData,
-			updatedAt: serverTimestamp(),
-		};
-		
-		if(docSnap.exists()) {
-			await updateDoc(docRef, newBlock);
-		} else {
-			await setDoc(docRef, {...blockData, updatedAt: serverTimestamp(),createdAt: serverTimestamp()});
-		}
+      const newBlock = {
+        ...block,
+        updatedAt: serverTimestamp(),
+      };
 
-		const subscriptionUpdateBatch = writeBatch(db);
+      if (docSnap.exists()) {
+        batch.update(docRef, newBlock);
+      } else {
+        batch.set(docRef, {
+          ...block,
+          updatedAt: serverTimestamp(),
+          createdAt: serverTimestamp(),
+        });
+      }
+    }
 
-          subscribers.forEach((subscriber) => {
-            if (subscriber?.data()?.subscriberId) {
-              const subscriptionRef = doc(
-                db,
-                `publicUsers/${subscriber?.data()?.subscriberId}/feed`,
-                docRef.id
-              );
-              subscriptionUpdateBatch.set(subscriptionRef, newPost);
-            }
-          });
-
-          await subscriptionUpdateBatch.commit().then(() => docRef.id);
-          return docRef.id;
-	} catch (error) {
-		console.error('Error updating block: ', error);
-	}
+    await batch.commit();
+  } catch (error) {
+    console.error("Error updating block: ", error);
+  }
 };
 
 export { addBlock, updateBlock };

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useAccount, sepolia } from "wagmi";
+import { useAccount, sepolia, useNetwork } from "wagmi";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import { Button, BappEdit, BappCarousel } from "components";
@@ -17,6 +17,10 @@ import { BAPPS_BASE_URL } from "constants/urls";
 import { type BlockData } from "models/BlockData";
 import BuyButton from "./buyButton";
 import SelectBlocks from "./selectBlocks";
+import { buildNetworkScanLink } from "utils/text";
+import { ChainName } from "constants/ABIs/contracts";
+import { polygonMumbai } from "wagmi/chains";
+import { updateBlock } from "api/editBlock";
 
 interface EditBlockDialogProps {
   open: boolean;
@@ -32,10 +36,11 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   const editBlockParam = searchParams.get("editBlock");
 
   const { address } = useAccount();
+  const { chain } = useNetwork();
 
   const [bought, setBought] = useState(false);
   const [selectedBlocksForEditing, setSelectedBlocksForEditing] = useState<
-    Map<string, object>
+    Map<string, BlockData>
   >(new Map());
   const [editBappId, setEditBappId] = useState<string>("");
   const [editBappValue, setEditBappValue] = useState<string>("");
@@ -45,10 +50,29 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
 
   const [buyState, setBuyState] = useState<number>(0);
   const [hash, setHash] = useState<string>();
-  const handleBuyStateChange = (state: number, data: string) => {
+  const handleBuyStateChange = (state: number, data?: string) => {
     setBuyState(state);
     if (data) setHash(data);
   };
+
+  const [network, setNetwork] = useState<ChainName>(
+    chain?.id === sepolia.id
+      ? "ethSepolia"
+      : chain?.id === polygonMumbai.id
+        ? "maticMumbai"
+        : "eth",
+  );
+
+  useEffect(() => {
+    const current =
+      chain?.id === sepolia.id
+        ? "ethSepolia"
+        : chain?.id === polygonMumbai.id
+          ? "maticMumbai"
+          : "eth";
+
+    if (current !== network) setNetwork(current);
+  }, [network, chain]);
 
   const blockIds = useMemo(() => {
     return editBlockParam
@@ -110,15 +134,29 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
     router.push(`${pathname}?${currentParams.toString()}`);
   }
 
-  function handleBappEditSave() {
+  async function handleBappEditSave() {
     setEditBappId("");
+    let newBlocks = [];
 
     for (const blockId of selectedBlocksForEditing!.keys()) {
+      newBlocks.push({
+        id: blockId,
+        type: editBappId,
+        content: editBappValue,
+        ...(selectedBlocksForEditing!.get(blockId)!.width ? { width: selectedBlocksForEditing!.get(blockId)!.width } : {}),
+        ...(selectedBlocksForEditing!.get(blockId)!.height ? { height: selectedBlocksForEditing!.get(blockId)!.height } : {}),
+        isFirstBlock:
+          selectedBlocksForEditing!.get(blockId)!.isFirstBlock || false,
+        owner: address,
+      });
+
       setBAppStoredValues((prev) => ({
         ...prev,
         [blockId]: editBappValue,
       }));
     }
+
+    await updateBlock(newBlocks);
   }
 
   function handleBappEditBackClick() {
@@ -176,7 +214,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                   bought={bought}
                   callback={handleBuyStateChange}
                 />
-                <div>
+                <div className="text-x">
                   {buyState === 1 &&
                     "Please approve the sales contract to spend your USDC"}
                   {buyState === 2 && "Please approve the purchase transaction"}
@@ -184,7 +222,18 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                   {buyState === 4 &&
                     "Sent transaction to Hom3, this might take 20 mins"}
                   {buyState === 5 && "Thank you for buying apart of Hom3"}
-                  {hash && <a href={}>See transaction</a>}
+                  <br />
+                  {hash && (
+                    <a
+                      href={buildNetworkScanLink({
+                        network: network,
+                        txHash: hash,
+                      })}
+                      target={"_blank"}
+                    >
+                      See transaction
+                    </a>
+                  )}
                 </div>
 
                 <button
