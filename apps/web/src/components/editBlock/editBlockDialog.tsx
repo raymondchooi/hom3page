@@ -50,7 +50,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
 
   const [buyState, setBuyState] = useState<number>(0);
   const [hash, setHash] = useState<string>();
-  const [hasError, setError] = useState<boolean>(false);
+  const [hasError, setError] = useState<string | undefined>("");
   const handleBuyStateChange = (
     state: number,
     data?: string,
@@ -115,17 +115,26 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   }, [blockIds, wallData]);
 
   const optimisedBlockIds = useMemo(() => {
-    const result = [];
-    for (let i = 0; i < blockIds.length; i++) {
-      const currentBlockId = Number(blockIds[i]);
-      if (i === 0 || currentBlockId !== Number(blockIds[i - 1]) + 1) {
-        result.push([blockIds[i]]);
+    const result: string[][] = [];
+    let previousBlockId: number | null = null;
+
+    for (const blockId of blockIds) {
+      const currentBlockId = Number(blockId);
+      if (previousBlockId === null || currentBlockId !== previousBlockId + 1) {
+        result.push([blockId.toString()]);
       } else {
-        result[result.length - 1]!.push(blockIds[i]);
+        const lastSubArray = result[result.length - 1];
+        if (lastSubArray) {
+          lastSubArray.push(blockId.toString());
+        }
       }
+      previousBlockId = currentBlockId;
     }
-    return result.map((item) => (item.length === 1 ? item[0] : [item]));
+
+    return result;
   }, [blockIds]);
+
+  console.log("optimisedBlockIds", optimisedBlockIds);
 
   function handleSelectMultipleClick() {
     setOpen(false);
@@ -179,8 +188,8 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   }
 
   function handleBappSummaryClick(bappId: string) {
-  //  if (selectedBlocksForEditing.size > 0 && (ownedBlocks.size > 0))
-      setEditBappId(bappId);
+    //  if (selectedBlocksForEditing.size > 0 && (ownedBlocks.size > 0))
+    setEditBappId(bappId);
   }
 
   return (

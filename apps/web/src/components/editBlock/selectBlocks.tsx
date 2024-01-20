@@ -6,6 +6,7 @@ import { Block } from "components";
 import { WALL_WIDTH } from "constants/wall";
 import { BLOCK_WIDTH, BLOCK_HEIGHT } from "constants/block";
 import { cn } from "utils/tailwind";
+import { type BlockData } from "models/BlockData";
 
 interface SelectBlocksProps {
   purchasableBlocks: Map<string, object>;
@@ -16,7 +17,7 @@ interface SelectBlocksProps {
   bAppStoredValues?: Record<string, string>;
   selectedBlocksForEditing: Map<string, object>;
   setSelectedBlocksForEditing: (
-    selectedBlocksForEditing: Map<string, object>,
+    selectedBlocksForEditing: Map<string, BlockData>,
   ) => void;
 }
 

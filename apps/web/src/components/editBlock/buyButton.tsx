@@ -21,7 +21,7 @@ import { updateBlock } from "api/editBlock";
 
 interface BuyButtonProps {
   purchasableBlocks: Map<string, object>;
-  optimisedBlockIds?: ((string | undefined)[][] | undefined)[];
+  optimisedBlockIds?: string[][];
   setBought: (bought: boolean) => void;
   bought: boolean;
   callback: (state: number, data?: string, error?: boolean) => void;
@@ -69,14 +69,12 @@ function BuyButton({
       CONTRACTS?.ethSepolia?.BlockStore
     ) {
       // get the allowance of teh contract of the payment token
-      const allowance = await readContract(
-        {
-          address: DEFAULT_PAYMENT_TOKEN[network] as `0x${string}`,
-          abi: GENERIC_ABI.ERC20,
-          functionName: "allowance",
-          args: [address, saleContract?.address],
-        },
-      );
+      const allowance = await readContract({
+        address: DEFAULT_PAYMENT_TOKEN[network] as `0x${string}`,
+        abi: GENERIC_ABI.ERC20,
+        functionName: "allowance",
+        args: [address, saleContract?.address],
+      });
       if (optimisedBlockIds?.[0]?.[0]) {
         // Check allowance covers payment
         let addAllowance;
@@ -106,19 +104,17 @@ function BuyButton({
         );
         //  Send the purchase
         try {
-          const { hash } = await writeContract(
-            {
-              address: saleContract.address as `0x${string}`,
-              abi: saleContract.abi,
-              functionName: "buyBlock",
-              args: [
-                purchasableBlocks.size === 1
-                  ? [optimisedBlockIds]
-                  : optimisedBlockIds,
-                purchasableBlocks.size === 1 ? true : false,
-              ],
-            },
-          );
+          const { hash } = await writeContract({
+            address: saleContract.address as `0x${string}`,
+            abi: saleContract.abi,
+            functionName: "buyBlock",
+            args: [
+              purchasableBlocks.size === 1
+                ? [optimisedBlockIds]
+                : optimisedBlockIds,
+              purchasableBlocks.size === 1 ? true : false,
+            ],
+          });
           callback(3, hash);
 
           await waitForTransaction({ hash, chainId: chain?.id });
@@ -133,7 +129,11 @@ function BuyButton({
           callback(5);
           if (optimisedBlockIds) {
             //@ts-ignore
-            const blockUpdate = optimisedBlockIds.flat().flat().filter(id => id !== undefined).map((id: string) => ({ id, owner: address }));
+            const blockUpdate = optimisedBlockIds
+              .flat()
+              .flat()
+              .filter((id) => id !== undefined)
+              .map((id: string) => ({ id, owner: address }));
             await updateBlock(blockUpdate);
           }
         } else {
@@ -143,7 +143,11 @@ function BuyButton({
           callback(5);
           if (optimisedBlockIds) {
             //@ts-ignore
-            const blockUpdate = optimisedBlockIds.flat().flat().filter(id => id !== undefined).map((id: string) => ({ id, owner: address }));
+            const blockUpdate = optimisedBlockIds
+              .flat()
+              .flat()
+              .filter((id) => id !== undefined)
+              .map((id: string) => ({ id, owner: address }));
             await updateBlock(blockUpdate);
           }
         }
