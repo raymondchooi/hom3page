@@ -317,7 +317,7 @@ function Profile({}: ProfileProps) {
           className="border border-zinc-800 bg-zinc-900"
         >
           <DialogTitle className="flex items-center justify-between text-gray-200">
-            <div className="text-gray-200">Welcome to Hom3page!</div>
+            <div className="text-gray-200">Profile</div>
             <Button plain onClick={() => setOpenProfileDialog(false)}>
               <svg
                 className="h-6 w-6 text-gray-200"
@@ -349,7 +349,7 @@ function Profile({}: ProfileProps) {
               ) : (
                 <Avatar address={address} size={32} radius={16} />
               )}
-              <div className="text  text-gray-200">
+              <div className="flex justify-center items-start  text-gray-200">
                 {parseLensProfile(lensProfile, "handle")
                   ? parseLensProfile(lensProfile, "handle")
                   : profileId?.home === 0

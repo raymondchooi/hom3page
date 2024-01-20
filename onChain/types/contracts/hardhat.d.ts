@@ -178,6 +178,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Checkpoints__factory>;
     getContractFactory(
+      name: "AaveFaucetbApp",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AaveFaucetbApp__factory>;
+    getContractFactory(
+      name: "IAaveFaucet",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAaveFaucet__factory>;
+    getContractFactory(
       name: "WallGenerator",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.WallGenerator__factory>;
@@ -488,6 +496,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Checkpoints>;
     getContractAt(
+      name: "AaveFaucetbApp",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AaveFaucetbApp>;
+    getContractAt(
+      name: "IAaveFaucet",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAaveFaucet>;
+    getContractAt(
       name: "WallGenerator",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -783,6 +801,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Checkpoints>;
     deployContract(
+      name: "AaveFaucetbApp",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.AaveFaucetbApp>;
+    deployContract(
+      name: "IAaveFaucet",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IAaveFaucet>;
+    deployContract(
       name: "WallGenerator",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.WallGenerator>;
@@ -1092,6 +1118,16 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Checkpoints>;
+    deployContract(
+      name: "AaveFaucetbApp",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.AaveFaucetbApp>;
+    deployContract(
+      name: "IAaveFaucet",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IAaveFaucet>;
     deployContract(
       name: "WallGenerator",
       args: any[],
