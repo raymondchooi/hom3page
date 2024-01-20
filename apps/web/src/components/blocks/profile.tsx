@@ -1,3 +1,5 @@
+import { type ChangeEvent } from "react";
+import Image from "next/image";
 import { useModal, Avatar } from "connectkit";
 import { useAccount } from "wagmi";
 
@@ -8,24 +10,32 @@ import {
   DialogTitle,
 } from "components/dialog";
 import { shortenWalletAddress } from "utils/text";
-import { Button } from "components";
+import { Button, Input } from "components";
 import { styles as ButtonStyles } from "components/button";
 import type { BlockData } from "models/BlockData";
 import { cn } from "utils/tailwind";
 import { useEffect, useState } from "react";
-import { readContract } from "@wagmi/core";
 import { CONTRACTS } from "constants/ABIs/contracts";
 import { type WalletClient, useWalletClient } from "wagmi";
 import { BrowserProvider, JsonRpcSigner, ethers } from "ethers";
 import { LensClient } from "@lens-protocol/client";
 import getLensClient from "utils/lens";
-import {
-  floatToHex,
-  floatToHexBigInt,
-  bigIntToHex,
-  floatToHexFloat,
-} from "utils/number";
+import { floatToHex, floatToHexBigInt, bigIntToHex } from "utils/number";
+import { getLensProfile } from "utils/lens/getLensProfiles";
 
+interface LensProfile {
+  metadata: {
+    picture: {
+      optimized: {
+        uri: string;
+      };
+    };
+  };
+  handle: {
+    localName: string;
+  };
+  // Add other properties as needed
+}
 interface ProfileProps {
   blockData: BlockData;
 }
@@ -40,7 +50,7 @@ function Profile({}: ProfileProps) {
     lens?: number;
   }>();
   const [profilesBalance, setProfilesBalance] = useState<number>(0);
-  const [lensProfile, setLensProfile] = useState();
+  const [lensProfile, setLensProfile] = useState<LensProfile | null>(null);
   const [loaded, setloaded] = useState<boolean>();
   const [profileContract, setProfileContract] = useState<ethers.Contract>();
   const [lensClient, setLensClient] = useState<LensClient>();
@@ -77,25 +87,19 @@ function Profile({}: ProfileProps) {
       console.log("got lens client");
     } else if (profileContract && !profileId?.lens && profileId?.home) {
       console.log("getting lens profile: ", profileId);
-      getLensProfile();
+      getLensPro();
     }
 
-    async function getLensProfile() {
+    async function getLensPro() {
       const lensId = await profileContract?.getProfileLensId(profileId?.home);
       console.log("got lens profile id", bigIntToHex(lensId));
 
-      const profile = await lensClient?.profile.fetch({
-        forProfileId: bigIntToHex(lensId),
-      });
+      const profile = await getLensProfile(
+        lensClient!,
+        bigIntToHex(lensId),
+        "id",
+      );
 
-      /*      .fetchAll({
-        where: {
-          ownedBy: [address as string],
-        },
-      }); */
-      /*  .fetch({
-          forProfileId: `0x${parseFloat(lensId)}`,
-        }); */
       console.log("got lens profile", profile);
       setProfileId((prv) => ({ ...prv, lens: lensId }));
       setLensProfile(profile);
@@ -103,8 +107,22 @@ function Profile({}: ProfileProps) {
   }, [lensClient, profileId, profileContract]);
 
   function handleProfileClick() {
-    if (isConnected) setOpen(true);
-    else setOpenProfileDialog(true);
+    if (isConnected) setOpenProfileDialog(true);
+    else setOpen(true);
+  }
+
+  async function linkLensProfileToHom3Profile() {
+    if (lensInput > 0) {
+      const prof = await getLensProfile(lensClient!, lensInput, "id");
+      if (prof?.handle?.ownedBy === address) {
+        // makesure on mumbai
+        // call contract function
+      }
+    }
+  }
+  const [lensInput, setLensInput] = useState<number>(0);
+  function handleLensLinkInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setLensInput(e.target.value);
   }
 
   return (
@@ -115,7 +133,17 @@ function Profile({}: ProfileProps) {
       >
         {isConnected ? (
           <div className="flex flex-col items-center justify-center ">
-            <Avatar address={address} size={32} radius={16} />
+            {lensProfile?.metadata?.picture?.optimized?.uri ? (
+              <Image
+                src={lensProfile.metadata.picture.optimized.uri}
+                className="rounded-full "
+                width={32}
+                height={32}
+                alt="Lens profile image"
+              />
+            ) : (
+              <Avatar address={address} size={32} radius={16} />
+            )}
             <div className="mt-2 truncate text-xs font-bold text-gray-400">
               {shortenWalletAddress(address)}
             </div>
@@ -124,6 +152,7 @@ function Profile({}: ProfileProps) {
                 {lensProfile ? (
                   <div>
                     <div className="text-xs">Hey,,,</div>
+                    {lensProfile?.handle?.localName}
                   </div>
                 ) : (
                   <div>
@@ -150,7 +179,7 @@ function Profile({}: ProfileProps) {
         >
           <DialogTitle className="flex items-center justify-between text-gray-200">
             <div className="text-gray-200">Welcome to Hom3page!</div>
-            <Button plain onClick={() => setOpen(false)}>
+            <Button plain onClick={() => setOpenProfileDialog(false)}>
               <svg
                 className="h-6 w-6 text-gray-200"
                 xmlns="http://www.w3.org/2000/svg"
@@ -169,27 +198,25 @@ function Profile({}: ProfileProps) {
             </Button>
           </DialogTitle>
           <DialogBody>
-            <DialogDescription className="text-gray-300">
-              <p>
-                Home3page, the home of web3. A decentralised wall of interactive
-                web3 blocks that connect the web3 ecosystem and community. The
-                wall features programmable blocks built, owned, and governed by
-                the community.
-              </p>
-              <p className="mt-3">
-                Each ERC-721 block can be edited to become an abstract, launch
-                pad, or entire sector of web3. Each block can be filled with
-                prebuilt or community-based apps including static text, images,
-                or custom interactive apps with different hosting and connection
-                abilities.
-              </p>
-              <p className="mt-3">
-                The unique combination of blocks is an ever-evolving display of
-                web3 with its own underlying economy. Hom3page features a block
-                app marketplace, decentralised advertising network and the
-                forefront of web3 technology.
-              </p>
-            </DialogDescription>
+        
+            {!lensProfile && (
+              <div className="text-gray-400">
+                You haven't linked your Lens Profile yet
+                <Input
+                  onChange={handleLensLinkInputChange}
+                  name="number"
+                  aria-label="Text"
+                />
+                <Button
+                  fancy
+                  onClick={() => linkLensProfileToHom3Profile()}
+                  className="w-half"
+                >
+                  Link
+                </Button>
+              </div>
+            )}
+            {}
             <div className="flex">
               <div className="z-[10] mt-8 flex w-full justify-center">
                 <Button fancy onClick={() => setOpen(false)} className="w-full">

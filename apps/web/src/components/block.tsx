@@ -8,6 +8,7 @@ import WallLink from "./blocks/wallLink";
 import Profile from "./blocks/profile";
 import Text from "./blocks/text";
 import ImageBlock from "./blocks/image";
+import AaveFaucet from "./blocks/aaveFaucet";
 
 interface BlockProps {
   blockData: BlockData;
@@ -21,7 +22,8 @@ export default function Block({ blockData, editing }: BlockProps) {
     else if (blockData?.type === "text") return <Text blockData={blockData} />;
     else if (blockData?.type === "image")
       return <ImageBlock blockData={blockData} />;
-    else if (!!blockData?.wallLink) return <WallLink blockData={blockData} />;
+    else if (blockData?.type === "wallLink") return <WallLink blockData={blockData} />;
+    else if (blockData?.type === "aaveFaucet") return <AaveFaucet />;
     else if (editing)
       return (
         <Text blockData={{ id: blockData.id, content: blockData.content }} />

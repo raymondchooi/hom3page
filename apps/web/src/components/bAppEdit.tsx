@@ -3,6 +3,9 @@
 import EditText from "./editBlock/editText";
 import EditImage from "./editBlock/editImage";
 import EditWallLink from "./editBlock/editWallLink";
+import EditAaveFaucet from "./editBlock/editAaveFaucet";
+import EditGho from "./editBlock/editGho";
+import EditNftSlider from "./editBlock/editNftSlider";
 
 interface BappEdit {
   onSave: () => void;
@@ -27,6 +30,12 @@ function BappEdit({ onSave, bAppId, onChange }: BappEdit) {
       return <EditImage onSave={handleSave} onChange={handleValueChange} />;
     if (bAppId === "wallLink")
       return <EditWallLink onSave={handleSave} onChange={handleValueChange} />;
+    if (bAppId === "aaveFaucet")
+      return <EditAaveFaucet onSave={handleSave} onChange={handleValueChange} />;
+    if (bAppId === "gho")
+      return <EditGho onSave={handleSave} onChange={handleValueChange} />;
+    if (bAppId === "nftSlider")
+      return <EditNftSlider onSave={handleSave} onChange={handleValueChange} />;
     
     return <EditText onSave={handleSave} onChange={handleValueChange} />;
   }

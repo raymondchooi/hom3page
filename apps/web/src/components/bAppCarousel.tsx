@@ -49,10 +49,19 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
         </CarouselItem>
         <CarouselItem className="basis-1/3">
           <BappSummary
-            id="aave-faucet"
+            id="aaveFaucet"
             title="Aave faucet"
             description="Get free assets to test Aave"
             image="/blocks/faucet.svg"
+            onClick={onBappClick}
+          />
+        </CarouselItem>
+        <CarouselItem className="basis-1/3">
+          <BappSummary
+            id="nftSlider"
+            title="NFT Slider"
+            description="Display your NFTs on a slider"
+            image="/blocks/slider.svg"
             onClick={onBappClick}
           />
         </CarouselItem>
@@ -62,15 +71,6 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
             title="GHO"
             description="Deposit and borrow GHO"
             image="/blocks/aave.svg"
-            onClick={onBappClick}
-          />
-        </CarouselItem>
-        <CarouselItem className="basis-1/3">
-          <BappSummary
-            id="nft-slider"
-            title="NFT Slider"
-            description="Display your NFTs on a slider"
-            image="/blocks/slider.svg"
             onClick={onBappClick}
           />
         </CarouselItem>

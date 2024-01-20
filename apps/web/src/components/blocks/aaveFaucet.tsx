@@ -1,17 +1,10 @@
-import Link from "next/link";
 import Image from "next/image";
 
-import type { BlockData } from "models/BlockData";
-
-interface AaveFaucetProps {
-  blockData?: BlockData;
-}
-
-function AaveFaucet({}: AaveFaucetProps) {
+function AaveFaucet({}) {
   return (
     <button
 	aria-label="Aave Faucet"
-      className="flex h-full w-full items-center justify-center border-gray-700"
+      className="flex h-full w-full items-center justify-center border-gray-700 active:scale-95"
     >
       <Image
         src={"/blocks/faucet.svg"}

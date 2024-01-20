@@ -10,7 +10,7 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["images.unsplash.com"],
+    domains: ["images.unsplash.com", "ik.imagekit.io"],
   },
   webpack: (config, context) => {
     if (config.plugins) {
@@ -20,7 +20,7 @@ const config = {
         }),
       );
     }
-    
+
     config.resolve.fallback = { fs: false, net: false, tls: false };
 
     return config;
