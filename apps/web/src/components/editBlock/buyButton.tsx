@@ -160,7 +160,11 @@ function BuyButton({
 
   function renderButtonContent() {
     if (loading) {
-      return <Loader size="small" />;
+      return (
+        <div className="mx-3 my-1">
+          <Loader size="small" />
+        </div>
+      );
     }
 
     return (

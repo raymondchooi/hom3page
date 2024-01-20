@@ -233,7 +233,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                   bought={bought}
                   callback={handleBuyStateChange}
                 />
-                <div className="text-x">
+                <div className="mt-2 text-xs">
                   {buyState === 1 &&
                     "Please approve the sales contract to spend your USDC"}
                   {buyState === 2 && "Please approve the purchase transaction"}
