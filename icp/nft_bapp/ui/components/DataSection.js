@@ -7,23 +7,30 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Text
+  Text,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper
 } from "@chakra-ui/react"
 import { useDropzone } from "react-dropzone"
 import { resizeImage } from "../utils/image"
-
+import { LedgerCanister } from "@dfinity/ledger-icp"
 import { useAuth } from "../service/use-auth-client"
 import { makeTemplateBackendActor } from "../service/actor-locator"
+import { createAgent } from "@dfinity/utils"
 
 const IMAGE_MAX_WIDTH = 2048
 const TEXT_WIDTH = "120px"
+const WIDTH = "450px"
 
-export const DataSection = () => {
+export const DataSection = async () => {
   const [name, setName] = useState("")
   const [symbol, setSymbol] = useState("")
   const [maxLimit, setMaxLimit] = useState(0)
   const [file, setFile] = useState(null)
-  const { principal } = useAuth()
+  const { identity, principal } = useAuth()
 
   // const [loading, setLoading] = useState("")
 
@@ -37,8 +44,7 @@ export const DataSection = () => {
     setSymbol(newSymbol)
   }
 
-  function onChangeMaxLimit(e) {
-    const newMaxLimit = Number(e.target.value)
+  function onChangeMaxLimit(newMaxLimit) {
     setMaxLimit(newMaxLimit)
   }
 
@@ -75,16 +81,28 @@ export const DataSection = () => {
       principal,
       name,
       symbol,
-      maxLimit,
+      Number(maxLimit),
       file.type,
       imageData
     )
     console.log(result)
   }
 
+  const agent = await createAgent({
+    identity,
+    host: process.env.NEXT_PUBLIC_IC_HOST
+  })
+
+  const { metadata } = LedgerCanister.create({
+    agent,
+    canisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai"
+  })
+
+  const data = await metadata()
+
   return (
     <Flex flexDirection="column" gap="5" mt="5">
-      <FormControl id="name" display="flex" alignItems="baseline">
+      <FormControl id="name" display="flex" alignItems="baseline" width={WIDTH}>
         <FormLabel minWidth={TEXT_WIDTH}>NFT name:</FormLabel>
         <Input
           id="name"
@@ -94,7 +112,12 @@ export const DataSection = () => {
           onChange={onChangeName}
         />
       </FormControl>
-      <FormControl id="symbol" display="flex" alignItems="baseline">
+      <FormControl
+        id="symbol"
+        display="flex"
+        alignItems="baseline"
+        width={WIDTH}
+      >
         <FormLabel minWidth={TEXT_WIDTH}>NFT symbol:</FormLabel>
         <Input
           id="symbol"
@@ -104,17 +127,34 @@ export const DataSection = () => {
           onChange={onChangeSymbol}
         />
       </FormControl>
-      <FormControl id="maxLimit" display="flex" alignItems="baseline">
+      <FormControl
+        id="maxLimit"
+        display="flex"
+        alignItems="baseline"
+        width="427px"
+      >
         <FormLabel minWidth={TEXT_WIDTH}>NFT max limit:</FormLabel>
-        <Input
-          id="maxLimit"
-          alt="Maximum Limit"
-          type="number"
+        <NumberInput
+          step={5}
+          defaultValue={0}
+          min={0}
           value={maxLimit}
           onChange={onChangeMaxLimit}
-        />
+          flex={1}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
       </FormControl>
-      <FormControl id="image" display="flex" alignItems="baseline">
+      <FormControl
+        id="image"
+        display="flex"
+        alignItems="baseline"
+        width={WIDTH}
+      >
         <FormLabel minWidth={TEXT_WIDTH}>NFT logo:</FormLabel>
         {file ? (
           <Text flex="1" marginX="12px">
@@ -131,7 +171,13 @@ export const DataSection = () => {
           </Button>
         )}
       </FormControl>
-      <Button alignSelf="center" width="100%" onClick={submit}>
+      <Button
+        alignSelf="center"
+        onClick={submit}
+        ml={0}
+        mr="18px"
+        width="438px"
+      >
         Submit
       </Button>
       {/* <Box>
