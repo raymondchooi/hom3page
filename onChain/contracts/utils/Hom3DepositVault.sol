@@ -216,7 +216,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     function _checkSenderIsOwner(
         uint256 profileId_
     ) internal view returns (bool) {
-        if (HOM3_PROFILE.ownerOf(profileId_) == _msgSender()) return true;
+        if (_owners[profileId_] == _msgSender()) return true;
         return false;
     }
 
