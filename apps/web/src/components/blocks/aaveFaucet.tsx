@@ -36,7 +36,7 @@ function AaveFaucet({}) {
   );
 
   const faucetAddress = {
-    ethSepolia: "",
+    ethSepolia: "0x8A406077d318CA27790Aa454F6c17a87f959C073",
     maticMumbai: "0xdF80cE4e154333B565cEf92187B81233Ea4b33a2",
   };
 

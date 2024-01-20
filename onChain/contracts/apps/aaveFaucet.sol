@@ -51,18 +51,27 @@ contract AaveFaucetbApp is OnlyActive {
         USDC
     }
 
+    enum Network {
+        SPEOLIA,
+        MUMBAI
+    }
+
     TokenAddresses private _TOKEN_ADDRESSES;
     MintAmount private _MINT_CAPS;
     IAaveFaucet private FAUCET;
 
+    Network immutable DEPLOYED_NETWORK;
+
     constructor(
         TokenAddresses memory addresses_,
         MintAmount memory mintCaps_,
-        address aaveFaucetAddress_
+        address aaveFaucetAddress_,
+        Network network_
     ) Ownable(msg.sender) {
         _TOKEN_ADDRESSES = addresses_;
         _MINT_CAPS = mintCaps_;
         FAUCET = IAaveFaucet(aaveFaucetAddress_);
+        DEPLOYED_NETWORK = network_;
     }
 
     function mint(address to_) external is_active {

@@ -172,7 +172,7 @@ export const tokenAddress: TokenAddressList = {
     maticMumbai: "0x1035CabC275068e0F4b745A29CEDf38E13aF41b1",
   },
   aaveFaucet: {
-    ethSepolia: "",
+    ethSepolia: "0xC959483DBa39aa9E78757139af0e9a2EDEb3f42D",
     maticMumbai: "0x2c95d10bA4BBEc79e562e8B3f48687751808C925",
   },
 };
