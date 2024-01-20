@@ -1,3 +1,42 @@
+type TokenId = nat64;
+type NFTData = 
+ record {
+   logo: LogoResult;
+   maxLimit: nat16;
+   name: text;
+   symbol: text;
+   totalSupply: nat64;
+ };
+type NFTCreationResult = 
+ record {
+   cyclesUsed: nat64;
+   id: text;
+ };
+type MintReceiptPart = 
+ record {
+   id: nat;
+   token_id: TokenId;
+ };
+type MintReceipt = 
+ variant {
+   Err: ApiError;
+   Ok: MintReceiptPart;
+ };
+type LogoResult = 
+ record {
+   data: text;
+   logo_type: text;
+ };
+type ApiError = 
+ variant {
+   InvalidTokenId;
+   Other;
+   Unauthorized;
+   ZeroAddress;
+ };
 service : {
-  createNFT: (principal, text, text, nat16, text, text) -> (text);
+  createNFT: (principal, text, text, nat16, text, text) ->
+   (NFTCreationResult);
+  getNFTData: (text) -> (NFTData);
+  mintNFT: (text, principal) -> (MintReceipt);
 }

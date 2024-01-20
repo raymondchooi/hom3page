@@ -8,27 +8,27 @@ import Principal "mo:base/Principal";
 
 module {
   public type Dip721NonFungibleToken = {
-    logo: LogoResult;
-    name: Text;
-    symbol: Text;
-    maxLimit : Nat16;
+    logo : LogoResult;
+    name : Text;
+    symbol : Text;
+    maxLimit : Nat16
   };
 
   public type ApiError = {
     #Unauthorized;
     #InvalidTokenId;
     #ZeroAddress;
-    #Other;
+    #Other
   };
 
   public type Result<S, E> = {
     #Ok : S;
-    #Err : E;
+    #Err : E
   };
 
   public type OwnerResult = Result<Principal, ApiError>;
   public type TxReceipt = Result<Nat, ApiError>;
-  
+
   public type TransactionId = Nat;
   public type TokenId = Nat64;
 
@@ -37,59 +37,69 @@ module {
     #TransactionHistory;
     #Mint;
     #Burn;
-    #TransferNotification;
+    #TransferNotification
   };
 
   public type LogoResult = {
-    logo_type: Text;
-    data: Text;
+    logo_type : Text;
+    data : Text
   };
 
   public type Nft = {
-    owner: Principal;
-    id: TokenId;
-    metadata: MetadataDesc;
+    owner : Principal;
+    id : TokenId;
+    metadata : MetadataDesc
   };
 
-  public type ExtendedMetadataResult = Result<{
-    metadata_desc: MetadataDesc;
-    token_id: TokenId;
-  }, ApiError>;
+  public type ExtendedMetadataResult = Result<{ metadata_desc : MetadataDesc; token_id : TokenId }, ApiError>;
 
   public type MetadataResult = Result<MetadataDesc, ApiError>;
 
   public type MetadataDesc = [MetadataPart];
 
   public type MetadataPart = {
-    purpose: MetadataPurpose;
-    key_val_data: [MetadataKeyVal];
-    data: Blob;
+    purpose : MetadataPurpose;
+    key_val_data : [MetadataKeyVal];
+    data : Blob
   };
 
   public type MetadataPurpose = {
     #Preview;
-    #Rendered;
+    #Rendered
   };
-  
+
   public type MetadataKeyVal = {
-    key: Text;
-    val: MetadataVal;
+    key : Text;
+    val : MetadataVal
   };
 
   public type MetadataVal = {
     #TextContent : Text;
     #BlobContent : Blob;
     #NatContent : Nat;
-    #Nat8Content: Nat8;
-    #Nat16Content: Nat16;
-    #Nat32Content: Nat32;
-    #Nat64Content: Nat64;
+    #Nat8Content : Nat8;
+    #Nat16Content : Nat16;
+    #Nat32Content : Nat32;
+    #Nat64Content : Nat64
   };
 
   public type MintReceipt = Result<MintReceiptPart, ApiError>;
 
   public type MintReceiptPart = {
-    token_id: TokenId;
-    id: Nat;
+    token_id : TokenId;
+    id : Nat
   };
-};
+
+  public type NFTData = {
+    name : Text;
+    symbol : Text;
+    logo : LogoResult;
+    totalSupply : Nat64;
+    maxLimit : Nat16
+  };
+
+  public type NFTCreationResult = {
+    id : Text;
+    cyclesUsed : Nat64
+  }
+}
