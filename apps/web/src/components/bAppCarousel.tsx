@@ -40,6 +40,15 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
         </CarouselItem>
         <CarouselItem className="basis-1/3">
           <BappSummary
+            id="wallLink"
+            title="WallLink"
+            description="Link to another wall"
+            image="/blocks/link.svg"
+            onClick={onBappClick}
+          />
+        </CarouselItem>
+        <CarouselItem className="basis-1/3">
+          <BappSummary
             id="aave-faucet"
             title="Aave faucet"
             description="Get free assets to test Aave"

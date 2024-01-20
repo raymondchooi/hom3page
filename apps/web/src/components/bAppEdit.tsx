@@ -2,6 +2,7 @@
 
 import EditText from "./editBlock/editText";
 import EditImage from "./editBlock/editImage";
+import EditWallLink from "./editBlock/editWallLink";
 
 interface BappEdit {
   onSave: () => void;
@@ -24,6 +25,9 @@ function BappEdit({ onSave, bAppId, onChange }: BappEdit) {
       return <EditText onSave={handleSave} onChange={handleValueChange} />;
     if (bAppId === "image")
       return <EditImage onSave={handleSave} onChange={handleValueChange} />;
+    if (bAppId === "wallLink")
+      return <EditWallLink onSave={handleSave} onChange={handleValueChange} />;
+    
     return <EditText onSave={handleSave} onChange={handleValueChange} />;
   }
   return (

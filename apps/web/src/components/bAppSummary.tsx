@@ -41,8 +41,9 @@ function BAppSummary({
           {title}
         </h4>
       </div>
-
-      <p className="mt-3 w-full text-xs">{description}</p>
+      <div className="flex h-full items-center justify-center">
+        <p className="mt-3 w-full text-xs">{description}</p>
+      </div>
     </button>
   );
 }

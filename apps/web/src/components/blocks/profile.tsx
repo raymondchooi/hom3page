@@ -19,7 +19,12 @@ import { type WalletClient, useWalletClient } from "wagmi";
 import { BrowserProvider, JsonRpcSigner, ethers } from "ethers";
 import { LensClient } from "@lens-protocol/client";
 import getLensClient from "utils/lens";
-import { floatToHex } from "utils/number";
+import {
+  floatToHex,
+  floatToHexBigInt,
+  bigIntToHex,
+  floatToHexFloat,
+} from "utils/number";
 
 interface ProfileProps {
   blockData: BlockData;
@@ -76,15 +81,21 @@ function Profile({}: ProfileProps) {
     }
 
     async function getLensProfile() {
-      const lensId = parseFloat(
-        await profileContract?.getProfileLensId(profileId?.home),
-      );
-
-      console.log("got lens profile id", floatToHex(lensId));
+      const lensId = await profileContract?.getProfileLensId(profileId?.home);
+      console.log("got lens profile id", bigIntToHex(lensId));
 
       const profile = await lensClient?.profile.fetch({
-        forProfileId: floatToHex(lensId),
+        forProfileId: bigIntToHex(lensId),
       });
+
+      /*      .fetchAll({
+        where: {
+          ownedBy: [address as string],
+        },
+      }); */
+      /*  .fetch({
+          forProfileId: `0x${parseFloat(lensId)}`,
+        }); */
       console.log("got lens profile", profile);
       setProfileId((prv) => ({ ...prv, lens: lensId }));
       setLensProfile(profile);
@@ -109,6 +120,17 @@ function Profile({}: ProfileProps) {
               {shortenWalletAddress(address)}
             </div>
             <div className="text=l">
+              <div>
+                {lensProfile ? (
+                  <div>
+                    <div className="text-xs">Hey,,,</div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="text-xs">profile</div>#{profileId?.lens}{" "}
+                  </div>
+                )}
+              </div>
               <div className="text-xs">profile</div>#{profileId?.lens}
               <br />
               <div className="text-xs">{profilesBalance.toFixed(3)}</div>

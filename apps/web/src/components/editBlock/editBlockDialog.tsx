@@ -179,7 +179,8 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   }
 
   function handleBappSummaryClick(bappId: string) {
-    if (ownedBlocks.size > 0 || bought) setEditBappId(bappId);
+    if (selectedBlocksForEditing.size > 0 && (ownedBlocks.size > 0 || bought))
+      setEditBappId(bappId);
   }
 
   return (
@@ -231,9 +232,8 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                   {buyState === 3 && "Waiting for transaction to confirm"}
                   {buyState === 4 &&
                     "Sent transaction to Hom3, this might take 20 mins"}
-                  {buyState === 5 && "Thank you for buying apart of Hom3"}
-                  {buyState === 10 &&
-                    `There was an error with the transaction`}
+                  {buyState === 5 && "Thank you for buying a part of Hom3"}
+                  {buyState === 10 && `There was an error with the transaction`}
 
                   <br />
                   {hash && !hasError && (
