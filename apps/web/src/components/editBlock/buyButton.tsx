@@ -71,24 +71,23 @@ function BuyButton({
       // get the allowance of teh contract of the payment token
       const allowance = await readContract(
         {
-          address: DEFAULT_PAYMENT_TOKEN[network],
+          address: DEFAULT_PAYMENT_TOKEN[network] as `0x${string}`,
           abi: GENERIC_ABI.ERC20,
           functionName: "allowance",
           args: [address, saleContract?.address],
         },
-        null,
       );
       if (optimisedBlockIds?.[0]?.[0]) {
         // Check allowance covers payment
         let addAllowance;
-        if (cost > allowance) {
+        if (cost > (allowance as number)) {
           callback(1);
 
           try {
             // They need to add allowanceaaaaaa
             // Approve the send to the sales contracts
             addAllowance = await writeContract({
-              address: DEFAULT_PAYMENT_TOKEN[network],
+              address: DEFAULT_PAYMENT_TOKEN[network] as `0x${string}`,
               abi: GENERIC_ABI.ERC20,
               functionName: "approve",
               args: [saleContract.address, cost],
@@ -109,7 +108,7 @@ function BuyButton({
         try {
           const { hash } = await writeContract(
             {
-              address: saleContract.address,
+              address: saleContract.address as `0x${string}`,
               abi: saleContract.abi,
               functionName: "buyBlock",
               args: [
@@ -119,7 +118,6 @@ function BuyButton({
                 purchasableBlocks.size === 1 ? true : false,
               ],
             },
-            null,
           );
           callback(3, hash);
 
@@ -141,7 +139,7 @@ function BuyButton({
         } else {
           callback(4);
           // 20---minutes---laterrrr
-          
+
           callback(5);
           if (optimisedBlockIds) {
             //@ts-ignore
