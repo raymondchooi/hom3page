@@ -58,8 +58,7 @@ export default function Wall() {
       ),
     ),
   );
-  const wallData = wallCollection?.docs || [];
-  console.log("wallData", wallData?.[0]?.data());
+ 
 
   useEffect(() => {
     if (editBlockParam && !selectMultipleBlocksOn) {
@@ -83,9 +82,7 @@ export default function Wall() {
       } else {
         // Add single selected block to selected
         if (currentParams.get("editBlock")?.split(",").length === 1) {
-          const newSelectedBlocks = selectedBlocks
-            ? new Map(selectedBlocks)
-            : new Map();
+          const newSelectedBlocks = new Map();
 
           newSelectedBlocks.set(
             currentParams.get("editBlock")?.toString() ?? "",
@@ -95,6 +92,8 @@ export default function Wall() {
           );
 
           setSelectedBlocks(newSelectedBlocks);
+        } else {
+          setSelectedBlocks(new Map());
         }
 
         currentParams.delete("editBlock");
@@ -143,16 +142,18 @@ export default function Wall() {
   }, [wallId]);
 
   const renderBlocks = useMemo(() => {
-    const populatedWallData = Array.from({ length: 288 }, (_, i) => {
+    const wallData = wallCollection?.docs || [];
+    const populatedWallData: BlockData[] = Array.from({ length: 288 }, (_, i) => {
       const index = i + 1;
       const existingBlock = wallData.find((block) =>block?.data()?.id === index.toString());
-      return existingBlock?.data() || { id: index.toString() };
+      return existingBlock?.data() ? existingBlock?.data() as BlockData : { id: index.toString() };
     });
 
     return (
       <>
         {populatedWallData.map((blockData, i) => {
           const blockId = blockData.id;
+          const isOwner = !!blockData?.owner && !!address && blockData?.owner === address;
 
           if (i === 212) {
             blockData.type = "profile";
@@ -171,7 +172,7 @@ export default function Wall() {
                 selectedBlocks?.delete(blockId.toString());
               } else {
                 // TODO probably some more efficient way to do this
-                if (!blockData?.owner || blockData?.owner === address)
+                if (!blockData?.owner || isOwner)
                   selectedBlocks?.set(blockId.toString(), { selected: true });
               }
 
@@ -206,8 +207,8 @@ export default function Wall() {
                   className={cn(
                     "absolute left-0 top-0 z-20 box-border flex cursor-pointer border-2 hover:border-emerald-400",
                     selectedBlocks?.has(blockId.toString())
-                      ? "border-emerald-400"
-                      : "border-transparent",
+                      ? "border-emerald-400" 
+                      : isOwner ? "border-indigo-700" :"border-transparent",
                     blockData?.isFirstBlock ? "overflow-visible" : "z-20",
                   )}
                   onClick={handleBlockSelect}
@@ -236,6 +237,7 @@ export default function Wall() {
                 className={cn(
                   "absolute left-0 top-0 z-10 box-border flex cursor-pointer border-2 border-gray-800 bg-gray-900 hover:border-emerald-400",
                   blockData?.isFirstBlock ? "overflow-visible" : "z-0",
+                  isOwner ? "border-indigo-700" :"border-transparent"
                 )}
                 style={{
                   width: BLOCK_WIDTH * (blockData?.width ?? 1),
@@ -249,7 +251,7 @@ export default function Wall() {
         })}
       </>
     );
-  }, [address, wallData, selectMultipleBlocksOn, selectedBlocks]);
+  }, [address, wallCollection?.docs, selectMultipleBlocksOn, selectedBlocks]);
 
   function handleConfirmSelection() {
     if (selectedBlocks) {

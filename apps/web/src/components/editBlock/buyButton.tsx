@@ -17,13 +17,14 @@ import {
   DEFAULT_PAYMENT_TOKEN,
   GENERIC_ABI,
 } from "constants/ABIs/contracts";
+import { updateBlock } from "api/editBlock";
 
 interface BuyButtonProps {
   purchasableBlocks: Map<string, object>;
   optimisedBlockIds?: ((string | undefined)[][] | undefined)[];
   setBought: (bought: boolean) => void;
   bought: boolean;
-  callback: (state: number, data?: string) => void;
+  callback: (state: number, data?: string, error?: boolean) => void;
 }
 
 function BuyButton({
@@ -83,14 +84,19 @@ function BuyButton({
         if (cost > allowance) {
           callback(1);
 
-          // They need to add allowanceaaaaaa
-          // Approve the send to the sales contracts
-          addAllowance = await writeContract({
-            address: DEFAULT_PAYMENT_TOKEN[network],
-            abi: GENERIC_ABI.ERC20,
-            functionName: "approve",
-            args: [saleContract.address, cost],
-          });
+          try {
+            // They need to add allowanceaaaaaa
+            // Approve the send to the sales contracts
+            addAllowance = await writeContract({
+              address: DEFAULT_PAYMENT_TOKEN[network],
+              abi: GENERIC_ABI.ERC20,
+              functionName: "approve",
+              args: [saleContract.address, cost],
+            });
+          } catch (error) {
+            console.log(error);
+            return callback(10, "error", true);
+          }
         }
         callback(2, addAllowance?.hash);
         console.log(
@@ -100,30 +106,48 @@ function BuyButton({
             : optimisedBlockIds,
         );
         //  Send the purchase
-        const { hash } = await writeContract(
-          {
-            address: saleContract.address,
-            abi: saleContract.abi,
-            functionName: "buyBlock",
-            args: [
-              optimisedBlockIds.length === 1
-                ? [optimisedBlockIds]
-                : optimisedBlockIds,
-              purchasableBlocks.size === 1 ? true : false,
-            ],
-          },
-          null,
-        );
-        callback(3, hash);
+        try {
+          const { hash } = await writeContract(
+            {
+              address: saleContract.address,
+              abi: saleContract.abi,
+              functionName: "buyBlock",
+              args: [
+                purchasableBlocks.size === 1
+                  ? [optimisedBlockIds]
+                  : optimisedBlockIds,
+                purchasableBlocks.size === 1 ? true : false,
+              ],
+            },
+            null,
+          );
+          callback(3, hash);
 
-        await waitForTransaction({ hash, chainId: chain?.id });
+          await waitForTransaction({ hash, chainId: chain?.id });
+        } catch (error) {
+          console.log(error);
+          return callback(10, "error", true);
+        }
 
         // Verify transactions
         // if connected to mumbai - display minted block tx
         if (network === "maticMumbai") {
           callback(5);
+          if (optimisedBlockIds) {
+            //@ts-ignore
+            const blockUpdate = optimisedBlockIds.flat().flat().filter(id => id !== undefined).map((id: string) => ({ id, owner: address }));
+            await updateBlock(blockUpdate);
+          }
         } else {
           callback(4);
+          // 20---minutes---laterrrr
+          
+          callback(5);
+          if (optimisedBlockIds) {
+            //@ts-ignore
+            const blockUpdate = optimisedBlockIds.flat().flat().filter(id => id !== undefined).map((id: string) => ({ id, owner: address }));
+            await updateBlock(blockUpdate);
+          }
         }
 
         // if on Sepplia wait for message sent,

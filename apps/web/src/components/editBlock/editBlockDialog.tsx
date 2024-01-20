@@ -50,9 +50,15 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
 
   const [buyState, setBuyState] = useState<number>(0);
   const [hash, setHash] = useState<string>();
-  const handleBuyStateChange = (state: number, data?: string) => {
+  const [hasError, setError] = useState<boolean>(false);
+  const handleBuyStateChange = (
+    state: number,
+    data?: string,
+    error?: boolean,
+  ) => {
     setBuyState(state);
     if (data) setHash(data);
+    if (error) setError(data);
   };
 
   const [network, setNetwork] = useState<ChainName>(
@@ -143,8 +149,12 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
         id: blockId,
         type: editBappId,
         content: editBappValue,
-        ...(selectedBlocksForEditing!.get(blockId)!.width ? { width: selectedBlocksForEditing!.get(blockId)!.width } : {}),
-        ...(selectedBlocksForEditing!.get(blockId)!.height ? { height: selectedBlocksForEditing!.get(blockId)!.height } : {}),
+        ...(selectedBlocksForEditing!.get(blockId)!.width
+          ? { width: selectedBlocksForEditing!.get(blockId)!.width }
+          : {}),
+        ...(selectedBlocksForEditing!.get(blockId)!.height
+          ? { height: selectedBlocksForEditing!.get(blockId)!.height }
+          : {}),
         isFirstBlock:
           selectedBlocksForEditing!.get(blockId)!.isFirstBlock || false,
         owner: address,
@@ -222,8 +232,11 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                   {buyState === 4 &&
                     "Sent transaction to Hom3, this might take 20 mins"}
                   {buyState === 5 && "Thank you for buying apart of Hom3"}
+                  {buyState === 10 &&
+                    `There was an error with the transaction`}
+
                   <br />
-                  {hash && (
+                  {hash && !hasError && (
                     <a
                       href={buildNetworkScanLink({
                         network: network,
