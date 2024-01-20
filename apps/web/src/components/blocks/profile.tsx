@@ -229,37 +229,36 @@ function Profile({}: ProfileProps) {
           </DialogTitle>
           <DialogBody>
             <div className="text  text-gray-200">
-              {lensProfile
+              {parseLensProfile(lensProfile, "handle")
                 ? parseLensProfile(lensProfile, "handle")
                 : `#${profileId?.home}`}
             </div>
             {!lensProfile && (
-              <Field className="text-gray-400">
-                <Label className="text-gray-400">
-                  {"You haven't linked your Lens Profile yet"}
-                </Label>
-                <Input
-                  onChange={handleLensLinkInputChange}
-                  name="number"
-                  type="number"
-                  aria-label="Text"
-                />
-                <Button
-                  fancy
-                  onClick={() => linkLensProfileToHom3Profile()}
-                  className="w-half"
-                >
-                  Link
-                </Button>
-              </Field>
+              <>
+                <Field className="mt-2 text-gray-400">
+                  <Label className="text-gray-400">
+                    {"You haven't linked your Lens Profile yet"}
+                  </Label>
+                  <Input
+                    onChange={handleLensLinkInputChange}
+                    name="number"
+                    type="number"
+                    aria-label="Text"
+                  />
+                </Field>
+                <div className="flex">
+                  <div className="z-[10] mt-6 flex w-full justify-center">
+                    <Button
+                      fancy
+                      onClick={() => linkLensProfileToHom3Profile()}
+                      className="w-half"
+                    >
+                      Link
+                    </Button>
+                  </div>
+                </div>
+              </>
             )}
-            <div className="flex">
-              <div className="z-[10] mt-8 flex w-full justify-center">
-                <Button fancy onClick={() => setOpen(false)} className="w-full">
-                  Start exploring
-                </Button>
-              </div>
-            </div>
           </DialogBody>
         </Dialog>
       )}
