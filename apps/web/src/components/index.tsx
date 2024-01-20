@@ -9,4 +9,4 @@ export { default as WelcomeDialog } from "./welcomeDialog";
 export { default as Input } from "./input";
 export { default as FileUpload } from "./fileUpload";
 export { default as SaveButton } from "./saveButton";
-export { default as Loader } from "./Loader";
+export { default as Loader } from "./loader";
