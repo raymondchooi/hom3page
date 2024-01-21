@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useAccount, sepolia, useNetwork } from "wagmi";
 import { useModal, Avatar } from "connectkit";
-import facuetAbi from "../../constants/ABIs/aaveFaucetbApp.abi.json";
+import ghoAbi from "../../constants/ABIs/bApps/aaveBurrow.abi.json";
+import ER20_ABI from "../../constants/ABIs/erc20.abi.json";
+
 import { ChainName, DEFAULT_PAYMENT_TOKEN } from "constants/ABIs/contracts";
 
 import BlockDialog from "./dialog"; // Don't know if this is useful
@@ -24,6 +26,7 @@ import {
 } from "@wagmi/core";
 import { buildNetworkScanLink } from "utils/text";
 import { BlockData } from "models/BlockData";
+import { ethers } from "ethers";
 
 interface GhoBurrowProps {
   blockData: BlockData;
@@ -50,7 +53,7 @@ function GHOBurrow({}: GhoBurrowProps) {
 
   const tokenAddresses = {
     wbtc: "0x29f2D40B0605204364af54EC677bD022dA425d03",
-    gho: "0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8",
+    gho: "0xc4bF5CbDaBE595361438F8c6a187bDc330539c60",
   };
 
   const getTokenBalance = async (token: "wbtc" | "gho") => {
@@ -99,15 +102,50 @@ function GHOBurrow({}: GhoBurrowProps) {
     setLoadingState(1);
 
     try {
-      const { hash } = await writeContract({
-        address: faucetAddress[network] as `0x${string}`,
-        abi: facuetAbi,
-        functionName: "mint",
+      const approvalTx = await writeContract({
+        address: "0x29f2D40B0605204364af54EC677bD022dA425d03",
+        abi: ER20_ABI,
+        functionName: "approve",
         args: [address],
       });
+
+      await waitForTransaction({ hash: approvalTx.hash, chainId: chain?.id });
+
+      const supplyArgs = [address, ethers.parseUnits("1", "ether"), address, 0];
+
+      const provideLiquidetyTx = await writeContract({
+        address: "0x6ae43d3271ff6888e7fc43fd7321a503ff738951",
+        abi: ghoAbi,
+        functionName: "supply",
+        args: supplyArgs,
+      });
       setLoadingState(12);
-      setHash(hash);
-      await waitForTransaction({ hash, chainId: chain?.id });
+      setHash(provideLiquidetyTx.hash);
+      await waitForTransaction({
+        hash: provideLiquidetyTx.hash,
+        chainId: chain?.id,
+      });
+      const burrowArgs = [
+        tokenAddresses.gho,
+        ethers.parseUnits("10000", "ether"),
+        2,
+        0,
+        address,
+      ];
+
+      const burrowTx = await writeContract({
+        address: "0x6ae43d3271ff6888e7fc43fd7321a503ff738951",
+        abi: ghoAbi,
+        functionName: "burrow",
+        args: burrowArgs,
+      });
+      setLoadingState(12);
+      setHash(burrowTx.hash);
+      await waitForTransaction({
+        hash: burrowTx.hash,
+        chainId: chain?.id,
+      });
+
       setLoadingState(2);
     } catch (error) {
       console.log("Error in Aave Faucet :", error);
@@ -152,8 +190,13 @@ function GHOBurrow({}: GhoBurrowProps) {
             <div className="Gap-y-10">
               {loadingState < 2 && (
                 <div className="text-s text-gray">
-                  Send your WBTC to Aave and burrow GHO to spend on deposit in
-                  your profile! This will deposit 1WTBC to burrow 10,000GHO
+                  {wbtcBalance &&
+                    wbtcBalance?.value > 0 &&
+                    ` Send your WBTC to Aave and burrow GHO to spend on deposit in
+                  your profile! This will deposit 1WTBC to burrow 10,000GHO`}
+                  {wbtcBalance &&
+                    wbtcBalance?.value < 1 &&
+                    `you don't have much WBTC, hit up the Faucet over there to get going. `}
                 </div>
               )}
               <br />

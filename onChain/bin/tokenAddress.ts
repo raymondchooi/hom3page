@@ -121,7 +121,7 @@ export const tokenAddress: TokenAddressList = {
   wbtc: {
     eth: productionChainAddresses.eth.wbtc,
     ethGoerli: "",
-    ethSepolia: "",
+    ethSepolia: "0x29f2D40B0605204364af54EC677bD022dA425d03",
     arbGoerli: "0x22d5e2dE578677791f6c90e0110Ec629be9d5Fb5",
     arbitrum: productionChainAddresses.arbitrum.wbtc,
     opGoerli: "",

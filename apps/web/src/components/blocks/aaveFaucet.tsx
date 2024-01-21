@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useAccount, sepolia, useNetwork } from "wagmi";
 import { useModal, Avatar } from "connectkit";
-import facuetAbi from "../../constants/ABIs/aaveFaucetbApp.abi.json";
+import facuetAbi from "../../constants/ABIs/bApps/aaveFaucetbApp.abi.json";
 import { ChainName } from "constants/ABIs/contracts";
 
 import BlockDialog from "./dialog"; // Don't know if this is useful
