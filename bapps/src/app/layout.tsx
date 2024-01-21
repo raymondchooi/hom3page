@@ -5,6 +5,9 @@ import { Inter } from "next/font/google";
 import { Navigation } from "components";
 import { ConnectkitProvider } from "utils/connectkit";
 import { BASE_URL } from "constants/urls";
+import * as React from "react";
+
+import { ChakraProvider } from "@chakra-ui/react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,7 +61,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable} relative`}>
         <ConnectkitProvider>
-          <Navigation>{children}</Navigation>
+          <Navigation>
+            <ChakraProvider>{children}</ChakraProvider>
+          </Navigation>
         </ConnectkitProvider>
       </body>
     </html>

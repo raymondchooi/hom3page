@@ -31,6 +31,14 @@ const bApps = [
     description: "Display your NFTs on a slider",
     image: "/blocks/slider.svg",
   },
+  {
+    id: "nft-collection-creator",
+    title: "Create and distribute your NFT collection",
+    description: "Create, distribute and monetize your NFT collection with our no-code IC solution. Requires an internet identity",
+    image: "/blocks/nft_minter.png",
+    customSize: 90,
+    url: "http://localhost:3000/",
+  }
 ];
 
 export default function HomePage() {
