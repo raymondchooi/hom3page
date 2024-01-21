@@ -6,6 +6,7 @@ import EditWallLink from "./editBlock/editWallLink";
 import EditAaveFaucet from "./editBlock/editAaveFaucet";
 import EditGho from "./editBlock/editGho";
 import EditNftSlider from "./editBlock/editNftSlider";
+import EditMintNFT from "./editBlock/editMintNFT";
 
 interface BappEdit {
   onSave: () => void;
@@ -28,6 +29,8 @@ function BappEdit({ onSave, bAppId, onChange }: BappEdit) {
       return <EditText onSave={handleSave} onChange={handleValueChange} />;
     if (bAppId === "image")
       return <EditImage onSave={handleSave} onChange={handleValueChange} />;
+    if (bAppId === "nft-minter")
+      return <EditMintNFT onSave={handleSave} onChange={handleValueChange} />;
     if (bAppId === "wallLink")
       return <EditWallLink onSave={handleSave} onChange={handleValueChange} />;
     if (bAppId === "aaveFaucet")

@@ -40,6 +40,15 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
         </CarouselItem>
         <CarouselItem className="basis-1/3">
           <BappSummary
+            id="nft-minter"
+            title="Mint NFT"
+            description="Mint NFT from your own custom collection"
+            image="/blocks/nft_minter.png"
+            onClick={onBappClick}
+          />
+        </CarouselItem>
+        <CarouselItem className="basis-1/3">
+          <BappSummary
             id="wallLink"
             title="WallLink"
             description="Link to another wall"
