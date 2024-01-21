@@ -29,7 +29,7 @@ const updateBlock = async (blocks: BlockData[]) => {
   const batch = writeBatch(db);
 
     for (const block of blocks) {
-      const docRef = doc(collection(db, "blocks"), `${block.id}`);
+      const docRef = doc(collection(db, "blocks"), `${block?.id || '0'}`);
       const docSnap = await getDoc(docRef);
 
       const newBlock = {
