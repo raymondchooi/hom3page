@@ -14,9 +14,9 @@ const deployedContracts: {
   },
   ethSepolia: {
     BlockToken: "",
-    BlockStore: "0xE8eC2D76D441ebCBEbb431701424BA96622364cf",
+    BlockStore: "0xA965C4feE7935a846A5b097b398B5Bb8BcbcD60A",
     Hom3Profile: "",
-    Hom3DepositVault: "0x6d79fDeF7589d9d38Fb710c393005ad33cC148D3",
+    Hom3DepositVault: "0xb3AE95217103d8DFccbbAa99d9b47B65c6b69B53",
   },
   opGoerli: {
     BlockToken: "",
