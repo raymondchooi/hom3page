@@ -16,7 +16,7 @@ const deployedContracts: {
     BlockToken: "",
     BlockStore: "0xA965C4feE7935a846A5b097b398B5Bb8BcbcD60A",
     Hom3Profile: "",
-    Hom3DepositVault: "0xb3AE95217103d8DFccbbAa99d9b47B65c6b69B53",
+    Hom3DepositVault: "0x9e9B01b1a6045965bC721BB3043636b86418c020",
   },
   opGoerli: {
     BlockToken: "",

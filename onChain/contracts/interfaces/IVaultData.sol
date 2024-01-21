@@ -3,16 +3,16 @@ pragma solidity ^0.8.20;
 
 interface IVaultData {
     event DepositedFundsRequested(
-        bytes32 messageId_,
-        uint256 profileId_,
-        uint256 amount_
+        bytes32 indexed messageId_,
+        uint256 indexed profileId_,
+        uint256 indexed amount_
     );
     event DepositedFunds(uint256 profileId_, uint256 amount_);
     event WithdrewFunds(uint256 profileId_, uint256 amount_);
     event WithdrewFundsRequested(
-        bytes32 messageId_,
-        uint256 profileId_,
-        uint256 amount_
+        bytes32 indexed messageId_,
+        uint256 indexed profileId_,
+        uint256 indexed amount_
     );
 
     event ProfileOwnershipTransferred(uint256 profileId_, address to_);

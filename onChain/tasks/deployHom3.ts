@@ -24,6 +24,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
 
   const opGoerli: ContractNames[] = ["BlockStore", "Hom3DepositVault"];
   const ethSepolia: ContractNames[] = ["BlockStore", "Hom3DepositVault"];
+  const smallSep: ContractNames[] = ["Hom3DepositVault"];
   const maticMumbai: ContractNames[] = [
     "BlockToken",
     "BlockSales",
@@ -33,7 +34,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   const deploys: { [chain in ChainName]?: ContractNames[] } = {
     opGoerli: opGoerli,
     maticMumbai: maticMumbai,
-    ethSepolia: ethSepolia,
+    ethSepolia: smallSep,
   };
 
   console.log(`🟠 [TASK] ${taskId} : Connecting to network ${network?.name}`);

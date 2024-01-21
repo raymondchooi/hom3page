@@ -37,7 +37,7 @@ export const Hom3PageDepositVaultArguments = (
   const ccipRouter_ = tokenAddress.ccipRouter[netName];
   const linkToken_ = tokenAddress.link[netName];
   const masterContract_ = deployedContracts?.maticMumbai?.Hom3Profile;
-  const masterChainId_ = "16015286601757825753";
+  const masterChainId_ = "12532609583862916517";
 
   return [
     paymentToken_,

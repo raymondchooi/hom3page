@@ -16,7 +16,6 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     mapping(uint256 => uint256) private _escrow; //Profile No. to amount
     mapping(uint256 => uint256) private _deposit; //Profile No. to amount
     mapping(uint256 => address) private _spender;
-    mapping(uint256 => uint256) private _allowance; //Profile No. to amount
 
     mapping(uint256 => address) private _owners;
 
@@ -49,27 +48,29 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     function depositFunds(
         uint256 profileId_,
         uint256 amount_
-    ) external override onlyProfileOwner(profileId_) {
+    ) external override {
         if (_checkTokenBalance(_msgSender()) < amount_) revert BalanceToLow();
 
-        bool success = _transferTokens(address(this), msg.sender, amount_);
+        bool success = _transferTokens(msg.sender, address(this), amount_);
         if (success) {
-            _escrow[profileId_] += amount_;
+            _deposit[profileId_] += amount_;
 
             Message memory newMessage = Message(
                 MessageActions.DEPOSIT,
                 Errors.NO_ERROR,
                 "",
                 UpdateMessage(profileId_, _msgSender(), 0),
-                0x0,
+                bytes32(0x0),
                 amount_
             );
 
-            bytes32 messageId = _sendMessage(
-                MASTER_CHAIN,
+            Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
                 _masterVault,
-                newMessage
+                abi.encode(newMessage),
+                1_000_000
             );
+
+            bytes32 messageId = _sendMessage(MASTER_CHAIN, evm2AnyMessage);
             _pastMessages[messageId] = PastMessage(newMessage, false);
             emit DepositedFundsRequested(messageId, profileId_, amount_);
         }
@@ -92,15 +93,17 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
             Errors.NO_ERROR,
             "",
             UpdateMessage(profileId_, _msgSender(), amount_),
-            0x0,
+            bytes32(0x0),
             amount_
         );
 
-        bytes32 messageId = _sendMessage(
-            MASTER_CHAIN,
+        Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
             _masterVault,
-            newMessage
+            abi.encode(newMessage),
+            1_000_000
         );
+        bytes32 messageId = _sendMessage(MASTER_CHAIN, evm2AnyMessage);
+
         _pastMessages[messageId] = PastMessage(newMessage, false);
         emit WithdrewFundsRequested(messageId, profileId_, amount_);
     }
@@ -188,30 +191,15 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         _messageSwitch(message.action_, any2EvmMessage);
     }
 
-    /// @notice Sends data to receiver on the destination chain.
-    /// @dev Assumes your contract has sufficient Native Token.
-    /// @param destinationChainSelector_ The identifier (aka selector) for the destination blockchain.
-    /// @param receiver_ The address of the recipient on the destination blockchain.
-    /// @param payload_ The string text to be sent.
-    /// @return messageId The ID of the message that was sent.
     function _sendMessage(
         uint64 destinationChainSelector_,
-        address receiver_,
-        Message memory payload_
-    ) internal onlyOwner returns (bytes32) {
-        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        Client.EVM2AnyMessage memory evm2AnyMessage = _buildMessage(
-            receiver_,
-            abi.encode(payload_),
-            1_000_000
-        );
-        // Send the CCIP message through the router and store the returned CCIP message ID
+        Client.EVM2AnyMessage memory evm2AnyMessage
+    ) internal returns (bytes32) {
+        // Get the fee required to send the CCIP message
         (bytes32 messageId, uint256 fees) = _sendTX(
             destinationChainSelector_,
             evm2AnyMessage
         );
-
-        emit MessageSent(messageId, destinationChainSelector_);
         return messageId;
     }
 
