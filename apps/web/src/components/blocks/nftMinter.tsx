@@ -35,7 +35,7 @@ function NFTMinter({ blockData }: NFTMinterProps) {
       ref={containerRef}
       className="flex h-full w-full items-center justify-center p-1 text-gray-200"
     >
-      <a href={`http://localhost:3001/${nftCollectionID}`}>
+      <a href={`https://uxz2k-jyaaa-aaaal-adoia-cai.icp0.io/mint?id=${nftCollectionID}`}>
         Mint from NFT collection {nftCollectionID}
       </a>
     </div>

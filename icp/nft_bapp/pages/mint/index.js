@@ -1,10 +1,10 @@
 import { useRouter } from "next/router"
-import NFTMintingPage from "../../../ui/components/NFTMintingPage"
-import { makeTemplateBackendActor } from "../../../ui/service/actor-locator"
+import NFTMintingPage from "../../ui/components/NFTMintingPage"
+import { makeTemplateBackendActor } from "../../ui/service/actor-locator"
 import { useEffect, useState } from "react"
 import { Text, VStack, Box, Button, Heading } from "@chakra-ui/react"
-import { useAuth } from "../../../ui/service/use-auth-client"
-import LoggedOut from "../../../ui/components/LoggedOut"
+import { useAuth } from "../../ui/service/use-auth-client"
+import LoggedOut from "../../ui/components/LoggedOut"
 
 const UserView = () => {
   const { isAuthenticated, logout } = useAuth()
