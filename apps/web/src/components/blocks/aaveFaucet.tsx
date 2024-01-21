@@ -48,7 +48,7 @@ function AaveFaucet({}) {
           ? "maticMumbai"
           : "eth";
     if (name !== network) setNetwork(name);
-  }, [chain]);
+  }, [chain, network]);
 
   // Add mint Faucet logic
   async function handleGo() {
@@ -61,6 +61,7 @@ function AaveFaucet({}) {
 
     try {
       const { hash } = await writeContract({
+        // @ts-ignore
         address: faucetAddress[network] as `0x${string}`,
         abi: facuetAbi,
         functionName: "mint",
