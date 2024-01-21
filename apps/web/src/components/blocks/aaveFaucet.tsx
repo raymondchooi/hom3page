@@ -103,10 +103,13 @@ function AaveFaucet({}) {
               {loadingState < 2 && (
                 <div className="text-s text-gray">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                   {
                     "The Aave Faucet wants to call 'mint' from you wallet. This will cost a little gas but mint WBTC, WETH, USDC and AAVE tokens in one transaction. This is available on Ethereum Sepolia & Polygon Mumbai. Do you want to continue?"
                   }
 =======
+=======
+>>>>>>> Stashed changes
                   The Aave Faucet wants to call `mint` from you wallet. This
                   will cost a little gas but mint WBTC, WETH, USDC and AAVE
                   tokens in one transaction. This is available on Ethereum

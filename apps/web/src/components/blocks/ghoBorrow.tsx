@@ -52,7 +52,10 @@ function GHOBurrow({}: GhoBurrowProps) {
   );
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
   const burrowTokens = {
     wbtc: "0x29f2D40B0605204364af54EC677bD022dA425d03",
     gho: "0xc4bF5CbDaBE595361438F8c6a187bDc330539c60",
@@ -107,7 +110,11 @@ function GHOBurrow({}: GhoBurrowProps) {
       setLoadingState(0);
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   }, [chain, network, openSwitchNetworks]);
+=======
+  };
+>>>>>>> Stashed changes
 =======
   };
 >>>>>>> Stashed changes
