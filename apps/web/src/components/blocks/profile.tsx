@@ -374,7 +374,6 @@ function Profile({}: ProfileProps) {
             {/** Create Hom3 Profile */}
             {profileId?.home === 0 && (
               <div>
-                Create Hom3Profile
                 <div className="color-white flex text-xs text-white">
                   {actionSate === 1 && "Finding your Lens profiles"}
                   {actionSate === 2 &&

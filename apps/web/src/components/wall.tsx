@@ -317,13 +317,8 @@ export default function Wall() {
                 <div className="relative flex h-screen w-screen  items-center justify-center">
                   <div className="grid min-w-[960px] grid-cols-24 gap-0">
                     {renderBlocks}
+                  
                   </div>
-                  <button
-                    className="0 absolute -right-[55px] bottom-[97px] flex h-10 w-10 items-center justify-center hover:scale-105"
-                    onClick={handleEditClick}
-                  >
-                    <PencilIcon className="h-6 w-6 text-emerald-800" />
-                  </button>
                 </div>
               </TransformComponent>
               <div className="absolute bottom-10 left-1/2 mt-5 flex -translate-x-1/2 flex-col items-center justify-center">
@@ -361,6 +356,12 @@ export default function Wall() {
                     <Button onClick={() => zoomIn()} fancy="less">
                       +
                     </Button>
+                    <button
+                      className="absolute top-1/2 -right-[40px] flex h-10 w-10 items-center justify-center hover:scale-105"
+                      onClick={handleEditClick}
+                    >
+                      <PencilIcon className="h-6 w-6 text-emerald-800" />
+                    </button>
                   </div>
                 </div>
                 <button

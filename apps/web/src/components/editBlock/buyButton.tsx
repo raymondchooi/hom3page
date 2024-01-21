@@ -212,9 +212,11 @@ function BuyButton({
         </Button>
         {!!balance?.data?.symbol && !!balance?.data?.formatted && (
           <div className="ml-4 flex flex-col text-sm text-gray-400">
-          <div>{`Cost: ${BLOCK_COST_USDC * purchasableBlocks.size} USDC `}</div>
-          <div>{`Balance: ${parseFloat(balance?.data?.formatted || "-").toFixed(3)} ${balance.data.symbol}`}</div>
-        </div>
+            <div>{`Cost: ${BLOCK_COST_USDC * purchasableBlocks.size} ${
+              chain?.id === sepolia.id ? "GHO" : "USDC"
+            } `}</div>
+            <div>{`Balance: ${parseFloat(balance?.data?.formatted || "-").toFixed(3)} ${balance.data.symbol}`}</div>
+          </div>
         )}
         {!isBalanceSufficient && (
           <ErrorMessage className="ml-4">Insufficient balance</ErrorMessage>
