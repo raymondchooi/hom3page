@@ -82,6 +82,7 @@ function Profile({}: ProfileProps) {
     home?: number;
     lens?: BigInt;
   }>();
+  const [profileAddress, setProfileAddress] = useState();
   const [profilesBalance, setProfilesBalance] = useState<number>(0);
   const [lensProfile, setLensProfile] = useState<any>(null);
   const [loaded, setloaded] = useState<boolean>();
@@ -117,6 +118,13 @@ function Profile({}: ProfileProps) {
       setloaded(true);
     };
     if (!profileContract && !loaded) getProfile();
+    if (address !== profileAddress) {
+      setProfileAddress(address);
+      setNoProfile(true);
+      setLensProfile();
+      getProfile();
+      getLensPro();
+    }
   }, [profileContract, loaded, address]);
 
   useEffect(() => {
@@ -225,8 +233,10 @@ function Profile({}: ProfileProps) {
       functionName: "allowance",
       args: [address, profileContract?.target],
     });
+    console.log("got allowance: ", parseFloat(allowance));
+    console.log("got asking: ", COST_PER_PROFILE);
 
-    if (allowance < COST_PER_PROFILE) {
+    if (parseFloat(allowance) < COST_PER_PROFILE.maticMumbai) {
       let addAllowance;
       setActionState(7);
       try {
@@ -236,7 +246,7 @@ function Profile({}: ProfileProps) {
           address: DEFAULT_PAYMENT_TOKEN.maticMumbai as `0x${string}`,
           abi: GENERIC_ABI.ERC20,
           functionName: "approve",
-          args: [profileContract?.target, COST_PER_PROFILE],
+          args: [profileContract?.target, COST_PER_PROFILE.maticMumbai],
         });
       } catch (error) {
         console.log(error);
@@ -469,7 +479,7 @@ function Profile({}: ProfileProps) {
                         <Button
                           fancy
                           onClick={() => handleDepositGho()}
-                          className="w-half"
+                          className="w-half background-white"
                         >
                           Deposit
                         </Button>

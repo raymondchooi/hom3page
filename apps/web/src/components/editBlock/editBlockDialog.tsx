@@ -116,17 +116,17 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
   }, [blockIds, wallData]);
 
   const optimisedBlockIds = useMemo(() => {
-    const result: string[][] = [];
+    const result: number[][] = [];
     let previousBlockId: number | null = null;
 
     for (const blockId of blockIds) {
       const currentBlockId = Number(blockId);
       if (previousBlockId === null || currentBlockId !== previousBlockId + 1) {
-        result.push([blockId.toString()]);
+        result.push([currentBlockId]);
       } else {
         const lastSubArray = result[result.length - 1];
         if (lastSubArray) {
-          lastSubArray.push(blockId.toString());
+          lastSubArray.push(currentBlockId);
         }
       }
       previousBlockId = currentBlockId;

@@ -15,7 +15,7 @@ function WallLink({ blockData }: WallLinkProps) {
     <Link
       href={`/${id}` ?? "/"}
       aria-label={`Go to wall ${id ?? "home"}`}
-      className="flex h-full w-full items-center justify-center border-gray-700"
+      className="flex h-full w-full items-center justify-center border-gray-700 cursor-pointer"
     >
       <Image
         src={"/blocks/link.svg"}

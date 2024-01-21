@@ -23,7 +23,7 @@ const BLOCK_COST_USDC = 100;
 
 interface BuyButtonProps {
   purchasableBlocks: Map<string, object>;
-  optimisedBlockIds?: string[][];
+  optimisedBlockIds?: number[][];
   setBought: (bought: boolean) => void;
   bought: boolean;
   callback: (state: number, data?: string, error?: boolean) => void;
@@ -135,7 +135,7 @@ function BuyButton({
             functionName: "buyBlock",
             args: [
               purchasableBlocks.size === 1
-                ? [optimisedBlockIds]
+                ? optimisedBlockIds
                 : optimisedBlockIds,
               purchasableBlocks.size === 1 ? false : true,
             ],
@@ -153,11 +153,11 @@ function BuyButton({
         if (network === "maticMumbai") {
           callback(5);
           if (optimisedBlockIds) {
-            //@ts-ignore
             const blockUpdate = optimisedBlockIds
               .flat()
               .flat()
               .filter((id) => id !== undefined)
+              //@ts-ignore
               .map((id: string) => ({ id, owner: address }));
             await updateBlock(blockUpdate);
           }
@@ -167,11 +167,11 @@ function BuyButton({
 
           callback(5);
           if (optimisedBlockIds) {
-            //@ts-ignore
             const blockUpdate = optimisedBlockIds
-              .flat()
+            .flat()
               .flat()
               .filter((id) => id !== undefined)
+              //@ts-ignore
               .map((id: string) => ({ id, owner: address }));
             await updateBlock(blockUpdate);
           }

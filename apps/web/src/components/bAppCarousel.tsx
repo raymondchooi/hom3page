@@ -17,7 +17,7 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
       opts={{
         align: "start",
       }}
-      className="relative mt-3 w-full max-w-3xl"
+      className="relative mt-3 w-full max-w-3xl overflow-x-auto"
     >
       <CarouselContent className="-ml-4">
         <CarouselItem className="basis-1/3">

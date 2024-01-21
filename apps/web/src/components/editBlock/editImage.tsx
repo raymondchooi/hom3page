@@ -14,6 +14,7 @@ interface EditTextProps {
 function EditText({ onSave, onChange }: EditTextProps) {
   const [uploadedImage, setUploadedImage] = useState("");
   const [altText, setAltText] = useState("");
+  const [link, setLink] = useState("");
 
   async function handleImageUpload(file: File) {
     if (file) {
@@ -26,11 +27,16 @@ function EditText({ onSave, onChange }: EditTextProps) {
 
   function handleAltInputChange(e: ChangeEvent<HTMLInputElement>) {
     setAltText(e.target.value);
-    onChange && onChange(`img:${uploadedImage}|alt:${altText}`);
+    onChange && onChange(`img:${uploadedImage}|alt:${altText}link:${link}`);
+  }
+
+  function handleLinkChange(e: ChangeEvent<HTMLInputElement>) {
+    setLink(e.target.value);
+    onChange && onChange(`img:${uploadedImage}|alt:${altText}|link:${link}`);
   }
 
   function handleSave() {
-    onSave(`img:${uploadedImage}|alt:${altText}`);
+    onSave(`img:${uploadedImage}|alt:${altText}link:${link}`);
   }
 
   return (
@@ -46,6 +52,14 @@ function EditText({ onSave, onChange }: EditTextProps) {
             onChange={handleAltInputChange}
             name="Alt"
             aria-label="Image alt text"
+          />
+        </Field>
+        <Field className="mt-2">
+          <Label className="text-gray-400">Link</Label>
+          <Input
+            onChange={handleLinkChange}
+            name="Link"
+            aria-label="Link"
           />
         </Field>
       </FieldGroup>

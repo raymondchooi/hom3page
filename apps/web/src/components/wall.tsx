@@ -317,7 +317,6 @@ export default function Wall() {
                 <div className="relative flex h-screen w-screen  items-center justify-center">
                   <div className="grid min-w-[960px] grid-cols-24 gap-0">
                     {renderBlocks}
-                  
                   </div>
                 </div>
               </TransformComponent>
@@ -356,14 +355,9 @@ export default function Wall() {
                     <Button onClick={() => zoomIn()} fancy="less">
                       +
                     </Button>
-                    <button
-                      className="absolute top-1/2 -right-[40px] flex h-10 w-10 items-center justify-center hover:scale-105"
-                      onClick={handleEditClick}
-                    >
-                      <PencilIcon className="h-6 w-6 text-emerald-800" />
-                    </button>
                   </div>
                 </div>
+
                 <button
                   className="pointer-cursor"
                   onClick={() => setWelcomeDialogOpen(true)}
@@ -376,6 +370,12 @@ export default function Wall() {
             </>
           )}
         </TransformWrapper>
+        <button
+          className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center hover:scale-105"
+          onClick={handleEditClick}
+        >
+          <PencilIcon className="h-6 w-6 text-emerald-800" />
+        </button>
       </div>
       {editBlockDialogOpen && (
         <EditBlockDialog
