@@ -26,7 +26,8 @@ export default function Block({ blockData, editing }: BlockProps) {
     else if (blockData?.type === "wallLink")
       return <WallLink blockData={blockData} />;
     else if (blockData?.type === "aaveFaucet") return <AaveFaucet />;
-    else if (blockData?.type === "gho") return <GHOBurrow />;
+    else if (blockData?.type === "gho")
+      return <GHOBurrow blockData={blockData} />;
     else if (editing)
       return (
         <Text blockData={{ id: blockData.id, content: blockData.content }} />

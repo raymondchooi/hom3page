@@ -39,26 +39,26 @@ export type DefaultPaymentContracts = { [chain in ChainName]?: string };
 const CONTRACTS: NetworkContracts = {
   ethSepolia: {
     BlockStore: {
-      address: "0xA965C4feE7935a846A5b097b398B5Bb8BcbcD60A",
+      address: "0x27b634838Bd398Ef06D691c749046414e81FA3eF",
       abi: BlockStoreABI,
     },
     Hom3DepositVault: {
-      address: "0x24aFE650dfD67042E6Ae214d498dC44A9CdB49c0",
+      address: "0xd30e45e78c876964AC9FB591230659B3D6aF3e1D",
       abi: HomeProfileABI,
     },
   },
 
   maticMumbai: {
     BlockSales: {
-      address: "0xF3A175F048Bb83f5F519a251628dBa123DE7DB77",
+      address: "0x5fB3A6D132F8d8eA2B4b4D81230ffce81D9740eD",
       abi: BlockSalesABI,
     },
     BlockToken: {
-      address: "0xE20D33EFD7CfE8258efbb6BdaE6c149941e7dac9",
+      address: "0xaA15B19EE877F1e1bdb92f0B3C57c0bc5Ad6b960",
       abi: BlockTokenABI,
     },
     Hom3Profile: {
-      address: "0xd6fBf2bFed1330E8B8859cA3a72170fFE9c99256",
+      address: "0x82F1a21aa77b9d5AfAa62Fb310961055133B21Ff",
       abi: HomeProfileABI,
     },
   },

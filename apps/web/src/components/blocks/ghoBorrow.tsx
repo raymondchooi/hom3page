@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useAccount, sepolia, useNetwork } from "wagmi";
 import { useModal, Avatar } from "connectkit";
 import facuetAbi from "../../constants/ABIs/aaveFaucetbApp.abi.json";
-import { ChainName } from "constants/ABIs/contracts";
+import { ChainName, DEFAULT_PAYMENT_TOKEN } from "constants/ABIs/contracts";
 
 import BlockDialog from "./dialog"; // Don't know if this is useful
 import {
@@ -16,10 +16,20 @@ import {
 } from "components/dialog";
 import { Button } from "components";
 import { polygonMumbai } from "wagmi/chains";
-import { waitForTransaction, writeContract } from "@wagmi/core";
+import {
+  FetchBalanceResult,
+  fetchBalance,
+  waitForTransaction,
+  writeContract,
+} from "@wagmi/core";
 import { buildNetworkScanLink } from "utils/text";
+import { BlockData } from "models/BlockData";
 
-function GHOBurrow({}) {
+interface GhoBurrowProps {
+  blockData: BlockData;
+}
+
+function GHOBurrow({}: GhoBurrowProps) {
   const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
   const { openSwitchNetworks } = useModal();
@@ -27,6 +37,9 @@ function GHOBurrow({}) {
   const [loadingState, setLoadingState] = useState<number>(0);
   const [hash, setHash] = useState<string>();
   const [hasError, setError] = useState<string | undefined>("");
+  const [wbtcBalance, setWbtcBalance] = useState<FetchBalanceResult>();
+  const [ghoBalance, setGhoBalance] = useState<FetchBalanceResult>();
+
   const [network, setNetwork] = useState<ChainName>(
     chain?.id === sepolia.id
       ? "ethSepolia"
@@ -35,10 +48,30 @@ function GHOBurrow({}) {
         : "eth",
   );
 
-  const faucetAddress = {
-    ethSepolia: "0x5d94accFcF4f3297F0EF3B111e15B6C21Fd31463",
-    maticMumbai: "0xdF80cE4e154333B565cEf92187B81233Ea4b33a2",
+  const tokenAddresses = {
+    wbtc: "0x29f2D40B0605204364af54EC677bD022dA425d03",
+    gho: "0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8",
   };
+
+  const getTokenBalance = async (token: "wbtc" | "gho") => {
+    const balance = await fetchBalance({
+      address: address,
+      token: tokenAddresses[token],
+      chainId: chain?.id,
+    });
+
+    console.log(`Balance of ${balance.formatted} for ${token}`);
+    return balance;
+  };
+
+  useEffect(() => {
+    if (!wbtcBalance) {
+      getTokenBalance("wbtc").then((value) => setWbtcBalance(value));
+    }
+    if (!ghoBalance) {
+      getTokenBalance("gho").then((value) => setGhoBalance(value));
+    }
+  }, [wbtcBalance]);
 
   useEffect(() => {
     const name =
@@ -48,12 +81,18 @@ function GHOBurrow({}) {
           ? "maticMumbai"
           : "eth";
     if (name !== network) setNetwork(name);
+    if (name && name !== "ethSepolia") {
+      setLoadingState(13);
+      openSwitchNetworks();
+    } else {
+      setLoadingState(0);
+    }
   }, [chain]);
 
   // Add mint Faucet logic
   async function handleGo() {
     if (!isConnected) return setLoadingState(11);
-    if (network !== "maticMumbai" && network !== "ethSepolia") {
+    if (network !== "ethSepolia") {
       setLoadingState(13);
       openSwitchNetworks();
     }
@@ -91,12 +130,17 @@ function GHOBurrow({}) {
           onClick={() => setOpenDialog(!openDialog)}
         >
           <Image
-            src={"/blocks/gho-icon.svg"}
+            src={"/blocks/gho-icon-white.svg"}
             alt="Wall link"
             width={20}
             height={20}
             className="opacity-70"
           />
+          <div className="text-s">GET SOME GHO!</div>
+          <div className="text-s">You have {wbtcBalance?.formatted}WBTC</div>
+          <div className="text-s">
+            You could Burrow {wbtcBalance?.formatted * 1.5}GHO!
+          </div>
         </button>
       </div>
       {openDialog && (
@@ -108,10 +152,8 @@ function GHOBurrow({}) {
             <div className="Gap-y-10">
               {loadingState < 2 && (
                 <div className="text-s text-gray">
-                  The Aave Faucet wants to call 'mint' from you wallet. This
-                  will cost a little gas but mint WBTC, WETH, USDC and AAVE
-                  tokens in one transaction. This is available on Ethereum
-                  Sepolia & Polygon Mumbai. Do you want to continue?
+                  Send your WBTC to Aave and burrow GHO to spend on deposit in
+                  your profile! This will deposit 1WTBC to burrow 10,000GHO
                 </div>
               )}
               <br />

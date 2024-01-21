@@ -21,8 +21,7 @@ function Gho({ onSave, onChange }: GhoProps) {
   return (
     <div className="my-4 flex w-full flex-col justify-center">
       <div className="mt-2">Save to add the Aave Lens/Burrow to your block</div>
-
-      <SaveButton onSaveClick={handleSave} disabled />
+      <SaveButton onSaveClick={handleSave} />
     </div>
   );
 }
