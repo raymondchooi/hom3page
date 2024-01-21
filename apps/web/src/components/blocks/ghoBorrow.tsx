@@ -56,6 +56,7 @@ function GHOBurrow({}: GhoBurrowProps) {
 
       const balance = await fetchBalance({
         address: address,
+        //@ts-ignore
         token: tokenAddresses[token],
         chainId: chain?.id,
       });
