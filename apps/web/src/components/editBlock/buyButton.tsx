@@ -76,12 +76,12 @@ function BuyButton({
       setOpen(true);
     }
 
-    const cost = purchasableBlocks.size * COST_PER_BLOCK[network]!;
-    const saleContract: AddressAndAbi = CONTRACTS?.[network]?.[
-      network === "maticMumbai" ? "BlockSales" : "BlockStore"
+    const cost = purchasableBlocks.size * COST_PER_BLOCK[net]!;
+    const saleContract: AddressAndAbi = CONTRACTS?.[net]?.[
+      net === "maticMumbai" ? "BlockSales" : "BlockStore"
     ] as AddressAndAbi;
 
-    console.log("network ", network);
+    console.log("network ", net);
 
     if (
       CONTRACTS?.maticMumbai?.BlockSales &&
@@ -91,7 +91,7 @@ function BuyButton({
       let allowance;
       try {
         allowance = await readContract({
-          address: DEFAULT_PAYMENT_TOKEN[network] as `0x${string}`,
+          address: DEFAULT_PAYMENT_TOKEN[net] as `0x${string}`,
           abi: GENERIC_ABI.ERC20,
           functionName: "allowance",
           args: [address, saleContract?.address],
@@ -109,7 +109,7 @@ function BuyButton({
             // They need to add allowanceaaaaaa
             // Approve the send to the sales contracts
             const { hash } = (addAllowance = await writeContract({
-              address: DEFAULT_PAYMENT_TOKEN[network] as `0x${string}`,
+              address: DEFAULT_PAYMENT_TOKEN[net] as `0x${string}`,
               abi: GENERIC_ABI.ERC20,
               functionName: "approve",
               args: [saleContract.address, cost],
@@ -213,7 +213,7 @@ function BuyButton({
         {!!balance?.data?.symbol && !!balance?.data?.formatted && (
           <div className="ml-4 flex flex-col text-sm text-gray-400">
           <div>{`Cost: ${BLOCK_COST_USDC * purchasableBlocks.size} USDC `}</div>
-          <div>{`Balance: ${parseFloat(balance?.data?.formatted || "-").toFixed(3)} USDC`}</div>
+          <div>{`Balance: ${parseFloat(balance?.data?.formatted || "-").toFixed(3)} ${balance.data.symbol}`}</div>
         </div>
         )}
         {!isBalanceSufficient && (

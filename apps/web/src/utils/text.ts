@@ -39,6 +39,7 @@ export interface buildNetworkScanLinkInterface {
 const etherscanPrefix: { [chain in ChainName]?: string } = {
   eth: "https://etherscan.io",
   ethGoerli: "https://goerli.etherscan.io",
+  ethSepolia: "https://sepolia.etherscan.io",
   matic: "https://polygonscan.com",
   maticMumbai: "https://mumbai.polygonscan.com",
   arbitrum: "https://arbiscan.io/",

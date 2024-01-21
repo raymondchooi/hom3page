@@ -8,7 +8,6 @@ import facuetAbi from "../../constants/ABIs/bApps/aaveFaucetbApp.abi.json";
 import { type ChainName } from "constants/ABIs/contracts";
 
 import BlockDialog from "./dialog"; // Don't know if this is useful
-
 import { Button } from "components";
 import { polygonMumbai } from "wagmi/chains";
 import { waitForTransaction, writeContract } from "@wagmi/core";
@@ -43,7 +42,7 @@ function AaveFaucet({}) {
           ? "maticMumbai"
           : "eth";
     if (name !== network) setNetwork(name);
-  }, [chain, network]);
+  }, [chain]);
 
   // Add mint Faucet logic
   async function handleGo() {
@@ -56,7 +55,7 @@ function AaveFaucet({}) {
 
     try {
       const { hash } = await writeContract({
-        // @ts-ignore
+        //@ts-ignore
         address: faucetAddress[network] as `0x${string}`,
         abi: facuetAbi,
         functionName: "mint",
@@ -99,49 +98,33 @@ function AaveFaucet({}) {
           setOpen={setOpenDialog}
           title="Transaction Required"
           description={
-            <div className="Gap-y-10">
-              {loadingState < 2 && (
-                <div className="text-s text-gray">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                  {
-                    "The Aave Faucet wants to call 'mint' from you wallet. This will cost a little gas but mint WBTC, WETH, USDC and AAVE tokens in one transaction. This is available on Ethereum Sepolia & Polygon Mumbai. Do you want to continue?"
-                  }
-=======
-=======
->>>>>>> Stashed changes
-                  The Aave Faucet wants to call `mint` from you wallet. This
-                  will cost a little gas but mint WBTC, WETH, USDC and AAVE
-                  tokens in one transaction. This is available on Ethereum
-                  Sepolia & Polygon Mumbai. Do you want to continue?
->>>>>>> Stashed changes
-                </div>
-              )}
-              <br />
-              <div className="color-white text-m  flex justify-center text-black">
-                {loadingState === 1 && "Please approve in your wallet"}
+            <>
+              <div className="text-s text-gray">
+                {loadingState < 2 &&
+                  "T           tokens in one transaction. This is available on Ethereum"}
                 {loadingState === 2 && "Success! Mint complete!"}
                 {loadingState === 10 &&
                   `There was an error with the transaction, Please try again`}
                 {loadingState === 11 && "Please Connect your wallet"}
                 {loadingState === 12 && "Waiting for confirmation..."}
                 {loadingState === 13 && "Please change networks"}
-                <br />
-                {hash && !hasError && (
-                  <div>
-                    <a
-                      className="text-underlined"
-                      href={buildNetworkScanLink({
-                        network: network,
-                        txHash: hash,
-                      })}
-                      target={"_blank"}
-                    >
-                      See transaction
-                    </a>
-                  </div>
-                )}
               </div>
+              <br />
+              {hash && !hasError && (
+                <div>
+                  <a
+                    className="text-underlined"
+                    href={buildNetworkScanLink({
+                      network: network,
+                      txHash: hash,
+                    })}
+                    target={"_blank"}
+                  >
+                    See transaction
+                  </a>
+                </div>
+              )}
+
               {showButton() && (
                 <div className="z-[10] mt-6 flex w-full justify-center">
                   <Button
@@ -164,7 +147,7 @@ function AaveFaucet({}) {
                   </Button>
                 </div>
               )}
-            </div>
+            </>
           }
         />
       )}

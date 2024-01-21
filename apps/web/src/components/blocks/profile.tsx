@@ -133,6 +133,7 @@ function Profile({}: ProfileProps) {
       getLensPro();
     }
   }, [lensClient, profileId, profileContract, noProfile, getLensPro]);
+
   async function getLensPro() {
     if (!profileContract?.getProfileLensId) return;
 
@@ -141,12 +142,7 @@ function Profile({}: ProfileProps) {
       setNoProfile(true);
       return;
     }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  }, [lensClient, profileId, profileContract, noProfile]);
-=======
-=======
->>>>>>> Stashed changes
+
     console.log("got lens profile id", lensProfileIdFromNumber(lensId));
     setProfileId((prv) => ({ ...prv, lens: lensId }));
 
@@ -159,10 +155,6 @@ function Profile({}: ProfileProps) {
     setProfileId((prv) => ({ ...prv, lens: lensId }));
     if (profile) setLensProfile(profile);
   }
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
   function handleProfileClick() {
     if (isConnected) setOpenProfileDialog(true);
