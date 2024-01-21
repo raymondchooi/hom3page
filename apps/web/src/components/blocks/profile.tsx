@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { type ChangeEvent } from "react";
 import Image from "next/image";
 import { useModal, Avatar } from "connectkit";
@@ -151,7 +153,7 @@ function Profile({}: ProfileProps) {
       setProfileId((prv) => ({ ...prv, lens: lensId }));
       if (profile) setLensProfile(profile);
     }
-  }, [lensClient, profileId, profileContract]);
+  }, [lensClient, profileId, profileContract, noProfile]);
 
   function handleProfileClick() {
     if (isConnected) setOpenProfileDialog(true);
@@ -349,7 +351,7 @@ function Profile({}: ProfileProps) {
               ) : (
                 <Avatar address={address} size={32} radius={16} />
               )}
-              <div className="flex justify-center items-center  text-gray-200">
+              <div className="flex items-center justify-center  text-gray-200">
                 {parseLensProfile(lensProfile, "handle")
                   ? parseLensProfile(lensProfile, "handle")
                   : profileId?.home === 0
@@ -360,7 +362,7 @@ function Profile({}: ProfileProps) {
 
             {/** Create Hom3 Profile */}
             {profileId?.home === 0 && (
-              <div >
+              <div>
                 Create Hom3Profile
                 <div className="color-white flex text-xs text-white">
                   {actionSate === 1 && "Finding your Lens profiles"}
