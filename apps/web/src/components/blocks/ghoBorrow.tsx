@@ -3,30 +3,25 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useAccount, sepolia, useNetwork } from "wagmi";
-import { useModal, Avatar } from "connectkit";
+import { useModal } from "connectkit";
 import ghoAbi from "../../constants/ABIs/bApps/aaveBurrow.abi.json";
 import ER20_ABI from "../../constants/ABIs/erc20.abi.json";
 
-import { ChainName, DEFAULT_PAYMENT_TOKEN } from "constants/ABIs/contracts";
+import { type ChainName } from "constants/ABIs/contracts";
 
 import BlockDialog from "./dialog"; // Don't know if this is useful
-import {
-  Dialog,
-  DialogBody,
-  DialogDescription,
-  DialogTitle,
-} from "components/dialog";
+
 import { Button } from "components";
 import { polygonMumbai } from "wagmi/chains";
 import {
-  FetchBalanceResult,
+  type FetchBalanceResult,
   fetchBalance,
   waitForTransaction,
   writeContract,
 } from "@wagmi/core";
 import { buildNetworkScanLink } from "utils/text";
-import { BlockData } from "models/BlockData";
-import { ethers, toBigInt } from "ethers";
+import { type BlockData } from "models/BlockData";
+import { ethers } from "ethers";
 
 interface GhoBurrowProps {
   blockData: BlockData;
@@ -51,30 +46,30 @@ function GHOBurrow({}: GhoBurrowProps) {
         : "eth",
   );
 
-  const tokenAddresses = {
-    wbtc: "0x29f2D40B0605204364af54EC677bD022dA425d03",
-    gho: "0xc4bF5CbDaBE595361438F8c6a187bDc330539c60",
-  };
-
-  const getTokenBalance = async (token: "wbtc" | "gho") => {
-    const balance = await fetchBalance({
-      address: address,
-      token: tokenAddresses[token],
-      chainId: chain?.id,
-    });
-
-    console.log(`Balance of ${balance.formatted} for ${token}`);
-    return balance;
-  };
-
   useEffect(() => {
+    const tokenAddresses = {
+      wbtc: "0x29f2D40B0605204364af54EC677bD022dA425d03",
+      gho: "0xc4bF5CbDaBE595361438F8c6a187bDc330539c60",
+    };
+    const getTokenBalance = async (token: "wbtc" | "gho") => {
+      if (!address) return;
+
+      const balance = await fetchBalance({
+        address: address,
+        token: tokenAddresses[token],
+        chainId: chain?.id,
+      });
+
+      console.log(`Balance of ${balance.formatted} for ${token}`);
+      return balance;
+    };
     if (!wbtcBalance) {
       getTokenBalance("wbtc").then((value) => setWbtcBalance(value));
     }
     if (!ghoBalance) {
       getTokenBalance("gho").then((value) => setGhoBalance(value));
     }
-  }, [wbtcBalance]);
+  }, [address, chain?.id, ghoBalance, wbtcBalance]);
 
   useEffect(() => {
     const name =
@@ -90,7 +85,7 @@ function GHOBurrow({}: GhoBurrowProps) {
     } else {
       setLoadingState(0);
     }
-  }, [chain]);
+  }, [chain, network, openSwitchNetworks]);
 
   // Add mint Faucet logic
   async function handleGo() {
