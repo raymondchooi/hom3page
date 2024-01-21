@@ -20,8 +20,9 @@ function Gho({ onSave, onChange }: GhoProps) {
 
   return (
     <div className="my-4 flex w-full flex-col justify-center">
-      <div className="mt-2">Coming soon!</div>
-      <SaveButton onSaveClick={handleSave} disabled/>
+      <div className="mt-2">Save to add the Aave Lens/Burrow to your block</div>
+
+      <SaveButton onSaveClick={handleSave} disabled />
     </div>
   );
 }

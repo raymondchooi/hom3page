@@ -28,7 +28,6 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
         _;
     }
 
-   
     constructor(
         address profileContract_,
         address ccipRouter_,
@@ -96,6 +95,10 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
         MessageActions action_,
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal {
+        emit MessageReceived(
+            any2EvmMessage.messageId,
+            any2EvmMessage.sourceChainSelector
+        );
         if (action_ == MessageActions.ERROR) _receiveError(any2EvmMessage);
         else if (action_ == MessageActions.DEPOSIT)
             _receiveDeposit(any2EvmMessage);
@@ -111,9 +114,10 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
 
     function _receiveDeposit(
         Client.Any2EVMMessage memory any2EvmMessage
-    ) internal returns (bool) {
+    ) internal {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
-        _deposit[message.update_.profileId_] += message.value_;
+        UpdateMessage memory update = message.update_;
+        _deposit[update.profileId_] += message.value_;
 
         emit DepositedFunds(message.update_.profileId_, message.value_);
     }

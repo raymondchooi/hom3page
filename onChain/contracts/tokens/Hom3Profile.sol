@@ -253,6 +253,7 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     function setDepositContractAddress(address contract_) external onlyOwner {
         _depositContractAddress = contract_;
         _setAllowedAddress(DEPOSIT_CONTRACT_CHAIN, contract_);
+        _setChainsActivity(DEPOSIT_CONTRACT_CHAIN, true);
     }
 
     function setLensProfile(

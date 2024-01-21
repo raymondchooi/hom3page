@@ -16,7 +16,7 @@ const deployedContracts: {
     BlockToken: "",
     BlockStore: "0xA965C4feE7935a846A5b097b398B5Bb8BcbcD60A",
     Hom3Profile: "",
-    Hom3DepositVault: "0x9e9B01b1a6045965bC721BB3043636b86418c020",
+    Hom3DepositVault: "0x24aFE650dfD67042E6Ae214d498dC44A9CdB49c0",
   },
   opGoerli: {
     BlockToken: "",
@@ -24,10 +24,10 @@ const deployedContracts: {
     Hom3Profile: "",
   },
   maticMumbai: {
-    BlockToken: "0xE20D33EFD7CfE8258efbb6BdaE6c149941e7dac9",
-    BlockSales: "0xF3A175F048Bb83f5F519a251628dBa123DE7DB77",
+    BlockToken: "0xaA15B19EE877F1e1bdb92f0B3C57c0bc5Ad6b960",
+    BlockSales: "0x5fB3A6D132F8d8eA2B4b4D81230ffce81D9740eD",
     BlockStore: "",
-    Hom3Profile: "0xd6fBf2bFed1330E8B8859cA3a72170fFE9c99256",
+    Hom3Profile: "0x82F1a21aa77b9d5AfAa62Fb310961055133B21Ff",
   },
 };
 

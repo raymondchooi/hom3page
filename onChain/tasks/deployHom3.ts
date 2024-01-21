@@ -34,7 +34,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   const deploys: { [chain in ChainName]?: ContractNames[] } = {
     opGoerli: opGoerli,
     maticMumbai: maticMumbai,
-    ethSepolia: smallSep,
+    ethSepolia: ethSepolia,
   };
 
   console.log(`🟠 [TASK] ${taskId} : Connecting to network ${network?.name}`);

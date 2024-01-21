@@ -69,7 +69,7 @@ function BappCarousel({ onBappClick }: BappCarouselProps) {
           <BappSummary
             id="gho"
             title="GHO"
-            description="Deposit and borrow GHO"
+            description="Deposit WBTC and borrow GHO"
             image="/blocks/aave.svg"
             onClick={onBappClick}
           />

@@ -9,6 +9,7 @@ import Profile from "./blocks/profile";
 import Text from "./blocks/text";
 import ImageBlock from "./blocks/image";
 import AaveFaucet from "./blocks/aaveFaucet";
+import GHOBurrow from "./blocks/ghoBorrow";
 
 interface BlockProps {
   blockData: BlockData;
@@ -25,6 +26,7 @@ export default function Block({ blockData, editing }: BlockProps) {
     else if (blockData?.type === "wallLink")
       return <WallLink blockData={blockData} />;
     else if (blockData?.type === "aaveFaucet") return <AaveFaucet />;
+    else if (blockData?.type === "gho") return <GHOBurrow />;
     else if (editing)
       return (
         <Text blockData={{ id: blockData.id, content: blockData.content }} />

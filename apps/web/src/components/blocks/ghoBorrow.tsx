@@ -19,7 +19,7 @@ import { polygonMumbai } from "wagmi/chains";
 import { waitForTransaction, writeContract } from "@wagmi/core";
 import { buildNetworkScanLink } from "utils/text";
 
-function GHOBurrowdApp({}) {
+function GHOBurrow({}) {
   const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
   const { openSwitchNetworks } = useModal();
@@ -84,19 +84,21 @@ function GHOBurrowdApp({}) {
 
   return (
     <>
-      <button
-        aria-label="Aave Faucet"
-        className="flex h-full w-full items-center justify-center border-gray-700 active:scale-95 active:animate-spin"
-        onClick={() => setOpenDialog(!openDialog)}
-      >
-        <Image
-          src={"/blocks/faucet.svg"}
-          alt="Wall link"
-          width={20}
-          height={20}
-          className="opacity-70"
-        />
-      </button>
+      <div>
+        <button
+          aria-label="Aave Faucet"
+          className="flex h-full w-full items-center justify-center border-gray-700 active:scale-95 active:animate-spin"
+          onClick={() => setOpenDialog(!openDialog)}
+        >
+          <Image
+            src={"/blocks/gho-icon.svg"}
+            alt="Wall link"
+            width={20}
+            height={20}
+            className="opacity-70"
+          />
+        </button>
+      </div>
       {openDialog && (
         <BlockDialog
           open={openDialog}
@@ -167,4 +169,4 @@ function GHOBurrowdApp({}) {
   );
 }
 
-export default GHOBurrowdApp;
+export default GHOBurrow;

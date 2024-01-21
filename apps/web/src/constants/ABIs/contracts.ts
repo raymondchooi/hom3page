@@ -43,7 +43,7 @@ const CONTRACTS: NetworkContracts = {
       abi: BlockStoreABI,
     },
     Hom3DepositVault: {
-      address: "0x9e9B01b1a6045965bC721BB3043636b86418c020",
+      address: "0x24aFE650dfD67042E6Ae214d498dC44A9CdB49c0",
       abi: HomeProfileABI,
     },
   },

@@ -138,13 +138,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "profileId_",
         type: "uint256",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "amount_",
         type: "uint256",
@@ -157,19 +157,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "bytes32",
         name: "messageId_",
         type: "bytes32",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "profileId_",
         type: "uint256",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "amount_",
         type: "uint256",
@@ -340,13 +340,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "profileId_",
         type: "uint256",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "amount_",
         type: "uint256",
@@ -359,19 +359,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "bytes32",
         name: "messageId_",
         type: "bytes32",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "profileId_",
         type: "uint256",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "amount_",
         type: "uint256",

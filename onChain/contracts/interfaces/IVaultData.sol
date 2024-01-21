@@ -7,8 +7,8 @@ interface IVaultData {
         uint256 indexed profileId_,
         uint256 indexed amount_
     );
-    event DepositedFunds(uint256 profileId_, uint256 amount_);
-    event WithdrewFunds(uint256 profileId_, uint256 amount_);
+    event DepositedFunds(uint256 indexed profileId_, uint256 indexed amount_);
+    event WithdrewFunds(uint256 indexed profileId_, uint256 indexed amount_);
     event WithdrewFundsRequested(
         bytes32 indexed messageId_,
         uint256 indexed profileId_,
