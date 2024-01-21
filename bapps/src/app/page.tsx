@@ -37,7 +37,7 @@ const bApps = [
     description: "Create, distribute and monetize your NFT collection with our no-code IC solution. Requires an internet identity",
     image: "/blocks/nft_minter.png",
     customSize: 90,
-    url: "http://localhost:3000/",
+    url: "https://uxz2k-jyaaa-aaaal-adoia-cai.icp0.io/",
   }
 ];
 
