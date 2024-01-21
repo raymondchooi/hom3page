@@ -3,17 +3,12 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useAccount, sepolia, useNetwork } from "wagmi";
-import { useModal, Avatar } from "connectkit";
+import { useModal } from "connectkit";
 import facuetAbi from "../../constants/ABIs/bApps/aaveFaucetbApp.abi.json";
-import { ChainName } from "constants/ABIs/contracts";
+import { type ChainName } from "constants/ABIs/contracts";
 
 import BlockDialog from "./dialog"; // Don't know if this is useful
-import {
-  Dialog,
-  DialogBody,
-  DialogDescription,
-  DialogTitle,
-} from "components/dialog";
+
 import { Button } from "components";
 import { polygonMumbai } from "wagmi/chains";
 import { waitForTransaction, writeContract } from "@wagmi/core";
