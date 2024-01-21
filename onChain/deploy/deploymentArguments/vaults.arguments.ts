@@ -1,5 +1,11 @@
 /** @format */
-import { AddressLike, Addressable, BigNumberish, ZeroAddress } from "ethers";
+import {
+  AddressLike,
+  Addressable,
+  BigNumberish,
+  ZeroAddress,
+  toBigInt,
+} from "ethers";
 import { ChainName, tokenAddress } from "../../bin/tokenAddress";
 import deployedDCAContracts from "../../bin/deployedAddress";
 import deployedContracts from "../../bin/deployedAddress";
@@ -27,16 +33,14 @@ export const Hom3PageDepositVaultArguments = (
   let netName: ChainName =
     networkName === "localhost" ? "hardhat" : networkName;
 
-  const NFTAddress_ = deployedContracts[netName]?.ProfileToken;
   const paymentToken_ = tokenAddress.usdc[netName];
   const ccipRouter_ = tokenAddress.ccipRouter[netName];
   const linkToken_ = tokenAddress.link[netName];
-  const masterContract_ = deployedContracts?.maticMumbai?.Hom3Vault;
-  const masterChainId_: BigNumberish = 16015286601757825753;
+  const masterContract_ = deployedContracts?.maticMumbai?.Hom3Profile;
+  const masterChainId_ = "16015286601757825753";
 
   return [
     paymentToken_,
-    NFTAddress_,
     masterContract_,
     ccipRouter_,
     linkToken_,

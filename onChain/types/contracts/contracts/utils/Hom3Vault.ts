@@ -91,6 +91,7 @@ export interface Hom3VaultInterface extends Interface {
       | "MessageSent"
       | "NewMessageSent"
       | "OwnershipTransferred"
+      | "ProfileOwnershipTransferred"
       | "SetSpendAllowance"
       | "SetSpender"
       | "SpendTriggered"
@@ -332,6 +333,19 @@ export namespace OwnershipTransferredEvent {
   export interface OutputObject {
     previousOwner: string;
     newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ProfileOwnershipTransferredEvent {
+  export type InputTuple = [profileId_: BigNumberish, to_: AddressLike];
+  export type OutputTuple = [profileId_: bigint, to_: string];
+  export interface OutputObject {
+    profileId_: bigint;
+    to_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -690,6 +704,13 @@ export interface Hom3Vault extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
+    key: "ProfileOwnershipTransferred"
+  ): TypedContractEvent<
+    ProfileOwnershipTransferredEvent.InputTuple,
+    ProfileOwnershipTransferredEvent.OutputTuple,
+    ProfileOwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
     key: "SetSpendAllowance"
   ): TypedContractEvent<
     SetSpendAllowanceEvent.InputTuple,
@@ -801,6 +822,17 @@ export interface Hom3Vault extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "ProfileOwnershipTransferred(uint256,address)": TypedContractEvent<
+      ProfileOwnershipTransferredEvent.InputTuple,
+      ProfileOwnershipTransferredEvent.OutputTuple,
+      ProfileOwnershipTransferredEvent.OutputObject
+    >;
+    ProfileOwnershipTransferred: TypedContractEvent<
+      ProfileOwnershipTransferredEvent.InputTuple,
+      ProfileOwnershipTransferredEvent.OutputTuple,
+      ProfileOwnershipTransferredEvent.OutputObject
     >;
 
     "SetSpendAllowance(uint256,uint256)": TypedContractEvent<

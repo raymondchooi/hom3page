@@ -9,6 +9,7 @@ import type {
   Result,
   Interface,
   EventFragment,
+  AddressLike,
   ContractRunner,
   ContractMethod,
   Listener,
@@ -32,6 +33,7 @@ export interface IHom3DepositVaultInterface extends Interface {
       | "DepositedFunds"
       | "DepositedFundsRequested"
       | "EscrowBalanceToLow"
+      | "ProfileOwnershipTransferred"
       | "WithdrewFunds"
       | "WithdrewFundsRequested"
   ): EventFragment;
@@ -104,6 +106,19 @@ export namespace EscrowBalanceToLowEvent {
   export interface OutputObject {
     userProfile_: bigint;
     messageId_: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ProfileOwnershipTransferredEvent {
+  export type InputTuple = [profileId_: BigNumberish, to_: AddressLike];
+  export type OutputTuple = [profileId_: bigint, to_: string];
+  export interface OutputObject {
+    profileId_: bigint;
+    to_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -251,6 +266,13 @@ export interface IHom3DepositVault extends BaseContract {
     EscrowBalanceToLowEvent.OutputObject
   >;
   getEvent(
+    key: "ProfileOwnershipTransferred"
+  ): TypedContractEvent<
+    ProfileOwnershipTransferredEvent.InputTuple,
+    ProfileOwnershipTransferredEvent.OutputTuple,
+    ProfileOwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
     key: "WithdrewFunds"
   ): TypedContractEvent<
     WithdrewFundsEvent.InputTuple,
@@ -297,6 +319,17 @@ export interface IHom3DepositVault extends BaseContract {
       EscrowBalanceToLowEvent.InputTuple,
       EscrowBalanceToLowEvent.OutputTuple,
       EscrowBalanceToLowEvent.OutputObject
+    >;
+
+    "ProfileOwnershipTransferred(uint256,address)": TypedContractEvent<
+      ProfileOwnershipTransferredEvent.InputTuple,
+      ProfileOwnershipTransferredEvent.OutputTuple,
+      ProfileOwnershipTransferredEvent.OutputObject
+    >;
+    ProfileOwnershipTransferred: TypedContractEvent<
+      ProfileOwnershipTransferredEvent.InputTuple,
+      ProfileOwnershipTransferredEvent.OutputTuple,
+      ProfileOwnershipTransferredEvent.OutputObject
     >;
 
     "WithdrewFunds(uint256,uint256)": TypedContractEvent<

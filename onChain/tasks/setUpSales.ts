@@ -13,7 +13,7 @@ const taskDescription = "Setup the sales contract";
 task(taskId, taskDescription).setAction(async (_args, hre) => {
   console.log(`🟠 [TASK] ${taskId} : Mounted`);
   const contractname = "BlockSales";
-  const [deployer, notThisDeployer, noreThisDeployer] =
+  const [deployer, notThisDeployer, nopeTheNext] =
     await hre.ethers.getSigners();
   const name = (await hre.ethers.provider
     .getNetwork()
@@ -76,6 +76,23 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   await chainSaleAddressTx.wait();
   console.log(`🟠 [TASK] ${taskId} : Added Store to Chain allow`);
 
+  // Add the deposit vault to porfile
+  const vaultUpdate = await profileContract.setDepositContractAddress(
+    deployedContracts.ethSepolia?.Hom3DepositVault
+  );
+
+  await vaultUpdate.wait();
+  console.log(`🟠 [TASK] ${taskId} : Added deposit vault address to profile`);
+
+  // AAllow chain to take messages
+  const chainAlow = await profileContract.setAllowedChainId(
+    "16015286601757825753",
+    true
+  );
+
+  await chainAlow.wait();
+  console.log(`🟠 [TASK] ${taskId} : Added deposit vault chain to true`);
+
   // Allow Hom3Profile to
   const paymentToken = await hre.ethers.getContractAt(
     "ERC20",
@@ -85,7 +102,7 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
 
   const approvalTx = await paymentToken.approve(
     deployedContracts[name]?.Hom3Profile as Addressable,
-    1000 * 10 ** 6
+    10000 * 10 ** 6
   );
   await approvalTx.wait();
   console.log(`🟠 [TASK] ${taskId} : Approved USDC Spend`);

@@ -265,6 +265,25 @@ const _abi = [
       },
       {
         indexed: false,
+        internalType: "address",
+        name: "to_",
+        type: "address",
+      },
+    ],
+    name: "ProfileOwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "profileId_",
+        type: "uint256",
+      },
+      {
+        indexed: false,
         internalType: "uint256",
         name: "amount_",
         type: "uint256",

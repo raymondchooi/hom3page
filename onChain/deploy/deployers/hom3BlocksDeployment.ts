@@ -148,7 +148,7 @@ export default async function deploy({
 
       const nativeTx = await deployer.sendTransaction({
         to: deployedContract.target,
-        value: hre.ethers.parseUnits("0.2", "ether"),
+        value: hre.ethers.parseUnits("0.1", "ether"),
       });
 
       await nativeTx.wait();
@@ -157,11 +157,24 @@ export default async function deploy({
     if (contractName == "Hom3Profile") {
       const maticTx = await deployer.sendTransaction({
         to: deployedContract.target,
-        value: hre.ethers.parseUnits("0.2", "ether"),
+        value: hre.ethers.parseUnits("0.1", "ether"),
       });
 
       await maticTx.wait();
       console.log(`🟢 Supplied with ETH : ${maticTx.hash}`);
+      const paymentToken = await hre.ethers.getContractAt(
+        "ERC20",
+        constructorArguments[3],
+        deployer
+      );
+
+      const approvalTx = await paymentToken.approve(
+        deployedContract.target,
+        hre.ethers.parseUnits("200", "ether")
+      );
+
+      await approvalTx.wait();
+      console.log(`🟢 Approved Token Spend : ${approvalTx.hash}`);
 
       const linkToken = await hre.ethers.getContractAt(
         "ERC20",
@@ -177,6 +190,30 @@ export default async function deploy({
       await linkTX.wait();
       console.log(`🟢 Sent link to contract : ${linkTX.hash}`);
     }
+    if (contractName == "Hom3DepositVault") {
+      const ethTx = await deployer.sendTransaction({
+        to: deployedContract.target,
+        value: hre.ethers.parseUnits("0.1", "ether"),
+      });
+
+      await ethTx.wait();
+      console.log(`🟢 Supplied with ETH : ${ethTx.hash}`);
+
+      const paymentToken = await hre.ethers.getContractAt(
+        "ERC20",
+        constructorArguments[0],
+        deployer
+      );
+
+      const approvalTx = await paymentToken.approve(
+        deployedContract.target,
+        hre.ethers.parseUnits("200", "ether")
+      );
+
+      await approvalTx.wait();
+      console.log(`🟢 Approved Token Spend : ${approvalTx.hash}`);
+    }
+
     return deployedContract.target;
   } catch (error) {
     console.error(error);

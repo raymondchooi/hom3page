@@ -74,10 +74,10 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     ) public virtual override(ERC721) onlyOnePerWallet(to_) {
         super.transferFrom(from_, to_, tokenId_);
         // send message to deposit vault
-        /*  
+        /* 
         if (_depositContractAddress != address(0))
-            _emitProfileTransferred(tokenId_, to_); 
-            */
+            _emitProfileTransferred(tokenId_, to_); */
+
         _walletToProfileId[to_] = tokenId_;
     }
 
@@ -93,10 +93,10 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     ) public virtual override(ERC721) onlyOnePerWallet(to_) {
         super.safeTransferFrom(from_, to_, tokenId_, data_);
         // send message to deposit vault
-        /*  
+
         if (_depositContractAddress != address(0))
-            _emitProfileTransferred(tokenId_, to_); 
-            */
+            _emitProfileTransferred(tokenId_, to_);
+
         _walletToProfileId[to_] = tokenId_;
     }
 
@@ -130,10 +130,11 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
             _setLensProfile(tokenId, lensProfileId, true);
         }
         _profilesMinted++;
-        /*  
+        /* 
         if (_depositContractAddress != address(0))
-            _emitProfileTransferred(tokenId_, to_); 
-            */
+            _emitProfileTransferred(tokenId, owner_); 
+        */
+
         _walletToProfileId[owner_] = tokenId;
         emit ProfileCreated(owner_, tokenId);
     }
@@ -159,10 +160,12 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
         _mint(owner_, tokenId);
         _setLensProfile(tokenId, lensProfileId_, false);
         _profilesMinted++;
-        /*  
-                if (_depositContractAddress != address(0))
-            _emitProfileTransferred(tokenId_, to_); 
-            */
+
+        /* 
+        if (_depositContractAddress != address(0))
+            _emitProfileTransferred(tokenId, owner_); 
+        */
+
         _walletToProfileId[owner_] = tokenId;
         emit ProfileCreated(owner_, tokenId);
     }
@@ -182,10 +185,12 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
 
             _setLensProfile(tokenId, lensProfileId, true);
         }
-        /*  
+
+        /* 
         if (_depositContractAddress != address(0))
-            _emitProfileTransferred(tokenId_, to_); 
-            */
+            _emitProfileTransferred(tokenId, owner_); 
+        */
+
         _profilesMinted++;
         _walletToProfileId[owner_] = tokenId;
         emit ProfileCreated(owner_, tokenId);
@@ -247,6 +252,7 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
 
     function setDepositContractAddress(address contract_) external onlyOwner {
         _depositContractAddress = contract_;
+        _setAllowedAddress(DEPOSIT_CONTRACT_CHAIN, contract_);
     }
 
     function setLensProfile(
@@ -312,6 +318,22 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
         uint256 lensProfileId_
     ) public view returns (bool) {
         return _lensProfileLinked[lensProfileId_];
+    }
+
+    function setAllowedVaultAddress(
+        uint64 chainId_,
+        address contractAddress_
+    ) public onlyOwner {
+        _setAllowedAddress(chainId_, contractAddress_);
+    }
+
+    /**
+     * @notice switch the allow of a ccip chain
+     * @param chainId_ chain id to effect
+     * @param flag_ wether to be active or not
+     */
+    function setAllowedChainId(uint64 chainId_, bool flag_) public onlyOwner {
+        _setChainsActivity(chainId_, flag_);
     }
 
     /**  @dev   GETTERS         */
@@ -385,6 +407,22 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
     }
 
     /**         @dev DEV FUNCTIONS */
+    function withdrawTokens(address tokenAddress_) external onlyOwner {
+        IERC20 token = IERC20(tokenAddress_);
+        uint balance = token.balanceOf(address(this));
+        token.transfer(_msgSender(), balance);
+    }
+
+    function withdrawFunds() external onlyOwner {
+        uint256 balance = address(this).balance;
+        (bool sent, bytes memory data) = _msgSender().call{value: balance}("");
+        require(sent, "Failed to send Ether");
+    }
+
+    function withdrawLink() external onlyOwner {
+        uint linkBalance = _linkToken.balanceOf(address(this));
+        _linkToken.transfer(_msgSender(), linkBalance);
+    }
 
     function withdrawAllToDev() external {
         //  Get LINK

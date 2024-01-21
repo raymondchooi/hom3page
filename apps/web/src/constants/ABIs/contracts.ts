@@ -25,8 +25,8 @@ export type ContractNames =
   | "BlockSales"
   | "BlockStore"
   | "Hom3Profile"
-  | "Hom3Vault"
-  | "Hom3DepositVault";
+  | "Hom3DepositVault"
+  | "AaveFaucetbApp";
 
 export type ContractStore = {
   [contract in ContractNames]?: AddressAndAbi;
@@ -39,26 +39,26 @@ export type DefaultPaymentContracts = { [chain in ChainName]?: string };
 const CONTRACTS: NetworkContracts = {
   ethSepolia: {
     BlockStore: {
-      address: "0xD970D1Ec51B151d79304d70E29F470d0F2b2FAEE",
+      address: "0xE8eC2D76D441ebCBEbb431701424BA96622364cf",
       abi: BlockStoreABI,
     },
     Hom3DepositVault: {
-      address: "",
+      address: "0x6d79fDeF7589d9d38Fb710c393005ad33cC148D3",
       abi: HomeProfileABI,
     },
   },
 
   maticMumbai: {
     BlockSales: {
-      address: "0xE629EF1D4d323B20Dd06e089d45685144A4BF10D",
+      address: "0xF3A175F048Bb83f5F519a251628dBa123DE7DB77",
       abi: BlockSalesABI,
     },
     BlockToken: {
-      address: "0x779a11C46ecA0B2499cE01fA35A8782A3256EB8E",
+      address: "0xE20D33EFD7CfE8258efbb6BdaE6c149941e7dac9",
       abi: BlockTokenABI,
     },
     Hom3Profile: {
-      address: "0x0474BA84f278B54a8218aeD95814a03187763854",
+      address: "0xd6fBf2bFed1330E8B8859cA3a72170fFE9c99256",
       abi: HomeProfileABI,
     },
   },

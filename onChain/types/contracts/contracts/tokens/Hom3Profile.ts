@@ -137,6 +137,8 @@ export interface Hom3ProfileInterface extends Interface {
       | "safeTransferFrom(address,address,uint256)"
       | "safeTransferFrom(address,address,uint256,bytes)"
       | "setActiveState"
+      | "setAllowedChainId"
+      | "setAllowedVaultAddress"
       | "setApprovalForAll"
       | "setDepositContractAddress"
       | "setLensProfile"
@@ -153,6 +155,9 @@ export interface Hom3ProfileInterface extends Interface {
       | "transferFrom"
       | "transferOwnership"
       | "withdrawAllToDev"
+      | "withdrawFunds"
+      | "withdrawLink"
+      | "withdrawTokens"
   ): FunctionFragment;
 
   getEvent(
@@ -170,6 +175,7 @@ export interface Hom3ProfileInterface extends Interface {
       | "NewMessageSent"
       | "OwnershipTransferred"
       | "ProfileCreated"
+      | "ProfileOwnershipTransferred"
       | "SetSpendAllowance"
       | "SetSpender"
       | "SpendTriggered"
@@ -353,6 +359,14 @@ export interface Hom3ProfileInterface extends Interface {
     values: [boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "setAllowedChainId",
+    values: [BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAllowedVaultAddress",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setApprovalForAll",
     values: [AddressLike, boolean]
   ): string;
@@ -412,6 +426,18 @@ export interface Hom3ProfileInterface extends Interface {
   encodeFunctionData(
     functionFragment: "withdrawAllToDev",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawFunds",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawLink",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawTokens",
+    values: [AddressLike]
   ): string;
 
   decodeFunctionResult(functionFragment: "BUY_CAP", data: BytesLike): Result;
@@ -558,6 +584,14 @@ export interface Hom3ProfileInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setAllowedChainId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setAllowedVaultAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
@@ -604,6 +638,18 @@ export interface Hom3ProfileInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawAllToDev",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFunds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawLink",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawTokens",
     data: BytesLike
   ): Result;
 }
@@ -813,6 +859,19 @@ export namespace ProfileCreatedEvent {
   export interface OutputObject {
     owner_: string;
     profileId_: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ProfileOwnershipTransferredEvent {
+  export type InputTuple = [profileId_: BigNumberish, to_: AddressLike];
+  export type OutputTuple = [profileId_: bigint, to_: string];
+  export interface OutputObject {
+    profileId_: bigint;
+    to_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -1164,6 +1223,18 @@ export interface Hom3Profile extends BaseContract {
     "nonpayable"
   >;
 
+  setAllowedChainId: TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
+    [void],
+    "nonpayable"
+  >;
+
+  setAllowedVaultAddress: TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   setApprovalForAll: TypedContractMethod<
     [operator: AddressLike, approved: boolean],
     [void],
@@ -1248,6 +1319,16 @@ export interface Hom3Profile extends BaseContract {
   >;
 
   withdrawAllToDev: TypedContractMethod<[], [void], "nonpayable">;
+
+  withdrawFunds: TypedContractMethod<[], [void], "nonpayable">;
+
+  withdrawLink: TypedContractMethod<[], [void], "nonpayable">;
+
+  withdrawTokens: TypedContractMethod<
+    [tokenAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
@@ -1457,6 +1538,20 @@ export interface Hom3Profile extends BaseContract {
     nameOrSignature: "setActiveState"
   ): TypedContractMethod<[newState_: boolean], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "setAllowedChainId"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setAllowedVaultAddress"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "setApprovalForAll"
   ): TypedContractMethod<
     [operator: AddressLike, approved: boolean],
@@ -1537,6 +1632,15 @@ export interface Hom3Profile extends BaseContract {
   getFunction(
     nameOrSignature: "withdrawAllToDev"
   ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawFunds"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawLink"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawTokens"
+  ): TypedContractMethod<[tokenAddress_: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "Approval"
@@ -1628,6 +1732,13 @@ export interface Hom3Profile extends BaseContract {
     ProfileCreatedEvent.InputTuple,
     ProfileCreatedEvent.OutputTuple,
     ProfileCreatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "ProfileOwnershipTransferred"
+  ): TypedContractEvent<
+    ProfileOwnershipTransferredEvent.InputTuple,
+    ProfileOwnershipTransferredEvent.OutputTuple,
+    ProfileOwnershipTransferredEvent.OutputObject
   >;
   getEvent(
     key: "SetSpendAllowance"
@@ -1814,6 +1925,17 @@ export interface Hom3Profile extends BaseContract {
       ProfileCreatedEvent.InputTuple,
       ProfileCreatedEvent.OutputTuple,
       ProfileCreatedEvent.OutputObject
+    >;
+
+    "ProfileOwnershipTransferred(uint256,address)": TypedContractEvent<
+      ProfileOwnershipTransferredEvent.InputTuple,
+      ProfileOwnershipTransferredEvent.OutputTuple,
+      ProfileOwnershipTransferredEvent.OutputObject
+    >;
+    ProfileOwnershipTransferred: TypedContractEvent<
+      ProfileOwnershipTransferredEvent.InputTuple,
+      ProfileOwnershipTransferredEvent.OutputTuple,
+      ProfileOwnershipTransferredEvent.OutputObject
     >;
 
     "SetSpendAllowance(uint256,uint256)": TypedContractEvent<

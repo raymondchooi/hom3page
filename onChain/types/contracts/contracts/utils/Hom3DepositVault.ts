@@ -125,6 +125,8 @@ export interface Hom3DepositVaultInterface extends Interface {
       | "owner"
       | "renounceOwnership"
       | "setActiveState"
+      | "setAllowedChainId"
+      | "setAllowedVaultAddress"
       | "supportsInterface"
       | "transferOwnership"
       | "withdrawAllToDev"
@@ -141,6 +143,7 @@ export interface Hom3DepositVaultInterface extends Interface {
       | "MessageSent"
       | "NewMessageSent"
       | "OwnershipTransferred"
+      | "ProfileOwnershipTransferred"
       | "WithdrewFunds"
       | "WithdrewFundsRequested"
   ): EventFragment;
@@ -199,6 +202,14 @@ export interface Hom3DepositVaultInterface extends Interface {
   encodeFunctionData(
     functionFragment: "setActiveState",
     values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAllowedChainId",
+    values: [BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAllowedVaultAddress",
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -267,6 +278,14 @@ export interface Hom3DepositVaultInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setActiveState",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setAllowedChainId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setAllowedVaultAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -398,6 +417,19 @@ export namespace OwnershipTransferredEvent {
   export interface OutputObject {
     previousOwner: string;
     newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ProfileOwnershipTransferredEvent {
+  export type InputTuple = [profileId_: BigNumberish, to_: AddressLike];
+  export type OutputTuple = [profileId_: bigint, to_: string];
+  export interface OutputObject {
+    profileId_: bigint;
+    to_: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -539,6 +571,18 @@ export interface Hom3DepositVault extends BaseContract {
     "nonpayable"
   >;
 
+  setAllowedChainId: TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
+    [void],
+    "nonpayable"
+  >;
+
+  setAllowedVaultAddress: TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   supportsInterface: TypedContractMethod<
     [interfaceId: BytesLike],
     [boolean],
@@ -624,6 +668,20 @@ export interface Hom3DepositVault extends BaseContract {
     nameOrSignature: "setActiveState"
   ): TypedContractMethod<[newState_: boolean], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "setAllowedChainId"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, flag_: boolean],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setAllowedVaultAddress"
+  ): TypedContractMethod<
+    [chainId_: BigNumberish, contractAddress_: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
   getFunction(
@@ -695,6 +753,13 @@ export interface Hom3DepositVault extends BaseContract {
     OwnershipTransferredEvent.InputTuple,
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: "ProfileOwnershipTransferred"
+  ): TypedContractEvent<
+    ProfileOwnershipTransferredEvent.InputTuple,
+    ProfileOwnershipTransferredEvent.OutputTuple,
+    ProfileOwnershipTransferredEvent.OutputObject
   >;
   getEvent(
     key: "WithdrewFunds"
@@ -798,6 +863,17 @@ export interface Hom3DepositVault extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "ProfileOwnershipTransferred(uint256,address)": TypedContractEvent<
+      ProfileOwnershipTransferredEvent.InputTuple,
+      ProfileOwnershipTransferredEvent.OutputTuple,
+      ProfileOwnershipTransferredEvent.OutputObject
+    >;
+    ProfileOwnershipTransferred: TypedContractEvent<
+      ProfileOwnershipTransferredEvent.InputTuple,
+      ProfileOwnershipTransferredEvent.OutputTuple,
+      ProfileOwnershipTransferredEvent.OutputObject
     >;
 
     "WithdrewFunds(uint256,uint256)": TypedContractEvent<

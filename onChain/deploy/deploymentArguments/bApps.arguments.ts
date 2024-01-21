@@ -30,13 +30,10 @@ export const AaveFaucetbAppArguments = (
   deployer: string | Addressable,
   networkName: ChainName
 ) => {
-  let netName: ChainName =
-    networkName === "localhost" ? "hardhat" : networkName;
-
   console.log("Max check", TOKEN_LIMITS);
 
-  const TOKEN_ADDRESSES = FAUCET_CONTRACTS[netName]!;
-  const faucetAddress = tokenAddress.aaveFaucet[netName];
+  const TOKEN_ADDRESSES = FAUCET_CONTRACTS[networkName]!;
+  const faucetAddress = tokenAddress.aaveFaucet[networkName];
 
   const network =
     networkName === "maticMumbai" ? 1 : networkName === "ethSepolia" ? 0 : 0;

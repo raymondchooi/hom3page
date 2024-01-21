@@ -15,6 +15,8 @@ interface IVaultData {
         uint256 amount_
     );
 
+    event ProfileOwnershipTransferred(uint256 profileId_, address to_);
+
     error NotOwnerOfProfile();
     error BalanceToLow();
     error VaultBalanceToLow();

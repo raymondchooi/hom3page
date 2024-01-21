@@ -27,6 +27,10 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         _;
     }
 
+    fallback() external payable {}
+
+    receive() external payable {}
+
     constructor(
         address ghoToken_,
         address masterContract_,
@@ -35,9 +39,10 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         uint64 masterChainId_
     ) CCIPInterface(linkToken_, ccipRouter_) Ownable(msg.sender) {
         PAYMENT_TOKEN = IGhoToken(ghoToken_);
-
         MASTER_CHAIN = masterChainId_;
         _masterVault = masterContract_;
+        _setAllowedAddress(masterChainId_, masterContract_);
+        _setChainsActivity(masterChainId_, true);
     }
 
     /**   @dev  DEPOSIT CONTROL  */
@@ -55,7 +60,7 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
                 MessageActions.DEPOSIT,
                 Errors.NO_ERROR,
                 "",
-                UpdateMessage(profileId_, address(0), 0),
+                UpdateMessage(profileId_, _msgSender(), 0),
                 0x0,
                 amount_
             );
@@ -123,6 +128,14 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
         emit DepositedFunds(message.update_.profileId_, message.value_);
     }
 
+    function _executeTransferProfile(Message memory message) internal {
+        _owners[message.update_.profileId_] = message.update_.owner_;
+        emit ProfileOwnershipTransferred(
+            message.update_.profileId_,
+            message.update_.owner_
+        );
+    }
+
     /**     @dev    CROSS CHAIN   */
 
     function _messageSwitch(
@@ -145,15 +158,15 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
     ) internal {
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
 
+        MessageActions action = _pastMessages[message.returnMessageId_]
+            .message_
+            .action_;
+
         if (!_pastMessages[message.returnMessageId_].fullFilled_) {
-            if (
-                _pastMessages[message.returnMessageId_].message_.action_ ==
-                MessageActions.WITHDRAW
-            ) _executeWithdrawal(message);
-            else if (
-                _pastMessages[message.returnMessageId_].message_.action_ ==
-                MessageActions.DEPOSIT
-            ) _executeDeposit(message);
+            if (action == MessageActions.WITHDRAW) _executeWithdrawal(message);
+            else if (action == MessageActions.DEPOSIT) _executeDeposit(message);
+            else if (action == MessageActions.TRANSFER)
+                _executeTransferProfile(message);
         }
     }
 
@@ -229,6 +242,22 @@ contract Hom3DepositVault is CCIPInterface, OnlyActive, IHom3DepositVault {
 
     function _checkTokenBalance(address account_) internal returns (uint256) {
         return PAYMENT_TOKEN.balanceOf(account_);
+    }
+
+    function setAllowedVaultAddress(
+        uint64 chainId_,
+        address contractAddress_
+    ) public onlyOwner {
+        _setAllowedAddress(chainId_, contractAddress_);
+    }
+
+    /**
+     * @notice switch the allow of a ccip chain
+     * @param chainId_ chain id to effect
+     * @param flag_ wether to be active or not
+     */
+    function setAllowedChainId(uint64 chainId_, bool flag_) public onlyOwner {
+        _setChainsActivity(chainId_, flag_);
     }
 
     /**  @dev   GETTERS         */

@@ -21,6 +21,7 @@ const deploymentFiles: Deployment = {
   BlockSales: GenericDeployer,
   BlockStore: GenericDeployer,
   AaveFaucetbApp: GenericDeployer,
+  Hom3DepositVault: GenericDeployer,
 };
 
 export const deploymentArgumentStore: ArgumentStore = {

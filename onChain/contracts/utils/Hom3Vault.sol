@@ -28,6 +28,7 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
         _;
     }
 
+   
     constructor(
         address profileContract_,
         address ccipRouter_,

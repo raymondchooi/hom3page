@@ -22,8 +22,8 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
 
   console.log(`🟠 [TASK] ${taskId} : Connected as ${deployer.address}`);
 
-  const opGoerli: ContractNames[] = ["BlockToken", "BlockSales"];
-  const ethSepolia: ContractNames[] = ["BlockStore"];
+  const opGoerli: ContractNames[] = ["BlockStore", "Hom3DepositVault"];
+  const ethSepolia: ContractNames[] = ["BlockStore", "Hom3DepositVault"];
   const maticMumbai: ContractNames[] = [
     "BlockToken",
     "BlockSales",
