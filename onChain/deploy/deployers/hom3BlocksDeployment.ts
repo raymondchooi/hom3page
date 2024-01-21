@@ -13,6 +13,7 @@ import waitForConfirmations from "../../scripts/helpers/waitForConformations";
 import ethernal from "hardhat-ethernal";
 import { BlockToken } from "../../types/contracts";
 import { ChainName, tokenAddress } from "../../bin/tokenAddress";
+import deployProxy from "./deployProxy";
 
 export default async function deploy({
   hre,
@@ -32,6 +33,7 @@ export default async function deploy({
       constructorArguments,
       { signer: deployer }
     );
+
     console.log(
       `🟠 Deployment confirming : ${contractName} to ${deployedContract.target}`
     );
@@ -96,7 +98,7 @@ export default async function deploy({
 
       const maticTx = await deployer.sendTransaction({
         to: deployedContract.target,
-        value: hre.ethers.parseUnits("0.2", "ether"),
+        value: hre.ethers.parseUnits("0.05", "ether"),
       });
 
       await maticTx.wait();
@@ -157,7 +159,7 @@ export default async function deploy({
     if (contractName == "Hom3Profile") {
       const maticTx = await deployer.sendTransaction({
         to: deployedContract.target,
-        value: hre.ethers.parseUnits("0.1", "ether"),
+        value: hre.ethers.parseUnits("0.01", "ether"),
       });
 
       await maticTx.wait();
@@ -193,7 +195,7 @@ export default async function deploy({
     if (contractName == "Hom3DepositVault") {
       const ethTx = await deployer.sendTransaction({
         to: deployedContract.target,
-        value: hre.ethers.parseUnits("0.1", "ether"),
+        value: hre.ethers.parseUnits("0.2", "ether"),
       });
 
       await ethTx.wait();

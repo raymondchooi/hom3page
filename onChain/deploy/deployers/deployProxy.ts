@@ -1,6 +1,6 @@
 /** @format */
 
-import { Addressable } from "ethers";
+import { Addressable, Contract } from "ethers";
 import delay from "../../scripts/helpers/delay";
 import verifyContractOnScan from "../../scripts/helpers/verifyOnScan";
 import { DeploymentProps } from "../../types/deploymentArguments";
@@ -14,7 +14,7 @@ export default async function deployProxy({
   network,
   constructorArguments,
   prevDeployments,
-}: DeploymentProps): Promise<string | Addressable | false> {
+}: DeploymentProps): Promise<Contract | false> {
   try {
     const contract = await hre.ethers.getContractFactory(
       contractName,
@@ -24,7 +24,7 @@ export default async function deployProxy({
       contract,
       constructorArguments,
       {
-        initializer: "initialize",
+        initializer: "constructor",
       }
     );
 
@@ -44,7 +44,7 @@ export default async function deployProxy({
       });
     }
 
-    return deployedContract.target;
+    return deployedContract;
   } catch (error) {
     console.error(error);
     process.exitCode = 1;

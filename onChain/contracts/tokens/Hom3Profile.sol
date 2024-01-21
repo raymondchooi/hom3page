@@ -198,6 +198,12 @@ contract Hom3Profile is Hom3Vault, ERC721Votes, IHom3Profile {
 
     /**     @dev    CROSS CHAIN   */
 
+    function _ccipReceive(
+        Client.Any2EVMMessage memory any2EvmMessage
+    ) internal override {
+        super._ccipReceive(any2EvmMessage);
+    }
+
     function _emitProfileTransferred(
         uint256 profileId_,
         address newOwner_

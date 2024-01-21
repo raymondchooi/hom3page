@@ -19,6 +19,8 @@ import {
 } from "constants/ABIs/contracts";
 import { updateBlock } from "api/editBlock";
 
+const BLOCK_COST_USDC = 100;
+
 interface BuyButtonProps {
   purchasableBlocks: Map<string, object>;
   optimisedBlockIds?: string[][];
@@ -37,12 +39,27 @@ function BuyButton({
   const { address } = useAccount();
   const balance = useBalance({ address, chainId: sepolia.id });
   const { chain, chains } = useNetwork();
-  const { openSwitchNetworks } = useModal();
+  const { openSwitchNetworks, setOpen } = useModal();
 
   const [loading, setLoading] = useState(false);
 
-  const blocksCost = COST_PER_BLOCK * purchasableBlocks.size;
+  const [network, setNetwork] = useState<ChainName>("maticMumbai");
+
+  const blocksCost =
+    COST_PER_BLOCK?.[network as ChainName] || 0 * purchasableBlocks.size;
   const isBalanceSufficient = balance?.data?.formatted || 0 >= blocksCost;
+
+  const getNetwork = () => {
+    const net: ChainName =
+      chain?.id === sepolia.id
+        ? "ethSepolia"
+        : chain?.id === polygonMumbai.id
+          ? "maticMumbai"
+          : "eth";
+
+    setNetwork(net);
+    return net;
+  };
 
   async function handleBuyButtonClick() {
     setLoading(true);
@@ -50,31 +67,38 @@ function BuyButton({
     console.log("blocks", optimisedBlockIds);
 
     // get network
-    const network: ChainName =
-      chain?.id === sepolia.id
-        ? "ethSepolia"
-        : chain?.id === polygonMumbai.id
-          ? "maticMumbai"
-          : "eth";
-    if (network !== "maticMumbai" && network !== "ethSepolia") {
+    let net = getNetwork();
+    if (net !== "maticMumbai" && net !== "ethSepolia") {
       openSwitchNetworks();
     }
-    const cost = purchasableBlocks.size * COST_PER_BLOCK;
+
+    if (!address) {
+      setOpen(true);
+    }
+
+    const cost = purchasableBlocks.size * COST_PER_BLOCK[network]!;
     const saleContract: AddressAndAbi = CONTRACTS?.[network]?.[
       network === "maticMumbai" ? "BlockSales" : "BlockStore"
     ] as AddressAndAbi;
+
+    console.log("network ", network);
 
     if (
       CONTRACTS?.maticMumbai?.BlockSales &&
       CONTRACTS?.ethSepolia?.BlockStore
     ) {
       // get the allowance of teh contract of the payment token
-      const allowance = await readContract({
-        address: DEFAULT_PAYMENT_TOKEN[network] as `0x${string}`,
-        abi: GENERIC_ABI.ERC20,
-        functionName: "allowance",
-        args: [address, saleContract?.address],
-      });
+      let allowance;
+      try {
+        allowance = await readContract({
+          address: DEFAULT_PAYMENT_TOKEN[network] as `0x${string}`,
+          abi: GENERIC_ABI.ERC20,
+          functionName: "allowance",
+          args: [address, saleContract?.address],
+        });
+      } catch (error) {
+        console.log("allowance", error);
+      }
       if (optimisedBlockIds?.[0]?.[0]) {
         // Check allowance covers payment
         let addAllowance;
@@ -92,7 +116,7 @@ function BuyButton({
             }));
             await waitForTransaction({ hash, chainId: chain?.id });
           } catch (error) {
-            console.log(error);
+            console.log("approve", error);
             return callback(10, "error", true);
           }
         }
@@ -113,14 +137,14 @@ function BuyButton({
               purchasableBlocks.size === 1
                 ? [optimisedBlockIds]
                 : optimisedBlockIds,
-              purchasableBlocks.size === 1 ? true : false,
+              purchasableBlocks.size === 1 ? false : true,
             ],
           });
           callback(3, hash);
 
           await waitForTransaction({ hash, chainId: chain?.id });
         } catch (error) {
-          console.log(error);
+          console.log("buyBlock", error);
           return callback(10, "error", true);
         }
 
@@ -187,9 +211,10 @@ function BuyButton({
           {renderButtonContent()}
         </Button>
         {!!balance?.data?.symbol && !!balance?.data?.formatted && (
-          <div className="ml-4 text-sm text-gray-400">
-            {`Balance: ${parseFloat(balance?.data?.formatted ?? "0").toFixed(3)} ${balance?.data?.symbol}`}
-          </div>
+          <div className="ml-4 flex flex-col text-sm text-gray-400">
+          <div>{`Cost: ${BLOCK_COST_USDC * purchasableBlocks.size} USDC `}</div>
+          <div>{`Balance: ${parseFloat(balance?.data?.formatted || "-").toFixed(3)} USDC`}</div>
+        </div>
         )}
         {!isBalanceSufficient && (
           <ErrorMessage className="ml-4">Insufficient balance</ErrorMessage>

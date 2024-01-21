@@ -33,7 +33,7 @@ export const Hom3PageDepositVaultArguments = (
   let netName: ChainName =
     networkName === "localhost" ? "hardhat" : networkName;
 
-  const paymentToken_ = tokenAddress.usdc[netName];
+  const paymentToken_ = tokenAddress.gho[netName];
   const ccipRouter_ = tokenAddress.ccipRouter[netName];
   const linkToken_ = tokenAddress.link[netName];
   const masterContract_ = deployedContracts?.maticMumbai?.Hom3Profile;

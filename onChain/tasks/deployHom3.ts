@@ -30,10 +30,13 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
     "BlockSales",
     "Hom3Profile",
   ];
+
+  const smallMatic: ContractNames[] = ["Hom3Profile"];
+
   const deploymentAddresses: DeploymentStore[] = [];
   const deploys: { [chain in ChainName]?: ContractNames[] } = {
     opGoerli: opGoerli,
-    maticMumbai: maticMumbai,
+    maticMumbai: smallMatic,
     ethSepolia: ethSepolia,
   };
 

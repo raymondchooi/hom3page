@@ -91,26 +91,50 @@ task(taskId, taskDescription).setAction(async (_args, hre) => {
   );
 
   await chainAlow.wait();
-  console.log(`🟠 [TASK] ${taskId} : Added deposit vault chain to true`);
+  console.log(`🟠 [TASK] ${taskId} : Added deposit vaultchain to true`);
 
-  // Allow Hom3Profile to
+  // Allow Hom3Profile to spend paymet token
   const paymentToken = await hre.ethers.getContractAt(
     "ERC20",
     tokenAddress.usdc[name] as Addressable,
     deployer
   );
 
-  const approvalTx = await paymentToken.approve(
+  const approvalProfileTx = await paymentToken.approve(
     deployedContracts[name]?.Hom3Profile as Addressable,
     10000 * 10 ** 6
   );
-  await approvalTx.wait();
+  await approvalProfileTx.wait();
   console.log(`🟠 [TASK] ${taskId} : Approved USDC Spend`);
 
-  // Buy a single Block
+  // transfer MATIC
+
+  const maticTx = await deployer.sendTransaction({
+    to: profileContract.target,
+    value: hre.ethers.parseUnits("0.01", "ether"),
+  });
+
+  await maticTx.wait();
+  console.log(`🟢 Supplied with ETH : ${maticTx.hash}`);
+
+  const linkToken = await hre.ethers.getContractAt(
+    "ERC20",
+    tokenAddress?.link[hre.network.name as ChainName] as Addressable,
+    deployer
+  );
+
+  const linkTX = await linkToken.transfer(
+    profileContract.target,
+    hre.ethers.parseUnits("3", "ether")
+  );
+
+  await linkTX.wait();
+  console.log(`🟢 Sent link to contract : ${linkTX.hash}`);
+
+  /*   // Buy a single Block
   const buySingleTx = await salesContract.buyBlock([[1]], false);
   await buySingleTx.wait();
-  console.log(`🟠 [TASK] ${taskId} : Bought Block No.1`);
+  console.log(`🟠 [TASK] ${taskId} : Bought Block No.1`); */
 
   console.log(`🟢 [TASK] ${taskId} : Finished`);
 });

@@ -5,6 +5,7 @@ import { deploymentArgumentStore } from "../deploymentModules";
 import delay from "../../scripts/helpers/delay";
 import verifyContractOnScan from "../../scripts/helpers/verifyOnScan";
 import { DeploymentProps } from "../../types/deploymentArguments";
+import deployedContracts from "../../bin/deployedAddress";
 
 export default async function upgradeDeployedProxy({
   hre,
@@ -16,10 +17,8 @@ export default async function upgradeDeployedProxy({
   prevDeployments,
 }: DeploymentProps) {
   const newContractData = await hre.ethers.getContractFactory(contractName);
-  const proxy = await hre.upgrades.upgradeProxy(
-    prevDeployments[0].deployment,
-    newContractData
-  );
+  const oldproxy = deployedContracts[network.name][contractName];
+  const proxy = await hre.upgrades.upgradeProxy(oldproxy, newContractData);
 
   await delay(delayTime);
   await verifyContractOnScan(hre.run, proxy.target);
@@ -28,5 +27,5 @@ export default async function upgradeDeployedProxy({
     `🟢 Contract Upgraded : ${contractName} via ${proxy.target} as Proxy`
   );
 
-  return proxy.target;
+  return proxy;
 }

@@ -117,7 +117,7 @@ function Profile({}: ProfileProps) {
       setloaded(true);
     };
     if (!profileContract && !loaded) getProfile();
-  }, [profileContract, loaded]);
+  }, [profileContract, loaded, address]);
 
   useEffect(() => {
     if (!lensClient) {
@@ -132,28 +132,31 @@ function Profile({}: ProfileProps) {
       console.log("getting lens profile: ", profileId);
       getLensPro();
     }
+  }, [lensClient, profileId, profileContract, noProfile, getLensPro]);
+  async function getLensPro() {
+    if (!profileContract?.getProfileLensId) return;
 
-    async function getLensPro() {
-      if (!profileContract?.getProfileLensId) return;
-
-      const lensId = await profileContract?.getProfileLensId(profileId?.home);
-      if (parseInt(lensId) === 0) {
-        setNoProfile(true);
-        return;
-      }
-      console.log("got lens profile id", lensProfileIdFromNumber(lensId));
-      setProfileId((prv) => ({ ...prv, lens: lensId }));
-
-      const profile = await getLensProfile(
-        lensClient!,
-        lensProfileIdFromNumber(lensId),
-        "id",
-      );
-
-      setProfileId((prv) => ({ ...prv, lens: lensId }));
-      if (profile) setLensProfile(profile);
+    const lensId = await profileContract?.getProfileLensId(profileId?.home);
+    if (parseInt(lensId) === 0) {
+      setNoProfile(true);
+      return;
     }
+<<<<<<< Updated upstream
   }, [lensClient, profileId, profileContract, noProfile]);
+=======
+    console.log("got lens profile id", lensProfileIdFromNumber(lensId));
+    setProfileId((prv) => ({ ...prv, lens: lensId }));
+
+    const profile = await getLensProfile(
+      lensClient!,
+      lensProfileIdFromNumber(lensId),
+      "id",
+    );
+
+    setProfileId((prv) => ({ ...prv, lens: lensId }));
+    if (profile) setLensProfile(profile);
+  }
+>>>>>>> Stashed changes
 
   function handleProfileClick() {
     if (isConnected) setOpenProfileDialog(true);
@@ -191,12 +194,18 @@ function Profile({}: ProfileProps) {
         await waitForTransaction({ hash: setProfileTx.hash });
         setNoProfile(false);
         setActionState(4);
+        setNoProfile(true);
+        await getLensPro();
       } else setActionState(5);
     }
   }
   const [lensInput, setLensInput] = useState<number>(0);
   function handleLensLinkInputChange(e: ChangeEvent<HTMLInputElement>) {
     setLensInput(parseInt(e.target.value));
+  }
+  const [valueInput, setValueInput] = useState<number>(0);
+  function handleVauleInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setValueInput(parseInt(e.target.value));
   }
 
   async function handleMakeProfile() {
@@ -238,26 +247,30 @@ function Profile({}: ProfileProps) {
       }
       setActionState(4);
       setHash(addAllowance.hash);
-      await waitForTransaction(addAllowance?.hash);
+      await waitForTransaction({ hash: addAllowance?.hash });
     }
     setActionState(3);
     try {
       const mintProfile = await writeContract({
-        address: profileContract?.target,
+        address: profileContract?.target as `0x${string}`,
         abi: CONTRACTS.maticMumbai?.Hom3Profile?.abi,
         functionName: "signUpAndCreateLens",
         args: [address],
       });
       setActionState(4);
       setHash(mintProfile.hash);
-      await waitForTransaction(mintProfile?.hash);
+      await waitForTransaction({ hash: mintProfile?.hash });
       setActionState(5);
-    } catch (error) {
+      setNoProfile(true);
+      await getLensPro();
+    } catch (error: any) {
       console.log(error);
       setError(error);
       return setActionState(10);
     }
   }
+
+  async function handleDepositGho() {}
 
   return (
     <>
@@ -405,65 +418,103 @@ function Profile({}: ProfileProps) {
                 </div>
               </div>
             )}
-            {/** Link Lens profile */}
-            {!parseLensProfile(lensProfile, "handle") &&
-              profileId?.home !== 0 && (
-                <>
-                  <Field className="mt-2 text-gray-400">
-                    <Label className="text-gray-400">
-                      {"You haven't linked your Lens Profile yet"}
-                    </Label>
-                    <Input
-                      onChange={handleLensLinkInputChange}
-                      name="number"
-                      type="number"
-                      aria-label="Text"
-                      placeholder="Lens Profile Id"
-                    />
-                    <Label className="text-gray-400">
-                      {actionSate === 1 && "Checking your own the Lens Profile"}
-                      {actionSate === 2 &&
-                        "Please confirm the transaction, this will link your Hom3 & Lens profiles"}
-                      {actionSate === 3 && "Waiting for confirmation..."}
-                      {actionSate === 4 && "Lens profile linked!"}
-                      {actionSate === 5 &&
-                        "Your address doesn't own that profile."}
-                      {actionSate === 6 && "Please connect to Mumbai"}
-                      {actionSate === 10 &&
-                        `There was an error with the transaction`}
-
-                      {hash && (
-                        <a
-                          href={buildNetworkScanLink({
-                            network:
-                              chain?.id === sepolia.id
-                                ? "ethSepolia"
-                                : chain?.id === polygonMumbai.id
-                                  ? "maticMumbai"
-                                  : "eth",
-                            txHash: hash,
-                          })}
-                          target={"_blank"}
-                        >
-                          See transaction
-                        </a>
-                      )}
-                    </Label>
-                  </Field>
-
-                  <div className="flex">
-                    <div className="z-[10] mt-6 flex w-full justify-center">
-                      <Button
-                        fancy
-                        onClick={() => linkLensProfileToHom3Profile()}
-                        className="w-half"
+            {/** Hom3 Profile Management */}
+            {profileId?.home !== 0 && (
+              <div className="color-white flex-colum text-xs text-white">
+                Profile Management
+                <div>
+                  <div className="color-white flex text-xs text-white">
+                    {actionSate === 1 && "Finding your Lens profiles"}
+                    {actionSate === 2 &&
+                      "No lens profile, we will create you one"}
+                    {actionSate === 7 &&
+                      "Need to allow the Hom3 Profile to pay for your token"}
+                    {actionSate === 3 && "Creating your Hom3 profile"}
+                    {actionSate === 4 && "Waiting for confirmation..."}
+                    {actionSate === 5 && "Hom3 Profile created!"}
+                    {actionSate === 6 && "Please connect to Mumbai"}
+                    {actionSate === 10 &&
+                      `There was an error with the transaction`}
+                    {hash && (
+                      <a
+                        href={buildNetworkScanLink({
+                          network:
+                            chain?.id === sepolia.id
+                              ? "ethSepolia"
+                              : chain?.id === polygonMumbai.id
+                                ? "maticMumbai"
+                                : "eth",
+                          txHash: hash,
+                        })}
+                        target={"_blank"}
                       >
-                        Link
-                      </Button>
+                        See transaction
+                      </a>
+                    )}
+                    {/** Deposit GHO */}
+                    <br />
+                    <Field className="mt-2 text-gray-400">
+                      <Label className="text-gray-400">
+                        {"Deposit GHO from Sepolia"}
+                      </Label>
+                      <Input
+                        onChange={handleVauleInputChange}
+                        name="number"
+                        type="number"
+                        aria-label="Text"
+                        placeholder="Amount"
+                      />
+                      <Label className="text-gray-400"></Label>
+                    </Field>
+
+                    <div>
+                      <div className="z-[10] mt-6 flex w-full justify-center">
+                        <Button
+                          fancy
+                          onClick={() => handleDepositGho()}
+                          className="w-half"
+                        >
+                          Deposit
+                        </Button>
+                      </div>
                     </div>
+
+                    {/** Link Lens profile */}
+                    {!parseLensProfile(lensProfile, "handle") &&
+                      !profileId?.lens &&
+                      profileId?.home !== 0 && (
+                        <>
+                          <Field className="mt-2 text-gray-400">
+                            <Label className="text-gray-400">
+                              {"You haven't linked your Lens Profile yet"}
+                            </Label>
+                            <Input
+                              onChange={handleLensLinkInputChange}
+                              name="number"
+                              type="number"
+                              aria-label="Text"
+                              placeholder="Lens Profile Id"
+                            />
+                            <Label className="text-gray-400"></Label>
+                          </Field>
+
+                          <div className="flex">
+                            <div className="z-[10] mt-6 flex w-full justify-center">
+                              <Button
+                                fancy
+                                onClick={() => linkLensProfileToHom3Profile()}
+                                className="w-half"
+                              >
+                                Link
+                              </Button>
+                            </div>
+                          </div>
+                        </>
+                      )}
                   </div>
-                </>
-              )}
+                </div>
+              </div>
+            )}
           </DialogBody>
         </Dialog>
       )}

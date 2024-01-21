@@ -51,6 +51,25 @@ function GHOBurrow({}: GhoBurrowProps) {
         : "eth",
   );
 
+<<<<<<< Updated upstream
+=======
+  const burrowTokens = {
+    wbtc: "0x29f2D40B0605204364af54EC677bD022dA425d03",
+    gho: "0xc4bF5CbDaBE595361438F8c6a187bDc330539c60",
+  };
+
+  const getTokenBalance = async (token: "wbtc" | "gho") => {
+    const balance = await fetchBalance({
+      address: address as `0x${string}`,
+      token: burrowTokens[token] as `0x${string}`,
+      chainId: 11155111,
+    });
+
+    console.log(`Balance of ${balance.formatted} for ${token}`);
+    return balance;
+  };
+
+>>>>>>> Stashed changes
   useEffect(() => {
     const getTokenBalance = async (token: "wbtc" | "gho") => {
       if (!address) return;
@@ -73,7 +92,7 @@ function GHOBurrow({}: GhoBurrowProps) {
     }
   }, [address, chain?.id, ghoBalance, wbtcBalance]);
 
-  useEffect(() => {
+  const switchChain = () => {
     const name =
       chain?.id === sepolia.id
         ? "ethSepolia"
@@ -87,7 +106,11 @@ function GHOBurrow({}: GhoBurrowProps) {
     } else {
       setLoadingState(0);
     }
+<<<<<<< Updated upstream
   }, [chain, network, openSwitchNetworks]);
+=======
+  };
+>>>>>>> Stashed changes
 
   // Add mint Faucet logic
   async function handleGo() {
@@ -126,7 +149,7 @@ function GHOBurrow({}: GhoBurrowProps) {
         chainId: chain?.id,
       });
       const burrowArgs = [
-        tokenAddresses.gho,
+        burrowTokens.gho,
         ethers.parseUnits("10000", "ether"),
         2,
         0,

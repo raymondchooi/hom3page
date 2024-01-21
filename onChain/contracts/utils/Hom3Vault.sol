@@ -95,10 +95,6 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
         MessageActions action_,
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal {
-        emit MessageReceived(
-            any2EvmMessage.messageId,
-            any2EvmMessage.sourceChainSelector
-        );
         if (action_ == MessageActions.ERROR) _receiveError(any2EvmMessage);
         else if (action_ == MessageActions.DEPOSIT)
             _receiveDeposit(any2EvmMessage);
@@ -126,12 +122,17 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
         Client.Any2EVMMessage memory any2EvmMessage
     )
         internal
+        virtual
         override
         onlyAllowlisted(
             any2EvmMessage.sourceChainSelector,
             abi.decode(any2EvmMessage.sender, (address))
         )
     {
+        emit MessageReceived(
+            any2EvmMessage.messageId,
+            any2EvmMessage.sourceChainSelector
+        );
         Message memory message = abi.decode(any2EvmMessage.data, (Message));
         _messageSwitch(message.action_, any2EvmMessage);
     }
