@@ -26,7 +26,7 @@ import {
 } from "@wagmi/core";
 import { buildNetworkScanLink } from "utils/text";
 import { BlockData } from "models/BlockData";
-import { ethers } from "ethers";
+import { ethers, toBigInt } from "ethers";
 
 interface GhoBurrowProps {
   blockData: BlockData;
@@ -106,12 +106,15 @@ function GHOBurrow({}: GhoBurrowProps) {
         address: "0x29f2D40B0605204364af54EC677bD022dA425d03",
         abi: ER20_ABI,
         functionName: "approve",
-        args: [address],
+        args: [
+          "0x6ae43d3271ff6888e7fc43fd7321a503ff738951",
+          ethers.parseEther("0.0000000001"),
+        ],
       });
 
       await waitForTransaction({ hash: approvalTx.hash, chainId: chain?.id });
 
-      const supplyArgs = [address, ethers.parseUnits("1", "ether"), address, 0];
+      const supplyArgs = [address, 1, address, 0];
 
       const provideLiquidetyTx = await writeContract({
         address: "0x6ae43d3271ff6888e7fc43fd7321a503ff738951",
@@ -174,10 +177,10 @@ function GHOBurrow({}: GhoBurrowProps) {
             height={20}
             className="opacity-70"
           />
-          <div className="text-s">GET SOME GHO!</div>
-          <div className="text-s">You have {wbtcBalance?.formatted}WBTC</div>
-          <div className="text-s">
-            You could Burrow {wbtcBalance?.formatted * 1.5}GHO!
+          <div>
+            <div className="text-s">GET SOME GHO!</div>
+            <div className="text-s">You have {wbtcBalance?.formatted}WBTC</div>
+            <div className="text-s">You could Burrow 10,000 GHO!</div>
           </div>
         </button>
       </div>
