@@ -23,6 +23,11 @@ import { buildNetworkScanLink } from "utils/text";
 import { type BlockData } from "models/BlockData";
 import { ethers } from "ethers";
 
+const tokenAddresses = {
+  wbtc: "0x29f2D40B0605204364af54EC677bD022dA425d03",
+  gho: "0xc4bF5CbDaBE595361438F8c6a187bDc330539c60",
+};
+
 interface GhoBurrowProps {
   blockData: BlockData;
 }
@@ -47,10 +52,6 @@ function GHOBurrow({}: GhoBurrowProps) {
   );
 
   useEffect(() => {
-    const tokenAddresses = {
-      wbtc: "0x29f2D40B0605204364af54EC677bD022dA425d03",
-      gho: "0xc4bF5CbDaBE595361438F8c6a187bDc330539c60",
-    };
     const getTokenBalance = async (token: "wbtc" | "gho") => {
       if (!address) return;
 
