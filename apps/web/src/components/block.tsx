@@ -10,6 +10,7 @@ import Text from "./blocks/text";
 import ImageBlock from "./blocks/image";
 import AaveFaucet from "./blocks/aaveFaucet";
 import GHOBurrow from "./blocks/ghoBorrow";
+import NFTMinter from "./blocks/nftMinter";
 
 interface BlockProps {
   blockData: BlockData;
@@ -23,6 +24,8 @@ export default function Block({ blockData, editing }: BlockProps) {
     else if (blockData?.type === "text") return <Text blockData={blockData} />;
     else if (blockData?.type === "image")
       return <ImageBlock blockData={blockData} />;
+    else if (blockData?.type === "nft-minter")
+      return <NFTMinter blockData={blockData} />;
     else if (blockData?.type === "wallLink")
       return <WallLink blockData={blockData} />;
     else if (blockData?.type === "aaveFaucet") return <AaveFaucet />;
