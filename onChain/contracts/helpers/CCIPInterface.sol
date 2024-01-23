@@ -8,7 +8,13 @@ import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.s
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
-abstract contract CCIPInterface is CCIPReceiver {
+abstract contract CCIPChainSelectors {
+    uint64 public constant OP_CHAIN_SELECTOR = 2664363617261496610;
+    uint64 public constant ETH_CHAIN_SELECTOR = 16015286601757825753;
+    uint64 public constant MATIC_CHAIN_SELECTOR = 12532609583862916517;
+}
+
+abstract contract CCIPInterface is CCIPChainSelectors, CCIPReceiver {
     event NewMessageSent(address recipient_, bytes32 messageId_);
 
     error DEVELOPMENT_ERROR(string note_);
@@ -22,11 +28,6 @@ abstract contract CCIPInterface is CCIPReceiver {
     event MessageReceived(bytes32 messageId_, uint64 sourceChainId_);
 
     //  Cross Chain endpoints
-    uint64 public constant OP_CHAIN_SELECTOR = 2664363617261496610;
-    uint64 public constant ETH_CHAIN_SELECTOR = 16015286601757825753;
-    uint64 public constant MATIC_CHAIN_SELECTOR = 12532609583862916517;
-
-    uint64 public constant SALES_CONTRACT_CHAIN = MATIC_CHAIN_SELECTOR;
 
     enum Chains {
         ETH,
@@ -128,8 +129,8 @@ abstract contract CCIPInterface is CCIPReceiver {
         _chainAllowed[chainId_] = flag_;
     }
 
-    function _setUseLinkForPaymentFlay(bool newSetting_) internal {
-        _useLinkAsPayment = newSetting_;
+    function _setUseLinkForPayment(bool flag_) internal {
+        _useLinkAsPayment = flag_;
     }
 
     function _setRouterAddress(address newRouter_) internal {

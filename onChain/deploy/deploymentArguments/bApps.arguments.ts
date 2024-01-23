@@ -20,10 +20,10 @@ const FAUCET_CONTRACTS = {
 };
 
 const TOKEN_LIMITS = {
-  WBTC: 1,
-  AAVE: 100,
-  WETH: 10,
-  USDC: 10000,
+  WBTC: 10000000,
+  AAVE: 100000000000000000,
+  WETH: 100000000000000000,
+  USDC: 10000000000,
 };
 
 export const AaveFaucetbAppArguments = (

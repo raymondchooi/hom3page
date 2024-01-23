@@ -6,16 +6,15 @@ import {OnlyActive, Ownable} from "../security/onlyActive.sol";
 import {IBlockStore} from "../interfaces/IBlockStore.sol";
 import {IGhoToken, IERC20} from "../interfaces/IGhoToken.sol";
 import "../helpers/CCIPInterface.sol";
+import {Hom3Constants} from "../constants/Hom3Variables.sol";
 
-/* 
-import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
-import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol"; 
-*/
-
-contract BlockStore is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockStore {
+contract BlockStore is
+    CCIPInterface,
+    Hom3Constants,
+    ReentrancyGuard,
+    OnlyActive,
+    IBlockStore
+{
     //  Set token cost to 100 $GHO
     //  Var to track contract sales
     uint256 public constant PAYMENT_TOKEN_DECIMALS = 18;

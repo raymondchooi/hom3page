@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IVaultData} from "./IVaultData.sol";
+import {Hom3Types} from "../types/Hom3Types.sol";
 
-interface IHom3Vault is IVaultData {
+interface IHom3Vault is Hom3Types {
     event SpendTriggered(uint256 profileId_, uint256 spender_, uint256 amount_);
     event SetSpendAllowance(uint256 profileId_, uint256 amount_);
     event SetSpender(uint256 profileId_, uint256 spender_);

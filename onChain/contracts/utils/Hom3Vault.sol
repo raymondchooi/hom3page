@@ -6,10 +6,12 @@ import {IGhoToken, IERC20} from "../interfaces/IGhoToken.sol";
 
 import {OnlyActive, Ownable, Context} from "../security/onlyActive.sol";
 import {IERC721A} from "./ERC721AVotes.sol";
-import "../helpers/CCIPInterface.sol";
+import "../messages/Hom3Messages.sol";
 
-abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
+abstract contract Hom3Vault is Hom3Messages, OnlyActive, IHom3Vault {
     IERC721A public immutable HOM3_PROFILE;
+
+
 
     mapping(uint256 => uint256) private _escrow; //Profile No. to amount
     mapping(uint256 => uint256) private _deposit; //Profile No. to amount
@@ -32,7 +34,7 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
         address profileContract_,
         address ccipRouter_,
         address linkToken_
-    ) CCIPInterface(linkToken_, ccipRouter_) {
+    ) Hom3Messages(linkToken_, ccipRouter_) {
         HOM3_PROFILE = IERC721A(profileContract_);
     }
 
@@ -85,56 +87,10 @@ abstract contract Hom3Vault is CCIPInterface, OnlyActive, IHom3Vault {
 
     /**     @dev    CROSS CHAIN   */
 
-    function _receiveComplete(
-        Client.Any2EVMMessage memory any2EvmMessage
-    ) internal {
-        Message memory message = abi.decode(any2EvmMessage.data, (Message));
-    }
+    /**     @dev    SETTERS   */
 
-    function _messageSwitch(
-        MessageActions action_,
-        Client.Any2EVMMessage memory any2EvmMessage
-    ) internal {
-        if (action_ == MessageActions.ERROR) _receiveError(any2EvmMessage);
-        else if (action_ == MessageActions.DEPOSIT)
-            _receiveDeposit(any2EvmMessage);
-        else if (action_ == MessageActions.COMPLETE)
-            _receiveComplete(any2EvmMessage);
-    }
-
-    function _receiveError(
-        Client.Any2EVMMessage memory any2EvmMessage
-    ) internal {
-        Message memory message = abi.decode(any2EvmMessage.data, (Message));
-    }
-
-    function _receiveDeposit(
-        Client.Any2EVMMessage memory any2EvmMessage
-    ) internal {
-        Message memory message = abi.decode(any2EvmMessage.data, (Message));
-        UpdateMessage memory update = message.update_;
-        _deposit[update.profileId_] += message.value_;
-
-        emit DepositedFunds(message.update_.profileId_, message.value_);
-    }
-
-    function _ccipReceive(
-        Client.Any2EVMMessage memory any2EvmMessage
-    )
-        internal
-        virtual
-        override
-        onlyAllowlisted(
-            any2EvmMessage.sourceChainSelector,
-            abi.decode(any2EvmMessage.sender, (address))
-        )
-    {
-        emit MessageReceived(
-            any2EvmMessage.messageId,
-            any2EvmMessage.sourceChainSelector
-        );
-        Message memory message = abi.decode(any2EvmMessage.data, (Message));
-        _messageSwitch(message.action_, any2EvmMessage);
+    function setUseLinkForPayment(bool flag_) external onlyOwner {
+        _setUseLinkForPayment(flag_);
     }
 
     /**  @dev   CHECKERS         */

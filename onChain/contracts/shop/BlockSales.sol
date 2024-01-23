@@ -115,15 +115,15 @@ contract BlockSales is CCIPInterface, ReentrancyGuard, OnlyActive, IBlockSales {
         require(PAYMENT_TOKEN.balanceOf(buyer_) >= cost, "Insufficient Funds");
 
         bool succsess = PAYMENT_TOKEN.transferFrom(buyer_, address(this), cost);
-        if (succsess) {
-            for (uint i = 0; i < numElements; i++) {
-                for (uint x = 0; x < tokenIds_[i].length; x++)
-                    NFT.transferFrom(address(this), buyer_, tokenIds_[i][x]);
-            }
-            _totalSold += totalOrder;
-            _doProfileThing(buyer_);
-            emit SaleMade(buyer_, totalOrder, OP_CHAIN_SELECTOR);
+        require(succsess, "Payment Failed");
+
+        for (uint i = 0; i < numElements; i++) {
+            for (uint x = 0; x < tokenIds_[i].length; x++)
+                NFT.transferFrom(address(this), buyer_, tokenIds_[i][x]);
         }
+        _totalSold += totalOrder;
+        _doProfileThing(buyer_);
+        emit SaleMade(buyer_, totalOrder, OP_CHAIN_SELECTOR);
     }
 
     function _ccipReceive(

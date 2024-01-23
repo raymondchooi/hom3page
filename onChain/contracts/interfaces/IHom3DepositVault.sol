@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IVaultData} from "./IVaultData.sol";
+import {Hom3Types} from "../types/Hom3Types.sol";
 
-interface IHom3DepositVault is IVaultData {
+interface IHom3DepositVault is Hom3Types {
     event EscrowBalanceToLow(uint256 userProfile_, bytes32 messageId_);
 
     function depositFunds(uint256 profileId_, uint256 amount_) external;
