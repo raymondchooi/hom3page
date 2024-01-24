@@ -25,8 +25,8 @@ function BlockDialog({
   onConfirm,
 }: BlockDialogProps) {
   return (
-    <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogTitle>
+    <Dialog open={open} onClose={() => setOpen(false)} className="border border-zinc-800 bg-zinc-900">
+      <DialogTitle className="flex items-center justify-between">
         {title ? <div className="text-gray-200">{title}</div> : <div></div>}
         <Button plain onClick={() => setOpen(false)}>
           <svg

@@ -101,7 +101,7 @@ function AaveFaucet({}) {
             <>
               <div className="text-s text-gray">
                 {loadingState < 2 &&
-                  "T           tokens in one transaction. This is available on Ethereum"}
+                  "Mint tokens in one transaction. This is available on Ethereum"}
                 {loadingState === 2 && "Success! Mint complete!"}
                 {loadingState === 10 &&
                   `There was an error with the transaction, Please try again`}
@@ -126,7 +126,7 @@ function AaveFaucet({}) {
               )}
 
               {showButton() && (
-                <div className="z-[10] mt-6 flex w-full justify-center">
+                <div className="relative z-[10] mt-6 flex w-full justify-center">
                   <Button
                     fancy
                     onClick={() => handleGo()}
@@ -137,9 +137,9 @@ function AaveFaucet({}) {
                 </div>
               )}
               {loadingState === 2 && (
-                <div className="z-[10] mt-6 flex w-full justify-center">
+                <div className="relative z-[10] mt-6 flex w-full justify-center">
                   <Button
-                    fancy
+                    fancy="less"
                     onClick={() => setOpenDialog(!openDialog)}
                     className="w-half text-white"
                   >
