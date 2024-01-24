@@ -360,7 +360,7 @@ function Profile({}: ProfileProps) {
             </Button>
           </DialogTitle>
           <DialogBody>
-            <div className="flex-display-row  flex w-full gap-x-[10px] align-middle">
+            <div className="flex-row flex w-full gap-x-[10px] align-middle">
               {parseLensProfile(lensProfile, "image") ? (
                 <Image
                   src={parseLensProfile(lensProfile, "image")}
@@ -427,10 +427,10 @@ function Profile({}: ProfileProps) {
             )}
             {/** Hom3 Profile Management */}
             {profileId?.home !== 0 && (
-              <div className="color-white flex-colum text-xs text-white">
+              <div className="color-white mt-4 flex-col text-xs text-white">
                 Profile Management
-                <div>
-                  <div className="color-white flex text-xs text-white">
+
+                  <div className="color-white flex flex-col text-xs text-white">
                     {actionSate === 1 && "Finding your Lens profiles"}
                     {actionSate === 2 &&
                       "No lens profile, we will create you one"}
@@ -474,8 +474,8 @@ function Profile({}: ProfileProps) {
                       <Label className="text-gray-400"></Label>
                     </Field>
 
-                    <div>
-                      <div className="z-[10] mt-6 flex w-full justify-center">
+
+                      <div className="relative z-[10] mt-6 mb-6 flex w-full justify-center">
                         <Button
                           fancy
                           onClick={() => handleDepositGho()}
@@ -484,7 +484,7 @@ function Profile({}: ProfileProps) {
                           Deposit
                         </Button>
                       </div>
-                    </div>
+
 
                     {/** Link Lens profile */}
                     {!parseLensProfile(lensProfile, "handle") &&
@@ -519,7 +519,7 @@ function Profile({}: ProfileProps) {
                         </>
                       )}
                   </div>
-                </div>
+
               </div>
             )}
           </DialogBody>
