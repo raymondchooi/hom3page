@@ -243,7 +243,7 @@ function EditBlockDialog({ open, setOpen, wallData }: EditBlockDialogProps) {
                   {buyState === 4 &&
                     "Sent transaction to Hom3, this might take 20 mins"}
                   {buyState === 5 && "Thank you for buying a part of Hom3"}
-                  {buyState === 10 && `There was an error with the transaction`}
+                  {buyState === 10 && `Add a lens profile or make sure you have enough balance`}
 
                   <br />
                   {hash && !hasError && (
