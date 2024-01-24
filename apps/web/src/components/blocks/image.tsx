@@ -43,7 +43,7 @@ function Image({ blockData }: ImageProps) {
     <>
       {link ? (
         <Link href={link} target="_blank">
-          <a>{imageElement}</a>
+          {imageElement}
         </Link>
       ) : (
         imageElement
