@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "../helpers/CCIPInterface.sol";
-import {IHom3Messages} from "../interfaces/IHom3Messages.sol";
+import {IHom3Messages} from "../interfaces/api/IHom3Messages.sol";
 
 abstract contract Hom3Messages is CCIPInterface, IHom3Messages {
     constructor(

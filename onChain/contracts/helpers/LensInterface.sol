@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {ILensHub} from "../interfaces/ILensHub.sol";
+import {ILensHub} from "../interfaces/api/ILensHub.sol";
 import {Types} from "../types/LensTypes.sol";
-
 
 abstract contract LensInterface {
     ILensHub public immutable LENS_PROTOCOL;
@@ -36,11 +35,8 @@ abstract contract LensInterface {
     function _createProfileWithoutModula(
         address owner_
     ) internal returns (uint256) {
-        Types.CreateProfileParams memory createProfileParams = Types
-            .CreateProfileParams(owner_, address(0), abi.encode(0));
-
         uint256 lensProfileId = LENS_PROTOCOL.createProfile(
-            createProfileParams
+            Types.CreateProfileParams(owner_, address(0), abi.encode(0))
         );
         if (lensProfileId < 1) revert FailedToCreateLensProfile();
         emit CreatedLensProfile(owner_, lensProfileId);
@@ -50,13 +46,10 @@ abstract contract LensInterface {
     function _createProfileWithModula(
         address owner_,
         address modualAddress_,
-        bytes32 modualData_
+        bytes memory modualData_
     ) internal returns (uint256) {
-        Types.CreateProfileParams memory createProfileParams = Types
-            .CreateProfileParams(owner_, address(0), abi.encode(0));
-
         uint256 lensProfileId = LENS_PROTOCOL.createProfile(
-            createProfileParams
+            Types.CreateProfileParams(owner_, modualAddress_, modualData_)
         );
         if (lensProfileId < 1) revert FailedToCreateLensProfile();
         emit CreatedLensProfile(owner_, lensProfileId);

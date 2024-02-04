@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "../interfaces/IHom3Messages.sol";
+import "../interfaces/api/IHom3Messages.sol";
 
 interface Hom3Types {
     event DepositedFundsRequested(

@@ -4,12 +4,12 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {OnlyActive, Ownable} from "../security/onlyActive.sol";
 import {IBlockStore} from "../interfaces/IBlockStore.sol";
-import {IGhoToken, IERC20} from "../interfaces/IGhoToken.sol";
-import "../helpers/CCIPInterface.sol";
-import {Hom3Constants} from "../constants/Hom3Variables.sol";
+import {IGhoToken, IERC20} from "../interfaces/tokens/IGhoToken.sol";
+import {Hom3Constants} from "../constants/Hom3Constants.sol";
+import "../messages/Hom3Messages.sol";
 
 contract BlockStore is
-    CCIPInterface,
+    Hom3Messages,
     Hom3Constants,
     ReentrancyGuard,
     OnlyActive,
@@ -40,7 +40,7 @@ contract BlockStore is
         address ghoTokenAddress_,
         address blockSalesContract_,
         address linkToken_
-    ) CCIPInterface(linkToken_, router_) Ownable(msg.sender) {
+    ) Hom3Messages(linkToken_, router_) Ownable(msg.sender) {
         PAYMENT_TOKEN = IGhoToken(ghoTokenAddress_);
         _salesContractAddress = blockSalesContract_;
         _setChainsActivity(SALES_CONTRACT_CHAIN, true);

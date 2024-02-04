@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "../interfaces/IHom3Profile.sol";
+import "../interfaces/tokens/IHom3Profile.sol";
 import {OnlyActive, Ownable, Context} from "../security/onlyActive.sol";
 import {ERC721Votes, ERC721} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Votes.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
