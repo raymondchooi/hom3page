@@ -23,9 +23,7 @@ export default async function deploy({
       constructorArguments,
       { nonce, signer: deployer }
     );
-    console.log(
-      `🟠 Deployment confirming : ${contractName}`
-    );
+    console.log(`🟠 Deployment confirming : ${contractName}`);
 
     await deployedContract.waitForDeployment();
     console.log(`🟠 Deployment Confirmed : ${contractName}`);
