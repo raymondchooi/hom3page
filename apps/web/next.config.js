@@ -10,8 +10,19 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["images.unsplash.com", "ik.imagekit.io"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "ik.imagekit.io",
+      },
+    ],
   },
+  // Use webpack instead of Turbopack for compatibility with custom webpack config
+  turbopack: {},
   webpack: (config, context) => {
     if (config.plugins) {
       config.plugins.push(

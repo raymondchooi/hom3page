@@ -7,8 +7,15 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["via.placeholder.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
+    ],
   },
+  // Use webpack instead of Turbopack for compatibility with custom webpack config
+  turbopack: {},
   webpack: (config, context) => {
     if (config.plugins) {
       config.plugins.push(

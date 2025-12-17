@@ -22,8 +22,8 @@
     "sync:image": "DFX_NETWORK=local && rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/image --exclude='idl/' --exclude='*.wasm' --delete ui/declarations"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
-    "eslint-config-next": "^14.0.4",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.0.10",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6"
   },
@@ -43,7 +43,7 @@
     "compressorjs": "^1.2.1",
     "events": "^3.3.0",
     "framer-motion": "^10.18.0",
-    "next": "^14.0.4",
+    "next": "^16.0.10",
     "react": "^18.2",
     "react-dom": "^18.2",
     "react-dropzone": "^14.2",

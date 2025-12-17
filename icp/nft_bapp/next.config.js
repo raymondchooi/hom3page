@@ -9,6 +9,8 @@ const EnvPlugin = new webpack.EnvironmentPlugin({
 })
 
 module.exports = {
+  // Use webpack instead of Turbopack for compatibility with DFX
+  turbopack: {},
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Plugin
     config.plugins.push(EnvPlugin)
