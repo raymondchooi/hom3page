@@ -13,7 +13,7 @@ function WallLink({ blockData }: WallLinkProps) {
 
   return (
     <Link
-      href={`/${id}` ?? "/"}
+      href={id ? `/${id}` : "/"}
       aria-label={`Go to wall ${id ?? "home"}`}
       className="flex h-full w-full items-center justify-center border-gray-700 cursor-pointer"
     >
