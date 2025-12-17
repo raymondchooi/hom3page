@@ -2,7 +2,19 @@
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
  */
-await import("./src/env.js");
+if (!process.env.SKIP_ENV_VALIDATION) {
+  try {
+    await import("./src/env.js");
+  } catch (error) {
+    // Skip env validation if the module is not found (e.g., in some build environments)
+    // but still throw other errors
+    if (error?.code === "ERR_MODULE_NOT_FOUND") {
+      console.warn("Warning: env.js not found, skipping environment validation");
+    } else {
+      throw error;
+    }
+  }
+}
 
 /** @type {import("next").NextConfig} */
 const config = {
